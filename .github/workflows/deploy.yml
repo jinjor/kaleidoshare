@@ -16,12 +16,8 @@ jobs:
       - name: Install Deno
         uses: denoland/setup-deno@v1
 
-      # - name: Build
-      #   run: deno task build
-
       - name: Deploy to Deno Deploy
         uses: denoland/deployctl@v1
         with:
           project: "kaleidoshare"
           entrypoint: https://deno.land/std/http/file_server.ts
-          # root: dist
