@@ -65,6 +65,7 @@ function stepMatrix(
 }
 
 export function addElementsIntoView(
+  num: number,
   viewElement: HTMLElement,
   triangleNodes: TrignaleNode[],
   options: { radius: number; width: number; height: number }
@@ -76,7 +77,7 @@ export function addElementsIntoView(
 
     const el = document.createElement("div");
     el.style.position = "absolute";
-    el.className = "node";
+    el.className = "node" + num;
     el.style.width = `${radius * 2}px`;
     el.style.height = `${radius * 2}px`;
     el.style.backgroundPosition = "center";
