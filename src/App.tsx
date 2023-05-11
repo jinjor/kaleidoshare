@@ -31,13 +31,13 @@ export default function App() {
     const triangleNodes = createTriangleNodes(generation);
 
     const viewElement = viewRef.current!;
-    addElementsIntoView(1, viewElement, triangleNodes, {
+    addElementsIntoView(0, viewElement, triangleNodes, {
       radius,
       width: viewWidth,
       height: viewHeight,
     });
     const view2Element = viewRef2.current!;
-    addElementsIntoView(2, view2Element, triangleNodes, {
+    addElementsIntoView(1, view2Element, triangleNodes, {
       radius,
       width: viewWidth,
       height: viewHeight,
@@ -57,7 +57,6 @@ export default function App() {
       const url = getImageURL(imgData, radius * 2, radius * 2);
 
       // Firefox, Safari でチラつくので、２枚の画像を交互に表示する
-      const image = count % 2 === 0 ? viewElement : view2Element;
       if (count % 2 === 0) {
         viewElement.style.zIndex = "0";
         view2Element.style.zIndex = "1";
@@ -65,16 +64,13 @@ export default function App() {
         viewElement.style.zIndex = "1";
         view2Element.style.zIndex = "0";
       }
+      // それぞれのノードに url をセットすると CPU 使用率が上がる
+      //（特に FirefoxCP Isolated Web Content）ため、
+      // CSS ルールを変更して一括で画像を変更する。
       (
         (document.styleSheets[0].cssRules[count % 2] as any)
           .style as CSSStyleDeclaration
       ).backgroundImage = `url(${url})`;
-
-      // const nodeElements = image.querySelectorAll(".node");
-      // for (let i = 0; i < triangleNodes.length; i++) {
-      //   const el = nodeElements[i] as HTMLElement;
-      //   el.style.backgroundImage = `url(${url})`;
-      // }
       count++;
     }, 1000 / 60);
 
