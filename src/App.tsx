@@ -5,11 +5,11 @@ import { addElementsIntoView, createTriangleNodes } from "./view";
 import { setupWorld } from "./world";
 
 const spinnerRadius = 120;
-const radius = 60;
+const radius = 68;
 const ballRadius = 12;
 const ballRadiusVar = 10;
 const numBalls = 15;
-const generation = 7;
+const generation = 5; // TODO: これを使って radius を計算する
 
 export default function App() {
   const viewWidth = 480;
@@ -72,7 +72,7 @@ export default function App() {
           .style as CSSStyleDeclaration
       ).backgroundImage = `url(${url})`;
       count++;
-    }, 1000 / 60);
+    }, 1000 / 30);
 
     return () => {
       worldElement.innerHTML = "";
@@ -87,37 +87,29 @@ export default function App() {
         <div ref={worldRef}></div>
         <div
           style={{
-            backgroundColor: "#eee",
+            backgroundColor: "#000",
             width: viewWidth,
             height: viewHeight,
             border: "1px solid #000",
             position: "relative",
           }}
         >
-          <div
-            ref={viewRef}
-            style={{
-              backgroundColor: "#eee",
-              width: viewWidth,
-              height: viewHeight,
-              overflow: "hidden",
-              position: "absolute",
-              left: 0,
-              top: 0,
-            }}
-          ></div>
-          <div
-            ref={viewRef2}
-            style={{
-              backgroundColor: "#eee",
-              width: viewWidth,
-              height: viewHeight,
-              overflow: "hidden",
-              position: "absolute",
-              left: 0,
-              top: 0,
-            }}
-          ></div>
+          {[viewRef, viewRef2].map((ref, i) => (
+            <div
+              ref={ref}
+              key={i}
+              style={{
+                backgroundColor: "#eee",
+                width: viewWidth,
+                height: viewHeight,
+                overflow: "hidden",
+                position: "absolute",
+                left: 0,
+                top: 0,
+                borderRadius: "50%",
+              }}
+            ></div>
+          ))}
         </div>
       </div>
     </>

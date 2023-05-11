@@ -84,7 +84,7 @@ export function setupWorld(
   Runner.run(runner, engine);
   return {
     rotate: () => {
-      Body.rotate(spinner, 0.01);
+      Body.rotate(spinner, 0.02);
     },
     canvas: render.canvas as HTMLCanvasElement, // TODO: as 要らないはず
   };
