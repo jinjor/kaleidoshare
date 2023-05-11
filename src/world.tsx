@@ -1,3 +1,4 @@
+// @deno-types="npm:@types/matter-js@^0.18.3"
 import {
   Engine,
   Render,
@@ -12,7 +13,7 @@ import decomp from "poly-decomp";
 
 Common.setDecomp(decomp);
 
-export function setup(
+export function setupWorld(
   element: HTMLElement,
   options: {
     spinnerRadius: number;
@@ -85,7 +86,7 @@ export function setup(
     rotate: () => {
       Body.rotate(spinner, 0.01);
     },
-    canvas: render.canvas,
+    canvas: render.canvas as HTMLCanvasElement, // TODO: as 要らないはず
   };
 }
 

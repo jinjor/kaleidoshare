@@ -3,6 +3,8 @@
   "remote": {},
   "npm": {
     "specifiers": {
+      "@types/react-dom@^18.2.4": "@types/react-dom@18.2.4",
+      "@types/react@^18.2.6": "@types/react@18.2.6",
       "@vitejs/plugin-react@^3.0.1": "@vitejs/plugin-react@3.1.0_vite@4.3.5_@babel+core@7.21.8",
       "matter-js@^0.19.0": "matter-js@0.19.0",
       "poly-decomp@^0.3.0": "poly-decomp@0.3.0",
@@ -317,6 +319,28 @@
           "@jridgewell/sourcemap-codec": "@jridgewell/sourcemap-codec@1.4.14"
         }
       },
+      "@types/prop-types@15.7.5": {
+        "integrity": "sha512-JCB8C6SnDoQf0cNycqd/35A7MjcnK+ZTqE7judS6o7utxUCg6imJg3QK2qzHKszlTjcj2cn+NwMB2i96ubpj7w==",
+        "dependencies": {}
+      },
+      "@types/react-dom@18.2.4": {
+        "integrity": "sha512-G2mHoTMTL4yoydITgOGwWdWMVd8sNgyEP85xVmMKAPUBwQWm9wBPQUmvbeF4V3WBY1P7mmL4BkjQ0SqUpf1snw==",
+        "dependencies": {
+          "@types/react": "@types/react@18.2.6"
+        }
+      },
+      "@types/react@18.2.6": {
+        "integrity": "sha512-wRZClXn//zxCFW+ye/D2qY65UsYP1Fpex2YXorHc8awoNamkMZSvBxwxdYVInsHOZZd2Ppq8isnSzJL5Mpf8OA==",
+        "dependencies": {
+          "@types/prop-types": "@types/prop-types@15.7.5",
+          "@types/scheduler": "@types/scheduler@0.16.3",
+          "csstype": "csstype@3.1.2"
+        }
+      },
+      "@types/scheduler@0.16.3": {
+        "integrity": "sha512-5cJ8CB4yAx7BH1oMvdU0Jh9lrEXyPkar6F9G/ERswkCuvP4KQZfZkSjcMbAICCpQTN4OuZn8tz0HiKv9TGZgrQ==",
+        "dependencies": {}
+      },
       "@vitejs/plugin-react@3.1.0_vite@4.3.5_@babel+core@7.21.8": {
         "integrity": "sha512-AfgcRL8ZBhAlc3BFdigClmTUMISmmzHn7sB2h9U1odvc5U/MjWXsAaz18b/WoppUTDBzxOJwo2VdClfUcItu9g==",
         "dependencies": {
@@ -367,6 +391,10 @@
       },
       "convert-source-map@1.9.0": {
         "integrity": "sha512-ASFBup0Mz1uyiIjANan1jzLQami9z1PoYSZCiiYW2FczPbenXc45FZdBZLzOT+r6+iciuEModtmCti+hjaAk0A==",
+        "dependencies": {}
+      },
+      "csstype@3.1.2": {
+        "integrity": "sha512-I7K1Uu0MBPzaFKg4nI5Q7Vs2t+3gWWW648spaF+Rg7pI9ds18Ugn+lvg4SHczUdKlHI5LWBXyqfS8+DufyBsgQ==",
         "dependencies": {}
       },
       "debug@4.3.4": {
