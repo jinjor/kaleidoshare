@@ -45,10 +45,17 @@ export default function App() {
   const [user, setUser] = React.useState<User | null>(null);
 
   useEffect(() => {
-    fetch("/api/user")
-      .then((res) => res.json())
+    fetch("/api/session")
+      .then((res) => {
+        if (res.status === 401) {
+          return null;
+        }
+        if (res.status >= 400) {
+          throw new Error("Failed to fetch user"); // TODO: handle error
+        }
+        return res.json();
+      })
       .then((user) => setUser(user));
-    // TODO: error
   }, []);
   return (
     <>

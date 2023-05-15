@@ -1,6 +1,7 @@
 {
   "name": "kaleidoshare",
   "devDependencies": {
+    "@simplewebauthn/browser": "^7.2.0",
     "@types/matter-js": "^0.18.3",
     "@types/react": "^18.2.6",
     "@types/react-dom": "^18.2.4",
@@ -13,10 +14,12 @@
     "vite": "^4.3.5"
   },
   "scripts": {
-    "dev": "run-p vite server",
-    "vite": "vite",
-    "server": "deno run -A --unstable ./server.ts",
+    "dev": "run-p dev:*",
+    "dev:vite": "vite",
+    "dev:server": "deno run -A --unstable ./server.ts",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "run-p preview:*",
+    "preview:vite": "vite preview",
+    "preview:server": "deno run -A ./server.ts"
   }
 }
