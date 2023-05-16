@@ -1,10 +1,7 @@
 import React from "react";
 import { User } from "./data/user";
 import Nav from "./Nav";
-import {
-  startRegistration,
-  startAuthentication,
-} from "@simplewebauthn/browser";
+import { startRegistration } from "@simplewebauthn/browser";
 
 export default function Signup(props: { user: User | null }) {
   const { user } = props;
