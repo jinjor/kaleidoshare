@@ -1,4 +1,3 @@
-// @deno-types="npm:@types/matter-js@^0.18.3"
 import {
   Engine,
   Render,
@@ -101,7 +100,7 @@ export function setupWorld(
     rotate: () => {
       Body.rotate(spinner, 0.02);
     },
-    canvas: render.canvas as HTMLCanvasElement, // TODO: as 要らないはず
+    canvas: render.canvas,
   };
 }
 
