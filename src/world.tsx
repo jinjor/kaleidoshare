@@ -54,10 +54,10 @@ export function setupWorld(
     0,
     [
       [
-        posFromAngle((Math.PI / 6) * 1, spinnerRadius + 40),
-        posFromAngle((Math.PI / 6) * 5, spinnerRadius + 40),
-        posFromAngle((Math.PI / 6) * 9, spinnerRadius + 40),
-        posFromAngle((Math.PI / 6) * 0.999, spinnerRadius + 40),
+        posFromAngle((Math.PI / 6) * 1, spinnerRadius * 1.3),
+        posFromAngle((Math.PI / 6) * 5, spinnerRadius * 1.3),
+        posFromAngle((Math.PI / 6) * 9, spinnerRadius * 1.3),
+        posFromAngle((Math.PI / 6) * 0.999, spinnerRadius * 1.3),
         posFromAngle((Math.PI / 6) * 0.999, spinnerRadius),
         posFromAngle((Math.PI / 6) * 9, spinnerRadius),
         posFromAngle((Math.PI / 6) * 5, spinnerRadius),

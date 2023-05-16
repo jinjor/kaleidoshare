@@ -4,7 +4,7 @@ import { addElementsIntoView, createTriangleNodes } from "./view";
 import { setupWorld } from "./world";
 
 const generation = 5;
-const viewRadiusRatio = 68 / 480; // TODO: generation から計算する
+const viewRadiusRatio = 0.142; // TODO: generation から計算する
 
 const worldSize = 240;
 const viewSize = 480;
