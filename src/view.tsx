@@ -2,7 +2,16 @@ import React, { useEffect, useRef } from "react";
 import World from "./World";
 
 const generation = 5;
-const viewRadiusRatio = 0.142; // TODO: generation から計算する
+const f = [
+  1,
+  1 / 2,
+  1 / 2,
+  1 / 4,
+  1 / (2 * Math.sqrt(7)),
+  1 / (2 * Math.sqrt(13)),
+  1 / 8,
+];
+const viewRadiusRatio = f[generation];
 
 type TrignaleNode = {
   x: number;
