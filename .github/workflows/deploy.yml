@@ -30,4 +30,6 @@ jobs:
         uses: denoland/deployctl@v1
         with:
           project: "kaleidoshare"
-          entrypoint: server.ts
+          # entrypoint: server.ts
+          entrypoint: https://deno.land/std@0.157.0/http/file_server.ts
+          root: dist
