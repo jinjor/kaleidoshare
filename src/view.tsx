@@ -70,7 +70,7 @@ const View = React.memo(function View(props: { size: number; world: World }) {
       clearInterval(interval);
       document.body.removeChild(styleElement);
     };
-  }, []);
+  }, [world]);
   return (
     <div
       style={{
@@ -101,7 +101,7 @@ const View = React.memo(function View(props: { size: number; world: World }) {
 });
 export default View;
 
-function createTriangleNodes(generation) {
+function createTriangleNodes(generation: number) {
   const nodes = new Map();
   const firstNode: TrignaleNode = {
     x: 0,

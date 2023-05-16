@@ -38,9 +38,14 @@ const World = React.memo(function World(props: {
 
   useEffect(() => {
     const worldElement = worldRef.current!;
-    const world = setupWorld(worldElement, options);
-    onReady(world);
+    const { render, runner, rotate, getImageURL } = setupWorld(
+      worldElement,
+      options
+    );
+    onReady({ rotate, getImageURL });
     return () => {
+      Render.stop(render);
+      Runner.stop(runner);
       worldElement.innerHTML = "";
     };
   }, [options]);
@@ -58,7 +63,7 @@ const World = React.memo(function World(props: {
 });
 export default World;
 
-function setupWorld(element: HTMLElement, options: WorldOptions): World {
+function setupWorld(element: HTMLElement, options: WorldOptions) {
   const {
     size,
     numBalls,
@@ -132,7 +137,10 @@ function setupWorld(element: HTMLElement, options: WorldOptions): World {
   });
   const runner = Runner.create();
   Runner.run(runner, engine);
+
   return {
+    render,
+    runner,
     rotate: () => {
       Body.rotate(spinner, 0.02);
     },
