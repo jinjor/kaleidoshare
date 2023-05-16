@@ -16,21 +16,36 @@ Common.setDecomp(decomp);
 export function setupWorld(
   element: HTMLElement,
   options: {
-    spinnerRadius: number;
+    size: number;
     numBalls: number;
-    ballRadius: number;
-    ballRadiusVar: number;
+    spinnerRadiusRatio: number;
+    clipRadiusRatio: number;
+    ballRadiusRatio: number;
+    ballRadiusVarRatio: number;
   }
 ) {
-  const { spinnerRadius, numBalls, ballRadius, ballRadiusVar } = options;
+  const {
+    size,
+    numBalls,
+    spinnerRadiusRatio,
+    clipRadiusRatio,
+    ballRadiusRatio,
+    ballRadiusVarRatio,
+  } = options;
+
+  const spinnerRadius = size * spinnerRadiusRatio;
+  const clipRadius = size * clipRadiusRatio;
+  const ballRadius = size * ballRadiusRatio;
+  const ballRadiusVar = size * ballRadiusVarRatio;
+
   const engine = Engine.create();
 
   const render = Render.create({
     element,
     engine: engine,
     options: {
-      width: spinnerRadius * 2,
-      height: spinnerRadius * 2,
+      width: size,
+      height: size,
       wireframes: false,
     },
   });

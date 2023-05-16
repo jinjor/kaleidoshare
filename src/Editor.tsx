@@ -5,12 +5,14 @@ import { setupWorld } from "./world";
 
 const generation = 5;
 const viewRadiusRatio = 68 / 480; // TODO: generation から計算する
-const spinnerRadius = 120;
 
+const worldSize = 240;
 const viewSize = 480;
-const clipRadius = spinnerRadius / 2;
-const ballRadius = 12;
-const ballRadiusVar = 10;
+
+const ballRadiusRatio = 0.05;
+const ballRadiusVarRatio = 0.04;
+const spinnerRadiusRatio = 0.5;
+const clipRadiusRatio = 0.25;
 const numBalls = 15;
 
 export default function Editor(props: { preview: boolean }) {
@@ -23,10 +25,12 @@ export default function Editor(props: { preview: boolean }) {
     const worldElement = worldRef.current!;
 
     const { rotate, canvas } = setupWorld(worldElement, {
-      spinnerRadius,
+      size: worldSize,
       numBalls,
-      ballRadius,
-      ballRadiusVar,
+      spinnerRadiusRatio,
+      clipRadiusRatio,
+      ballRadiusRatio,
+      ballRadiusVarRatio,
     });
 
     const triangleNodes = createTriangleNodes(generation);
@@ -44,6 +48,10 @@ export default function Editor(props: { preview: boolean }) {
     const interval = setInterval(() => {
       rotate();
       const ctx = canvas.getContext("2d")!;
+
+      // TODO: 共通化
+      const spinnerRadius = worldSize * spinnerRadiusRatio;
+      const clipRadius = worldSize * clipRadiusRatio;
       const imgData = ctx.getImageData(
         spinnerRadius - clipRadius,
         spinnerRadius - clipRadius,
