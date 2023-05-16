@@ -3,18 +3,18 @@ import { useEffect, useRef } from "react";
 import { addElementsIntoView, createTriangleNodes } from "./view";
 import { setupWorld } from "./world";
 
+const generation = 5;
+const viewRadiusRatio = 68 / 480; // TODO: generation から計算する
 const spinnerRadius = 120;
-const radius = 68;
+
+const viewSize = 480;
+const clipRadius = spinnerRadius / 2;
 const ballRadius = 12;
 const ballRadiusVar = 10;
 const numBalls = 15;
-const generation = 5; // TODO: これを使って radius を計算する
 
 export default function Editor(props: { preview: boolean }) {
   const { preview } = props;
-
-  const viewWidth = 480;
-  const viewHeight = 480;
 
   const worldRef = useRef<HTMLDivElement>(null);
   const viewRef = useRef<HTMLDivElement>(null);
@@ -33,15 +33,11 @@ export default function Editor(props: { preview: boolean }) {
 
     const viewElement = viewRef.current!;
     addElementsIntoView(0, viewElement, triangleNodes, {
-      radius,
-      width: viewWidth,
-      height: viewHeight,
+      radius: viewRadiusRatio,
     });
     const view2Element = viewRef2.current!;
     addElementsIntoView(1, view2Element, triangleNodes, {
-      radius,
-      width: viewWidth,
-      height: viewHeight,
+      radius: viewRadiusRatio,
     });
 
     let count = 0;
@@ -49,13 +45,13 @@ export default function Editor(props: { preview: boolean }) {
       rotate();
       const ctx = canvas.getContext("2d")!;
       const imgData = ctx.getImageData(
-        spinnerRadius - radius,
-        spinnerRadius - radius,
-        radius * 2,
-        radius * 2
+        spinnerRadius - clipRadius,
+        spinnerRadius - clipRadius,
+        clipRadius * 2,
+        clipRadius * 2
       );
 
-      const url = getImageURL(imgData, radius * 2, radius * 2);
+      const url = getImageURL(imgData, clipRadius * 2, clipRadius * 2);
 
       // Firefox, Safari でチラつくので、２枚の画像を交互に表示する
       if (count % 2 === 0) {
@@ -89,8 +85,8 @@ export default function Editor(props: { preview: boolean }) {
         <div
           style={{
             backgroundColor: "#000",
-            width: viewWidth,
-            height: viewHeight,
+            width: viewSize,
+            height: viewSize,
             border: "1px solid #000",
             position: "relative",
           }}
@@ -101,8 +97,8 @@ export default function Editor(props: { preview: boolean }) {
               key={i}
               style={{
                 backgroundColor: "#eee",
-                width: viewWidth,
-                height: viewHeight,
+                width: "100%",
+                height: "100%",
                 overflow: "hidden",
                 position: "absolute",
                 left: 0,

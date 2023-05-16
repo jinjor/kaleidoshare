@@ -68,28 +68,28 @@ export function addElementsIntoView(
   num: number,
   viewElement: HTMLElement,
   triangleNodes: TrignaleNode[],
-  options: { radius: number; width: number; height: number }
+  options: { radius: number }
 ) {
-  const { radius, width, height } = options;
+  const { radius } = options;
   for (const node of triangleNodes) {
-    const x = width / 2 - radius + node.x * radius;
-    const y = width / 2 - radius + node.y * radius;
+    const x = 0.5 - radius + node.x * radius;
+    const y = 0.5 - radius + node.y * radius;
 
     const el = document.createElement("div");
     el.style.position = "absolute";
     el.className = "node" + num;
-    el.style.width = `${radius * 2}px`;
-    el.style.height = `${radius * 2}px`;
-    el.style.backgroundPosition = "center";
+    el.style.width = `${radius * 2 * 100}%`;
+    el.style.height = `${radius * 2 * 100}%`;
+    el.style.backgroundSize = "cover";
     el.style.backgroundRepeat = "no-repeat";
-    el.style.clipPath = `polygon(${radius}px ${0}px, ${
-      radius + radius * Math.cos(Math.PI / 6)
-    }px ${radius + radius * Math.sin(Math.PI / 6)}px, ${
-      radius + radius * Math.cos((Math.PI / 6) * 5)
-    }px ${radius + radius * Math.sin((Math.PI / 6) * 5)}px)`;
+    el.style.clipPath = `polygon(50% 0%, ${
+      (0.5 + 0.5 * Math.cos(Math.PI / 6)) * 100
+    }% ${(0.5 + 0.5 * Math.sin(Math.PI / 6)) * 100}%, ${
+      (0.5 + 0.5 * Math.cos((Math.PI / 6) * 5)) * 100
+    }% ${(0.5 + 0.5 * Math.sin((Math.PI / 6) * 5)) * 100}%)`;
 
-    el.style.left = `${x}px`;
-    el.style.top = `${y}px`;
+    el.style.left = `${x * 100}%`;
+    el.style.top = `${y * 100}%`;
     el.style.transform = `matrix(${node.rotateMatrix
       .map((n) => n.toFixed(2))
       .join(",")},0,0)`;
