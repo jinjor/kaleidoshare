@@ -1,3 +1,5 @@
+import React, { useEffect, useRef } from "react";
+
 import {
   Engine,
   Render,
@@ -12,17 +14,51 @@ import decomp from "poly-decomp";
 
 Common.setDecomp(decomp);
 
-export function setupWorld(
-  element: HTMLElement,
-  options: {
-    size: number;
-    numBalls: number;
-    spinnerRadiusRatio: number;
-    clipRadiusRatio: number;
-    ballRadiusRatio: number;
-    ballRadiusVarRatio: number;
-  }
-) {
+type World = {
+  rotate: () => void;
+  getImageURL: () => string;
+};
+type WorldOptions = {
+  size: number;
+  numBalls: number;
+  spinnerRadiusRatio: number;
+  clipRadiusRatio: number;
+  ballRadiusRatio: number;
+  ballRadiusVarRatio: number;
+};
+
+const World = React.memo(function World(props: {
+  options: WorldOptions;
+  hidden: boolean;
+  onReady: (world: World) => void;
+}) {
+  const { options, hidden, onReady } = props;
+
+  const worldRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const worldElement = worldRef.current!;
+    const world = setupWorld(worldElement, options);
+    onReady(world);
+    return () => {
+      worldElement.innerHTML = "";
+    };
+  }, [options]);
+
+  return (
+    <div
+      style={{
+        width: options.size,
+        height: options.size,
+        display: hidden ? "none" : undefined,
+      }}
+      ref={worldRef}
+    ></div>
+  );
+});
+export default World;
+
+function setupWorld(element: HTMLElement, options: WorldOptions): World {
   const {
     size,
     numBalls,
@@ -100,7 +136,21 @@ export function setupWorld(
     rotate: () => {
       Body.rotate(spinner, 0.02);
     },
-    canvas: render.canvas,
+    getImageURL: () => {
+      const ctx = render.context;
+      const imageData = ctx.getImageData(
+        size / 2 - clipRadius,
+        size / 2 - clipRadius,
+        clipRadius * 2,
+        clipRadius * 2
+      );
+      const canvas = document.createElement("canvas");
+      canvas.width = clipRadius * 2;
+      canvas.height = clipRadius * 2;
+      const ctx2 = canvas.getContext("2d")!;
+      ctx2.putImageData(imageData, 0, 0);
+      return canvas.toDataURL();
+    },
   };
 }
 

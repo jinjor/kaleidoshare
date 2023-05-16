@@ -1,10 +1,107 @@
+import React, { useEffect, useRef } from "react";
+import World from "./World";
+
+const generation = 5;
+const viewRadiusRatio = 0.142; // TODO: generation から計算する
+
 type TrignaleNode = {
   x: number;
   y: number;
   rotateMatrix: [number, number, number, number];
 };
 
-export function createTriangleNodes(generation) {
+const View = React.memo(function View(props: { size: number; world: World }) {
+  const { size, world } = props;
+
+  const viewRef = useRef<HTMLDivElement>(null);
+  const viewRef2 = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const styleElement = document.createElement("style");
+    styleElement.textContent = `
+    .node0 {
+      background-image: none;
+    }
+    .node1 {
+      background-image: none;
+    }
+    `;
+    document.body.appendChild(styleElement);
+
+    const { rotate, getImageURL } = world;
+
+    const triangleNodes = createTriangleNodes(generation);
+
+    const viewElement = viewRef.current!;
+    addElementsIntoView(0, viewElement, triangleNodes, {
+      radius: viewRadiusRatio,
+    });
+    const view2Element = viewRef2.current!;
+    addElementsIntoView(1, view2Element, triangleNodes, {
+      radius: viewRadiusRatio,
+    });
+
+    let count = 0;
+    const interval = setInterval(() => {
+      rotate();
+      const url = getImageURL();
+
+      // Firefox, Safari でチラつくので、２枚の画像を交互に表示する
+      if (count % 2 === 0) {
+        viewElement.style.zIndex = "0";
+        view2Element.style.zIndex = "1";
+      } else {
+        viewElement.style.zIndex = "1";
+        view2Element.style.zIndex = "0";
+      }
+      // それぞれのノードに url をセットすると CPU 使用率が上がる
+      //（特に FirefoxCP Isolated Web Content）ため、
+      // CSS ルールを変更して一括で画像を変更する。
+      (
+        (styleElement.sheet!.cssRules[count % 2] as any)
+          .style as CSSStyleDeclaration
+      ).backgroundImage = `url(${url})`;
+      count++;
+    }, 1000 / 30);
+
+    return () => {
+      viewElement.innerHTML = "";
+      view2Element.innerHTML = "";
+      clearInterval(interval);
+      document.body.removeChild(styleElement);
+    };
+  }, []);
+  return (
+    <div
+      style={{
+        backgroundColor: "#000",
+        width: size,
+        height: size,
+        position: "relative",
+      }}
+    >
+      {[viewRef, viewRef2].map((ref, i) => (
+        <div
+          ref={ref}
+          key={i}
+          style={{
+            backgroundColor: "#eee",
+            width: "100%",
+            height: "100%",
+            overflow: "hidden",
+            position: "absolute",
+            left: 0,
+            top: 0,
+            borderRadius: "50%",
+          }}
+        ></div>
+      ))}
+    </div>
+  );
+});
+export default View;
+
+function createTriangleNodes(generation) {
   const nodes = new Map();
   const firstNode: TrignaleNode = {
     x: 0,
