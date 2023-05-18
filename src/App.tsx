@@ -4,6 +4,7 @@ import { User } from "./data/user";
 import Signup from "./Signup";
 import NotFound from "./NotFound";
 import Home from "./Home";
+import Account from "./Account";
 
 type Route =
   | {
@@ -11,6 +12,9 @@ type Route =
     }
   | {
       type: "signup";
+    }
+  | {
+      type: "account";
     }
   | {
       type: "content";
@@ -24,6 +28,9 @@ function getRoute(pathname: string): Route | null {
   }
   if (pathname === "/signup") {
     return { type: "signup" };
+  }
+  if (pathname === "/account") {
+    return { type: "account" };
   }
   const match = pathname.match(/^\/content\/([^\/]+)\/([^\/]+)$/);
   if (match) {
@@ -56,6 +63,8 @@ export default function App() {
         <Home user={user} />
       ) : route?.type === "signup" ? (
         <Signup user={user} />
+      ) : route?.type === "account" ? (
+        <Account user={user} />
       ) : route?.type === "content" ? (
         <Content
           user={user}

@@ -121,6 +121,7 @@ export async function createCredential(
     userName,
     timeout: 60000,
     attestationType: "none",
+    // TODO: 効いてない？
     excludeCredentials: credentials.map((cred) => ({
       id: cred.device.credentialID,
       type: "public-key",

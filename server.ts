@@ -149,7 +149,7 @@ router.post("/credential", async (context) => {
   }
 });
 
-routerWithAuth.delete("/credential", async (context) => {
+routerWithAuth.delete("/user", async (context) => {
   const userName = await context.state.session.get("login");
   if (userName == null) {
     context.response.status = 401;
