@@ -15,6 +15,13 @@ import {
 } from "./server/auth.ts";
 import { randomHex } from "./server/util.ts";
 
+// デバッグのためにデータを全部消す
+const kv = await Deno.openKv();
+const iter = await kv.list({ prefix: [] });
+for await (const res of iter) {
+  kv.delete(res.key);
+}
+
 type AppState = {
   session: Session;
 };
@@ -122,14 +129,8 @@ router.post("/credential", async (context) => {
     if (challenge == null || userName == null) {
       throw new RegistrationNotVerifiedError();
     }
-    const device = await register(
-      rpID,
-      expectedOrigin,
-      response,
-      challenge,
-      userName
-    );
-    console.log("device", device);
+    await register(rpID, expectedOrigin, response, challenge, userName);
+    await context.state.session.set("login", userName);
     context.response.status = 200;
   } catch (e) {
     if (e instanceof RegistrationNotVerifiedError) {

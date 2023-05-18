@@ -101,7 +101,7 @@ export async function register(
   response: RegistrationResponseJSON,
   expectedChallenge: string,
   userName: string
-): Promise<AuthenticatorDevice> {
+): Promise<void> {
   console.log(
     "clientDataJSON",
     decodeClientDataJSON(response.response.clientDataJSON)
@@ -130,7 +130,6 @@ export async function register(
     transports: response.response.transports,
   };
   await setCredential(userName, { device });
-  return device;
 }
 export async function createAuthentication(
   rpID: string,

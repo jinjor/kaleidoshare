@@ -10,6 +10,19 @@ export default function Nav(props: {
     return <></>;
   }
   const { user, children } = props;
+
+  const handleLogout = async (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    const res = await fetch("/api/session", {
+      method: "DELETE",
+    });
+    if (res.status >= 400) {
+      const { message } = await res.json();
+      alert(message); // TODO
+      throw new Error("Failed"); // TODO: handle error
+    }
+    location.reload();
+  };
   return (
     <nav>
       <ul>
@@ -21,7 +34,7 @@ export default function Nav(props: {
           <>
             <li>{user.name}</li>
             <li>
-              <a href="/logout">Logout</a>
+              <button onClick={handleLogout}>Logout</button>
             </li>
           </>
         ) : (
