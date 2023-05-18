@@ -10,10 +10,7 @@ import {
   GenerateAuthenticationOptionsOpts,
   VerifyAuthenticationResponseOpts,
 } from "npm:@simplewebauthn/server@^7.2.0";
-import {
-  decodeClientDataJSON,
-  isoUint8Array,
-} from "npm:@simplewebauthn/server/helpers";
+import { isoUint8Array } from "npm:@simplewebauthn/server/helpers";
 import type {
   RegistrationResponseJSON,
   AuthenticationResponseJSON,
@@ -102,21 +99,33 @@ export class AuthenticationNotVerifiedError extends Error {
 }
 export async function createCredential(
   rpID: string,
-  userName: string
+  userName: string,
+  newUser: boolean
 ): Promise<PublicKeyCredentialCreationOptionsJSON> {
   const user = await getUser(userName);
-  if (user != null) {
+  if (newUser && user != null) {
     throw new UserAlreadyExistsError();
   }
-  const userID = crypto.randomUUID();
+  const userID = "kaleidoshare/" + userName;
+  const credentials = [];
+  for (const credential of user?.credentials ?? []) {
+    const cred = await getCredential(credential);
+    if (cred != null) {
+      credentials.push(cred);
+    }
+  }
   const opts: GenerateRegistrationOptionsOpts = {
-    rpName: "SimpleWebAuthn Example",
+    rpName: "Kaleidoshare",
     rpID,
     userID,
     userName,
     timeout: 60000,
     attestationType: "none",
-    excludeCredentials: [], // 複数デバイスの時は登録ずみのクレデンシャルをここに追加
+    excludeCredentials: credentials.map((cred) => ({
+      id: cred.device.credentialID,
+      type: "public-key",
+      transports: cred.device.transports,
+    })),
     // ?
     authenticatorSelection: {
       residentKey: "discouraged",
@@ -133,10 +142,10 @@ export async function register(
   expectedChallenge: string,
   userName: string
 ): Promise<void> {
-  console.log(
-    "clientDataJSON",
-    decodeClientDataJSON(response.response.clientDataJSON)
-  );
+  // console.log(
+  //   "clientDataJSON",
+  //   decodeClientDataJSON(response.response.clientDataJSON)
+  // );
 
   const opts: VerifyRegistrationResponseOpts = {
     response,
@@ -146,7 +155,7 @@ export async function register(
     requireUserVerification: true,
   };
   const verification = await verifyRegistrationResponse(opts);
-  console.log("verification", verification);
+  // console.log("verification", verification);
 
   if (!verification.verified || verification.registrationInfo == null) {
     throw new RegistrationNotVerifiedError();
@@ -160,9 +169,14 @@ export async function register(
     counter,
     transports: response.response.transports,
   };
+  // ユーザーが存在する場合としない場合の両方に対応
+  const existingUser = await getUser(userName);
+  const existingCredentials = existingUser?.credentials ?? [];
   // TODO: transaction
   await setCredential(credentialID, { device, userName });
-  await setUser(userName, { credentials: [credentialID] });
+  await setUser(userName, {
+    credentials: [...existingCredentials, credentialID],
+  });
 }
 // deno-lint-ignore require-await
 export async function createAuthentication(

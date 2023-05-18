@@ -102,7 +102,7 @@ router.delete("/session", async (context) => {
 router.post("/credential/new", async (context) => {
   const { name: userName } = await context.request.body({ type: "json" }).value;
   try {
-    const options = await createCredential(rpID, userName);
+    const options = await createCredential(rpID, userName, true);
     await context.state.session.flash("challenge", options.challenge);
     await context.state.session.flash("userName", userName);
     context.response.status = 200;
@@ -118,10 +118,18 @@ router.post("/credential/new", async (context) => {
     throw e;
   }
 });
+routerWithAuth.post("/credential/add", async (context) => {
+  const userName = await context.state.session.get("login");
+  const options = await createCredential(rpID, userName, false);
+  await context.state.session.flash("challenge", options.challenge);
+  await context.state.session.flash("userName", userName);
+  context.response.status = 200;
+  context.response.body = JSON.stringify(options);
+});
 router.post("/credential", async (context) => {
   const response = await context.request.body({ type: "json" }).value;
-  const challenge = await context.state.session.get("challenge");
-  const userName = await context.state.session.get("userName");
+  const challenge: string = await context.state.session.get("challenge");
+  const userName: string = await context.state.session.get("userName");
   try {
     if (challenge == null || userName == null) {
       throw new RegistrationNotVerifiedError();
