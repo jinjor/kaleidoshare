@@ -1,5 +1,38 @@
 import React from "react";
 import { User } from "./data/user";
+import { startAuthentication } from "@simplewebauthn/browser";
+
+async function login() {
+  const res = await fetch("/api/session/new", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  if (res.status >= 400) {
+    const { message } = await res.json();
+    alert(message); // TODO
+    throw new Error("Failed"); // TODO: handle error
+  }
+  const authenticateOps = await res.json();
+  console.log(authenticateOps);
+  const authResp = await startAuthentication(authenticateOps);
+  console.log(authResp);
+
+  const res2 = await fetch("/api/session", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(authResp),
+  });
+  if (res2.status >= 400) {
+    const { message } = await res2.json();
+    alert(message); // TODO
+    throw new Error("Failed"); // TODO: handle error
+  }
+  location.href = "/";
+}
 
 export default function Nav(props: {
   user: User | null;
@@ -11,6 +44,11 @@ export default function Nav(props: {
   }
   const { user, children } = props;
 
+  const handleLogin = async (event: React.FormEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    await login();
+    location.reload();
+  };
   const handleLogout = async (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
     const res = await fetch("/api/session", {
@@ -23,6 +61,7 @@ export default function Nav(props: {
     }
     location.reload();
   };
+
   return (
     <nav>
       <ul>
@@ -43,7 +82,7 @@ export default function Nav(props: {
               <a href="/signup">Signup</a>
             </li>
             <li>
-              <a href="/login">Login</a>
+              <button onClick={handleLogin}>Login</button>
             </li>
           </>
         )}

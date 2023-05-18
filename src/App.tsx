@@ -2,7 +2,6 @@ import React, { useEffect } from "react";
 import Content from "./Content";
 import { User } from "./data/user";
 import Signup from "./Signup";
-import Login from "./Login";
 import NotFound from "./NotFound";
 import Home from "./Home";
 
@@ -12,9 +11,6 @@ type Route =
     }
   | {
       type: "signup";
-    }
-  | {
-      type: "login";
     }
   | {
       type: "content";
@@ -28,9 +24,6 @@ function getRoute(pathname: string): Route | null {
   }
   if (pathname === "/signup") {
     return { type: "signup" };
-  }
-  if (pathname === "/login") {
-    return { type: "login" };
   }
   const match = pathname.match(/^\/content\/([^\/]+)\/([^\/]+)$/);
   if (match) {
@@ -63,8 +56,6 @@ export default function App() {
         <Home user={user} />
       ) : route?.type === "signup" ? (
         <Signup user={user} />
-      ) : route?.type === "login" ? (
-        <Login user={user} />
       ) : route?.type === "content" ? (
         <Content
           user={user}

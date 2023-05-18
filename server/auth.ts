@@ -8,7 +8,6 @@ import {
   VerifyRegistrationResponseOpts,
   GenerateRegistrationOptionsOpts,
   GenerateAuthenticationOptionsOpts,
-  VerifiedAuthenticationResponse,
   VerifyAuthenticationResponseOpts,
 } from "npm:@simplewebauthn/server@^7.2.0";
 import {
@@ -23,14 +22,24 @@ import type {
   PublicKeyCredentialRequestOptionsJSON,
 } from "npm:@simplewebauthn/typescript-types";
 import * as base64url from "https://deno.land/std@0.179.0/encoding/base64url.ts";
+import { assert } from "https://deno.land/std@0.183.0/_util/asserts.ts";
 
-// ここで管理する DB は userName => Credential のマッピング
+// Schema:
+// - credentials: credentialID => Credential
+// - users: userName => User
 type Credential = {
-  device: AuthenticatorDevice; // TODO: 複数
+  device: AuthenticatorDevice;
+  userName: string;
 };
-async function getCredential(userName: string): Promise<Credential | null> {
+type User = {
+  credentials: Uint8Array[];
+};
+
+async function getCredential(
+  credentialID: Uint8Array
+): Promise<Credential | null> {
   const kv = await Deno.openKv();
-  const cred = await kv.get<Credential>(["credentials", userName]);
+  const cred = await kv.get<Credential>(["credentials", credentialID]);
   if (cred.value == null) {
     return null;
   }
@@ -38,15 +47,37 @@ async function getCredential(userName: string): Promise<Credential | null> {
   return cred.value;
 }
 async function setCredential(
-  userName: string,
+  credentialID: Uint8Array,
   credential: Credential
 ): Promise<void> {
   const kv = await Deno.openKv();
-  await kv.set(["credentials", userName], credential);
+  await kv.set(["credentials", credentialID], credential);
 }
-export async function deleteCredential(userName: string): Promise<void> {
+async function deleteCredential(credentialID: Uint8Array): Promise<void> {
   const kv = await Deno.openKv();
-  await kv.delete(["credentials", userName]);
+  await kv.delete(["credentials", credentialID]);
+}
+
+async function getUser(userName: string): Promise<User | null> {
+  const kv = await Deno.openKv();
+  const cred = await kv.get<User>(["users", userName]);
+  return cred.value;
+}
+async function setUser(userName: string, user: User): Promise<void> {
+  const kv = await Deno.openKv();
+  await kv.set(["users", userName], user);
+}
+export async function deleteUser(userName: string): Promise<void> {
+  const kv = await Deno.openKv();
+  const user = await getUser(userName);
+  if (user == null) {
+    return;
+  }
+  // TODO: transaction
+  for (const credentialID of user.credentials) {
+    await deleteCredential(credentialID);
+  }
+  await kv.delete(["users", userName]);
 }
 
 export class UserAlreadyExistsError extends Error {
@@ -73,8 +104,8 @@ export async function createCredential(
   rpID: string,
   userName: string
 ): Promise<PublicKeyCredentialCreationOptionsJSON> {
-  const cred = await getCredential(userName);
-  if (cred != null) {
+  const user = await getUser(userName);
+  if (user != null) {
     throw new UserAlreadyExistsError();
   }
   const userID = crypto.randomUUID();
@@ -129,25 +160,16 @@ export async function register(
     counter,
     transports: response.response.transports,
   };
-  await setCredential(userName, { device });
+  // TODO: transaction
+  await setCredential(credentialID, { device, userName });
+  await setUser(userName, { credentials: [credentialID] });
 }
+// deno-lint-ignore require-await
 export async function createAuthentication(
-  rpID: string,
-  userName: string
+  rpID: string
 ): Promise<PublicKeyCredentialRequestOptionsJSON> {
-  const user = await getCredential(userName);
   const opts: GenerateAuthenticationOptionsOpts = {
     timeout: 60000,
-    allowCredentials:
-      user != null
-        ? [
-            {
-              id: user.device.credentialID,
-              type: "public-key",
-              transports: user.device.transports,
-            },
-          ]
-        : [],
     userVerification: "required",
     rpID,
   };
@@ -158,23 +180,25 @@ export async function authenticate(
   rpID: string,
   expectedOrigin: string,
   response: AuthenticationResponseJSON,
-  expectedChallenge: string,
-  userName: string
-): Promise<VerifiedAuthenticationResponse> {
-  const user = await getCredential(userName);
-  const bodyCredIDBuffer = base64url.decode(response.rawId);
-  if (
-    user == null ||
-    !isoUint8Array.areEqual(user.device.credentialID, bodyCredIDBuffer)
-  ) {
+  expectedChallenge: string
+): Promise<string> {
+  const credentialId = base64url.decode(response.rawId);
+
+  const cred = await getCredential(credentialId);
+  if (cred == null) {
     throw new AuthenticatorNotRegisteredError();
   }
+  const user = await getUser(cred.userName);
+  assert(user != null);
+  assert(user.credentials.some((c) => isoUint8Array.areEqual(c, credentialId)));
+  assert(isoUint8Array.areEqual(cred.device.credentialID, credentialId));
+
   const opts: VerifyAuthenticationResponseOpts = {
     response,
     expectedChallenge: `${expectedChallenge}`,
     expectedOrigin,
     expectedRPID: rpID,
-    authenticator: user.device,
+    authenticator: cred.device,
     requireUserVerification: true,
   };
   const verification = await verifyAuthenticationResponse(opts);
@@ -184,8 +208,8 @@ export async function authenticate(
   }
   // TODO: これなんの意味がある？
   // Update the authenticator's counter in the DB to the newest count in the authentication
-  user.device.counter = authenticationInfo.newCounter;
-  await setCredential(userName, { device: user.device });
-
-  return verification;
+  cred.device.counter = authenticationInfo.newCounter;
+  await setCredential(credentialId, { ...cred, device: cred.device });
+  // TODO: transaction
+  return cred.userName;
 }

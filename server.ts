@@ -10,7 +10,7 @@ import {
   authenticate,
   createAuthentication,
   createCredential,
-  deleteCredential,
+  deleteUser,
   register,
 } from "./server/auth.ts";
 import { randomHex } from "./server/util.ts";
@@ -19,6 +19,7 @@ import { randomHex } from "./server/util.ts";
 const kv = await Deno.openKv();
 const iter = await kv.list({ prefix: [] });
 for await (const res of iter) {
+  console.log("delete", res.key);
   kv.delete(res.key);
 }
 
@@ -48,29 +49,25 @@ routerWithAuth.use(async (context, next) => {
   await next();
 });
 router.post("/session/new", async (context) => {
-  const { name: userName } = await context.request.body({ type: "json" }).value;
-  const options = await createAuthentication(rpID, userName);
+  const options = await createAuthentication(rpID);
   context.response.status = 200;
   await context.state.session.flash("challenge", options.challenge);
-  await context.state.session.flash("userName", userName);
   context.response.body = JSON.stringify(options);
 });
 router.post("/session", async (context) => {
   const response = await context.request.body({ type: "json" }).value;
   const challenge = await context.state.session.get("challenge");
-  const userName = await context.state.session.get("userName");
   try {
-    if (challenge == null || userName == null) {
+    if (challenge == null) {
       throw new AuthenticationNotVerifiedError();
     }
-    const res = await authenticate(
+    const userName = await authenticate(
       rpID,
       expectedOrigin,
       response,
-      challenge,
-      userName
+      challenge
     );
-    console.log("res", res);
+    console.log("logged-in user:", userName);
     await context.state.session.set("login", userName);
     context.response.status = 200;
   } catch (e) {
@@ -153,7 +150,7 @@ routerWithAuth.delete("/credential", async (context) => {
     });
     return;
   }
-  await deleteCredential(userName);
+  await deleteUser(userName);
   await context.state.session.deleteSession();
   context.response.status = 200;
 });
