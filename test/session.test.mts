@@ -8,7 +8,7 @@ test("session", async (t) => {
     p = childProcess.spawn("deno", ["run", "-A", "--unstable", "server.ts"], {
       stdio: "inherit",
     });
-    for (const _ of Array(10).keys()) {
+    for (const _ of Array(1000).keys()) {
       try {
         await fetch("http://localhost:8000");
         break;
