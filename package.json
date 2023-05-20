@@ -3,6 +3,7 @@
   "devDependencies": {
     "@simplewebauthn/browser": "^7.2.0",
     "@types/matter-js": "^0.18.3",
+    "@types/node": "^20.2.1",
     "@types/react": "^18.2.6",
     "@types/react-dom": "^18.2.4",
     "@vitejs/plugin-react": "^4.0.0",
@@ -11,6 +12,7 @@
     "poly-decomp": "^0.3.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "tsx": "^3.12.7",
     "vite": "^4.3.5"
   },
   "scripts": {
@@ -21,6 +23,7 @@
     "preview": "run-p preview:*",
     "preview:vite": "vite preview",
     "preview:server": "deno run -A --unstable ./server.ts",
-    "stub": "cd dist && deno run -A https://deno.land/std@0.157.0/http/file_server.ts"
+    "stub": "cd dist && deno run -A https://deno.land/std@0.157.0/http/file_server.ts",
+    "test": "node --loader tsx --test ./test/*.test.mts"
   }
 }

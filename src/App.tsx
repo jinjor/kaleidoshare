@@ -47,9 +47,6 @@ export default function App() {
   useEffect(() => {
     fetch("/api/session")
       .then((res) => {
-        if (res.status === 401) {
-          return null;
-        }
         if (res.status >= 400) {
           throw new Error("Failed to fetch user"); // TODO: handle error
         }

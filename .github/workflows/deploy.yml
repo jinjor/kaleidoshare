@@ -26,6 +26,10 @@ jobs:
           npm ci
           npm run build
 
+      - name: Test
+        run: |
+          npm test
+
       - name: Deploy to Deno Deploy
         uses: denoland/deployctl@v1
         with:

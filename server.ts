@@ -83,17 +83,14 @@ router.post("/session", async (context) => {
 });
 router.get("/session", async (context) => {
   const name = await context.state.session.get("login");
-  if (name == null) {
-    context.response.status = 401;
-    context.response.body = JSON.stringify({
-      message: "not authenticated",
-    });
-    return;
-  }
   context.response.status = 200;
-  context.response.body = JSON.stringify({
-    name,
-  });
+  context.response.body = JSON.stringify(
+    name == null
+      ? null
+      : {
+          name,
+        }
+  );
 });
 router.delete("/session", async (context) => {
   await context.state.session.deleteSession();
