@@ -5,6 +5,7 @@ import {
 } from "https://deno.land/x/oak_sessions@v4.1.4/mod.ts";
 import {
   AuthenticationNotVerifiedError,
+  AuthenticatorNotRegisteredError,
   RegistrationNotVerifiedError,
   UserAlreadyExistsError,
   authenticate,
@@ -70,7 +71,10 @@ router.post("/session", async (context) => {
     await context.state.session.set("login", userName);
     context.response.status = 200;
   } catch (e) {
-    if (e instanceof AuthenticationNotVerifiedError) {
+    if (
+      e instanceof AuthenticatorNotRegisteredError ||
+      e instanceof AuthenticationNotVerifiedError
+    ) {
       context.response.status = 401;
       context.response.body = JSON.stringify({
         message: "not verified",
@@ -141,7 +145,7 @@ router.post("/credential", async (context) => {
       });
       return;
     }
-    throw e; // TODO: catch されて 500 になる？
+    throw e;
   }
 });
 
