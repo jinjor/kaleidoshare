@@ -115,6 +115,7 @@ export async function createCredential(
     }
   }
   const opts: GenerateRegistrationOptionsOpts = {
+    challenge: Deno.env.get("CHALLENGE"), // テスト時は固定、その他はランダム
     rpName: "Kaleidoshare",
     rpID,
     userID,
