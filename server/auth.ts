@@ -185,6 +185,7 @@ export async function createAuthentication(
   rpID: string
 ): Promise<PublicKeyCredentialRequestOptionsJSON> {
   const opts: GenerateAuthenticationOptionsOpts = {
+    challenge: Deno.env.get("CHALLENGE"), // テスト時は固定、その他はランダム
     timeout: 60000,
     userVerification: "required",
     rpID,

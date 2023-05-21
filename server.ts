@@ -67,7 +67,6 @@ router.post("/session", async (context) => {
       response,
       challenge
     );
-    console.log("logged-in user:", userName);
     await context.state.session.set("login", userName);
     context.response.status = 200;
   } catch (e) {
