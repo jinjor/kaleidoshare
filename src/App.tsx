@@ -48,7 +48,8 @@ export default function App() {
     fetch("/api/session")
       .then((res) => {
         if (res.status >= 400) {
-          throw new Error("Failed to fetch user"); // TODO: handle error
+          // throw new Error("Failed to fetch user"); // TODO: handle error
+          return null; // 現在 prd で 404 になるため null にしておく
         }
         return res.json();
       })
