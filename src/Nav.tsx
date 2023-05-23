@@ -66,7 +66,7 @@ export default function Nav(props: {
     <nav className="horizontal-center">
       <div className="container nav-contents">
         <a className="nav-brand" href="/">
-          <img src="logo.png" width={200} />
+          <img src="/logo.png" width={200} />
         </a>
         <ul>
           {children}
@@ -85,14 +85,14 @@ export default function Nav(props: {
           ) : (
             <>
               <li>
-                <a className="button" href="/signup">
-                  Signup
-                </a>
-              </li>
-              <li>
                 <button className="button" onClick={handleLogin}>
                   Login
                 </button>
+              </li>
+              <li>
+                <a className="button primary" href="/signup">
+                  Signup
+                </a>
               </li>
             </>
           )}

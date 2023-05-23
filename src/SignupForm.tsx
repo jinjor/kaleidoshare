@@ -43,7 +43,7 @@ export default function SignupForm(props: { redirect: string }) {
     location.href = redirect;
   };
   return (
-    <form className="form" onSubmit={handleSubmit} style={{ marginTop: 20 }}>
+    <form className="form" onSubmit={handleSubmit}>
       <h1 className="form-title">Signup</h1>
       <label style={{ display: "block" }}>
         <div>Name</div>
@@ -59,7 +59,7 @@ export default function SignupForm(props: { redirect: string }) {
           pattern="^[a-z\d](?:[a-z\d]|-(?=[a-z\d])){0,38}$"
         />
       </label>
-      <input className="button primary" type="submit" value="Signup" />
+      <input className="button wide primary" type="submit" value="Signup" />
     </form>
   );
 }

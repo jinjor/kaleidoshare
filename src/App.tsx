@@ -42,7 +42,7 @@ function getRoute(pathname: string): Route | null {
 
 export default function App() {
   const route = getRoute(window.location.pathname);
-  const [user, setUser] = React.useState<User | null>(null);
+  const [user, setUser] = React.useState<User | null | undefined>(undefined);
 
   useEffect(() => {
     fetch("/api/session")
@@ -54,6 +54,9 @@ export default function App() {
       })
       .then((user) => setUser(user));
   }, []);
+  if (user === undefined) {
+    return null;
+  }
   return (
     <>
       {route?.type === "home" ? (

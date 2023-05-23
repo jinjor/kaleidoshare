@@ -1,14 +1,19 @@
 :root {
   --bg-color: #333;
+  --bg-color-float: #222;
   --text-color: #ddd;
   --text-color-active: #fff;
   --text-color-invert: #333;
   --text-color-invert-active: #222;
+  --text-color-danger: #e44;
+  --text-color-danger-active: #f55;
   --accent-color: hsl(252, 50%, 45%);
   --accent-color-active: hsl(252, 50%, 50%);
   --border: solid 1px #aaa;
-  --border-color-active: #eee;
-  --border-color-invalid: #f44;
+  --border-color-active: #ccc;
+  --border-color-invalid: #e44;
+  --border-color-danger: #e44;
+  --border-color-danger-active: #f55;
   --border-radius: 2px;
 }
 
@@ -22,6 +27,11 @@ body {
   color: var(--text-color);
   font-family: "Montserrat", "游ゴシック", YuGothic, "ヒラギノ角ゴ ProN W3",
     "Hiragino Kaku Gothic ProN", "メイリオ", Meiryo, sans-serif;
+}
+hr {
+  border: none;
+  border-top: var(--border);
+  margin: 30px 0;
 }
 a {
   color: var(--text-color);
@@ -42,8 +52,8 @@ input:-webkit-autofill:active {
   caret-color: #fff;
 }
 nav {
-  background-color: #222;
-  padding: 20px;
+  background-color: var(--bg-color-float);
+  padding: 15px;
   margin-bottom: 10px;
 }
 nav ul {
@@ -82,15 +92,13 @@ nav ul li a {
 .form {
   padding: 30px;
   min-width: 360px;
-  display: grid;
-  grid-auto-flow: row;
-  gap: 40px;
-  border: var(--border);
+  background-color: var(--bg-color-float);
   border-radius: var(--border-radius);
+  margin: 20px;
 }
 .form-title {
-  font-size: 24px;
-  margin: 0;
+  font-size: 21px;
+  margin: 0 0 20px;
 }
 .input,
 .input:active,
@@ -100,6 +108,7 @@ nav ul li a {
   border: var(--border);
   color: var(--text-color);
   outline: none;
+  border-radius: var(--border-radius);
 }
 .input:focus {
   border-color: var(--border-color-active);
@@ -126,10 +135,30 @@ nav ul li a {
   border-color: var(--border-color-active);
   color: var(--text-color-active);
 }
+.button.wide {
+  display: block;
+  width: 100%;
+}
+.button.wide:not(:first-child) {
+  margin-top: 30px;
+}
+.button.wide:not(:last-child) {
+  margin-bottom: 30px;
+}
+
 .button.primary {
   background-color: var(--accent-color);
 }
 .button.primary:hover,
 .button.primary:active {
   background-color: var(--accent-color-active);
+}
+.button.danger {
+  border-color: var(--border-color-danger);
+  color: var(--text-color-danger);
+}
+.button.danger:hover,
+.button.danger:active {
+  border-color: var(--border-color-danger-active);
+  color: var(--text-color-danger-active);
 }

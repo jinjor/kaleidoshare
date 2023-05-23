@@ -38,14 +38,8 @@ async function addCredential() {
 export default function Account(props: { user: User | null }) {
   const { user } = props;
   if (user == null) {
-    // TODO: ログインして戻ってくる
-    return (
-      <>
-        <Nav user={user}></Nav>
-        <h1>Account</h1>
-        <p>Please login</p>
-      </>
-    );
+    location.href = "/";
+    return null;
   }
 
   const handleAddCredential = async (
@@ -74,13 +68,24 @@ export default function Account(props: { user: User | null }) {
   return (
     <>
       <Nav user={user}></Nav>
-      <h1>Account</h1>
-      <li>
-        <button onClick={handleAddCredential}>Add credential</button>
-      </li>
-      <li>
-        <button onClick={handleDeleteAccount}>Delete account</button>
-      </li>
+      <div className="horizontal-center">
+        <div className="container horizontal-center">
+          <div className="form">
+            <h1 className="form-title">Account</h1>
+            <button className="button wide" onClick={handleAddCredential}>
+              Add credential
+            </button>
+            <hr></hr>
+            <h1 className="form-title">Danger Zone</h1>
+            <button
+              className="button wide danger"
+              onClick={handleDeleteAccount}
+            >
+              Delete account
+            </button>
+          </div>
+        </div>
+      </div>
     </>
   );
 }

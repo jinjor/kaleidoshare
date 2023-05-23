@@ -5,6 +5,10 @@ import SignupForm from "./SignupForm";
 
 export default function Signup(props: { user: User | null }) {
   const { user } = props;
+  if (user !== null) {
+    location.href = "/";
+    return null;
+  }
   return (
     <>
       <Nav user={user}></Nav>
