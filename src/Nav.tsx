@@ -63,33 +63,41 @@ export default function Nav(props: {
   };
 
   return (
-    <nav>
-      <ul>
-        <li>
-          <a href="/">Home</a>
-        </li>
-        {children}
-        {user ? (
-          <>
-            <li>{user.name}</li>
-            <li>
-              <a href="/account">Account</a>
-            </li>
-            <li>
-              <button onClick={handleLogout}>Logout</button>
-            </li>
-          </>
-        ) : (
-          <>
-            <li>
-              <a href="/signup">Signup</a>
-            </li>
-            <li>
-              <button onClick={handleLogin}>Login</button>
-            </li>
-          </>
-        )}
-      </ul>
+    <nav className="horizontal-center">
+      <div className="container nav-contents">
+        <a className="nav-brand" href="/">
+          <img src="logo.png" width={200} />
+        </a>
+        <ul>
+          {children}
+          {user ? (
+            <>
+              <li>{user.name}</li>
+              <li>
+                <a href="/account">Account</a>
+              </li>
+              <li>
+                <button className="button" onClick={handleLogout}>
+                  Logout
+                </button>
+              </li>
+            </>
+          ) : (
+            <>
+              <li>
+                <a className="button" href="/signup">
+                  Signup
+                </a>
+              </li>
+              <li>
+                <button className="button" onClick={handleLogin}>
+                  Login
+                </button>
+              </li>
+            </>
+          )}
+        </ul>
+      </div>
     </nav>
   );
 }

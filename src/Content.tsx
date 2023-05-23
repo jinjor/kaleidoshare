@@ -39,7 +39,11 @@ export default function Content(props: {
           </li>
         )}
       </Nav>
-      <Editor preview={preview} />
+      <div className="horizontal-center">
+        <div className="container">
+          <Editor preview={preview} />
+        </div>
+      </div>
     </>
   );
 }

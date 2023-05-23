@@ -19,7 +19,11 @@ export default function Home(props: { user: User | null }) {
           </li>
         )}
       </Nav>
-      <Editor preview={preview} />
+      <div className="horizontal-center">
+        <div className="container">
+          <Editor preview={preview} />
+        </div>
+      </div>
     </>
   );
 }

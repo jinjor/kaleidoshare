@@ -43,22 +43,23 @@ export default function SignupForm(props: { redirect: string }) {
     location.href = redirect;
   };
   return (
-    <div>
-      <h1>Signup</h1>
-      <form onSubmit={handleSubmit}>
-        <label>
-          <span>Name</span>
-          <input
-            type="text"
-            name="name"
-            minLength={1}
-            maxLength={39}
-            // GitHub と同じルール
-            pattern="^[a-z\d](?:[a-z\d]|-(?=[a-z\d])){0,38}$"
-          />
-        </label>
-        <input type="submit" value="Submit" />
-      </form>
-    </div>
+    <form className="form" onSubmit={handleSubmit} style={{ marginTop: 20 }}>
+      <h1 className="form-title">Signup</h1>
+      <label style={{ display: "block" }}>
+        <div>Name</div>
+        <input
+          autoFocus
+          required
+          className="input"
+          type="text"
+          name="name"
+          minLength={1}
+          maxLength={39}
+          // GitHub と同じルール
+          pattern="^[a-z\d](?:[a-z\d]|-(?=[a-z\d])){0,38}$"
+        />
+      </label>
+      <input className="button primary" type="submit" value="Signup" />
+    </form>
   );
 }

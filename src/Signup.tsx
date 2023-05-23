@@ -8,7 +8,11 @@ export default function Signup(props: { user: User | null }) {
   return (
     <>
       <Nav user={user}></Nav>
-      <SignupForm redirect="/" />
+      <div className="horizontal-center">
+        <div className="container horizontal-center">
+          <SignupForm redirect="/" />
+        </div>
+      </div>
     </>
   );
 }
