@@ -1,6 +1,7 @@
 {
   "name": "kaleidoshare",
   "devDependencies": {
+    "@monaco-editor/react": "^4.5.1",
     "@simplewebauthn/browser": "^7.2.0",
     "@types/matter-js": "^0.18.3",
     "@types/node": "^20.2.1",

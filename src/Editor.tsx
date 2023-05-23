@@ -1,6 +1,7 @@
 import React, { useCallback, useState } from "react";
 import View from "./View";
 import World from "./World";
+import SettingEditor from "./SettingEditor";
 
 const worldSize = 320;
 const viewSize = 320;
@@ -27,6 +28,7 @@ export default function Editor(props: { preview: boolean }) {
         <World options={worldOptions} hidden={preview} onReady={handleReady} />
         {world && <View size={viewSize} world={world} />}
       </div>
+      <SettingEditor />
     </>
   );
 }
