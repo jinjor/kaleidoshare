@@ -6,6 +6,10 @@ export default function SettingEditor(props: {}) {
   function handleEditorChange(value, event) {
     console.log(value);
   }
+  // TODO: feature flag 化
+  if (location.origin !== "http://localhost:5173") {
+    return <></>;
+  }
   return (
     <>
       <Editor
