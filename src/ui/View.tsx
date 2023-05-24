@@ -91,10 +91,12 @@ const View = React.memo(function View(props: {
   return (
     <div
       style={{
-        backgroundColor: "#000",
+        backgroundColor: "#111",
         width: size,
         height: size,
         position: "relative",
+        minWidth: size,
+        maxHeight: "100vw", // keep square
       }}
     >
       {[viewRef, viewRef2].map((ref, i) => (

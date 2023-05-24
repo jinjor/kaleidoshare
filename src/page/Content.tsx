@@ -12,6 +12,7 @@ export default function Content(props: {
   const [preview, setPreview] = React.useState(true);
   const [config, setConfig] = React.useState({});
   const isSelf = user?.name === authorName;
+  const handleQuitPreview = React.useCallback(() => setPreview(false), []);
 
   React.useEffect(() => {
     fetch(`/api/config/${authorName}/${contentName}`)
@@ -41,7 +42,7 @@ export default function Content(props: {
       </Nav>
       <div className="horizontal-center">
         <div className="container">
-          <Editor preview={preview} />
+          <Editor preview={preview} onQuitPreview={handleQuitPreview} />
         </div>
       </div>
     </>

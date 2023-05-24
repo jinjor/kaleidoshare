@@ -20,10 +20,9 @@ export type WorldOptions = {
 
 const World = React.memo(function World(props: {
   options: WorldOptions;
-  hidden: boolean;
   onReady: (world: World) => void;
 }) {
-  const { options, hidden, onReady } = props;
+  const { options, onReady } = props;
 
   const worldRef = useRef<HTMLDivElement>(null);
 
@@ -46,7 +45,6 @@ const World = React.memo(function World(props: {
       style={{
         width: options.size,
         height: options.size,
-        display: hidden ? "none" : undefined,
       }}
       ref={worldRef}
     ></div>

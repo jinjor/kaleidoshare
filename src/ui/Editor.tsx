@@ -4,11 +4,18 @@ import World, { WorldOptions } from "./World";
 import SettingEditor from "./SettingEditor";
 import { Settings } from "../domain/settings";
 
-const worldSize = 320;
-const viewSize = 320;
+// |--- worldSize --|-|--- viewSize ---|-|--- ????Size ---|
+//                  gap                gap
+const worldSize = 300;
+const viewSize = 300;
+const ____Size = 300;
+const gap = (960 - (worldSize + viewSize + ____Size)) / 2;
 
-export default function Editor(props: { preview: boolean }) {
-  const { preview } = props;
+export default function Editor(props: {
+  preview: boolean;
+  onQuitPreview: () => void;
+}) {
+  const { preview, onQuitPreview } = props;
   const settings: Settings = {
     background: "#502",
     generators: [
@@ -46,10 +53,40 @@ export default function Editor(props: { preview: boolean }) {
   const handleApply = useCallback((json: any) => {
     setWorldOptions({ ...worldOptions, settings: json });
   }, []);
+  const quitPreview = useCallback(() => {
+    onQuitPreview();
+  }, [onQuitPreview]);
+  if (world && preview) {
+    return (
+      <>
+        <World options={worldOptions} onReady={handleReady} />
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            bottom: 0,
+            left: 0,
+            right: 0,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            backgroundColor: "#111",
+          }}
+          onClick={quitPreview}
+        >
+          <View
+            size={viewSize * 2}
+            world={world}
+            settings={worldOptions.settings}
+          />
+        </div>
+      </>
+    );
+  }
   return (
     <>
-      <div style={{ display: "flex", gap: 10 }}>
-        <World options={worldOptions} hidden={preview} onReady={handleReady} />
+      <div style={{ display: "flex", gap }}>
+        <World options={worldOptions} onReady={handleReady} />
         {world && (
           <View
             size={viewSize}

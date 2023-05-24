@@ -6,6 +6,7 @@ import Editor from "../ui/Editor";
 export default function Home(props: { user: User | null }) {
   const { user } = props;
   const [preview, setPreview] = React.useState(false);
+  const handleQuitPreview = React.useCallback(() => setPreview(false), []);
   return (
     <>
       <Nav user={user}>
@@ -21,7 +22,7 @@ export default function Home(props: { user: User | null }) {
       </Nav>
       <div className="horizontal-center">
         <div className="container">
-          <Editor preview={preview} />
+          <Editor preview={preview} onQuitPreview={handleQuitPreview} />
         </div>
       </div>
     </>
