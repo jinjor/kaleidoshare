@@ -1,5 +1,5 @@
 import { Body, Bodies } from "matter-js";
-import { Color, Length, Settings, Shape } from "./settings";
+import { Color, Count, Length, Settings, Shape } from "./settings";
 
 export function generateSpinner(options: {
   size: number;
@@ -35,7 +35,7 @@ export function generateObjects(options: {
   const { size, settings } = options;
   const objects: Body[] = [];
   for (const generator of settings.generators) {
-    for (let i = 0; i < generator.count; i++) {
+    for (let i = 0; i < generateCount(generator.count); i++) {
       objects.push(generateShape(generator.shape, size));
     }
   }
@@ -63,6 +63,13 @@ function generateShape(shape: Shape, size: number): Body {
       generateLength(shape.height) * size,
       options
     );
+  }
+}
+function generateCount(count: Count): number {
+  if (typeof count === "number") {
+    return count;
+  } else {
+    return count.min + Math.floor(Math.random() * (count.max - count.min + 1));
   }
 }
 function generateLength(length: Length): number {

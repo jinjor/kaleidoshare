@@ -1,9 +1,8 @@
 import React, { useRef } from "react";
-import Editor from "@monaco-editor/react";
+import Editor, { Monaco } from "@monaco-editor/react";
 import { Settings } from "../domain/settings";
 // @ts-ignore
 import { schema } from "virtual:settings-schema";
-console.log(schema);
 
 // TODO: JSON Schema にする
 function isJsonValid(json: any) {
@@ -23,8 +22,19 @@ const SettingEditor = React.memo(
   (props: { settings: Settings; onApply: (json: any) => void }) => {
     const { settings, onApply } = props;
     const editorRef = useRef<any | null>(null);
-
-    function handleEditorDidMount(editor: any) {
+    function handleEditorWillMount(monaco: Monaco) {
+      monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
+        validate: true,
+        schemas: [
+          {
+            uri: window.location.href,
+            fileMatch: ["*"],
+            schema,
+          },
+        ],
+      });
+    }
+    function handleEditorDidMount(editor: any, monaco: Monaco) {
       editorRef.current = editor;
     }
     function handleKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
@@ -56,10 +66,15 @@ const SettingEditor = React.memo(
           theme="vs-dark"
           defaultLanguage="json"
           defaultValue={JSON.stringify(settings, null, 4)}
+          beforeMount={handleEditorWillMount}
           onMount={handleEditorDidMount}
           options={{
             contextmenu: false,
             scrollBeyondLastLine: false,
+            autoClosingBrackets: "always",
+            autoClosingQuotes: "always",
+            formatOnPaste: true,
+            formatOnType: true,
           }}
         />
       </div>

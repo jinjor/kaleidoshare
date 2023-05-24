@@ -3,7 +3,7 @@ export type Settings = {
   generators: Generator[];
 };
 export type Generator = {
-  count: number;
+  count: Count;
   shape: Shape;
 };
 export type Shape = Circle | Rectangle;
@@ -22,9 +22,28 @@ export type Rectangle = {
   stroke?: Color;
   strokeWidth?: Length;
 };
-export type Length = number | RandomLength;
-export type RandomLength = {
-  min: number;
-  max: number;
+export type Count = FixedCount | RandomCount;
+/**
+ * @exclusiveMinimum 0
+ * @TJS-type integer
+ */
+export type FixedCount = number;
+export type RandomCount = {
+  min: FixedCount;
+  max: FixedCount;
 };
-export type Color = string | string[];
+export type Length = FixedLength | RandomLength;
+/**
+ * @exclusiveMinimum 0
+ */
+export type FixedLength = number;
+export type RandomLength = {
+  min: FixedLength;
+  max: FixedLength;
+};
+export type Color = FixedColor | RandomColor;
+export type FixedColor = string;
+/**
+ * @minItems 1
+ */
+export type RandomColor = string[];
