@@ -4,23 +4,10 @@ import { Settings } from "../domain/settings";
 // @ts-ignore
 import { schema } from "virtual:settings-schema";
 
-// TODO: JSON Schema にする
-function isJsonValid(json: any) {
-  if (typeof json !== "object") {
-    return false;
-  }
-  if (json === null) {
-    return false;
-  }
-  if (Array.isArray(json)) {
-    return false;
-  }
-  return true;
-}
-
 const SettingEditor = React.memo(
   (props: { settings: Settings; onApply: (json: any) => void }) => {
     const { settings, onApply } = props;
+    const monacoRef = useRef<Monaco | null>(null);
     const editorRef = useRef<any | null>(null);
     function handleEditorWillMount(monaco: Monaco) {
       monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
@@ -36,6 +23,7 @@ const SettingEditor = React.memo(
     }
     function handleEditorDidMount(editor: any, monaco: Monaco) {
       editorRef.current = editor;
+      monacoRef.current = monaco;
     }
     function handleKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
       // TODO: OS によって切り替える
@@ -43,15 +31,19 @@ const SettingEditor = React.memo(
         event.stopPropagation();
         event.preventDefault();
         const editor = editorRef.current!;
+        editor.getAction("editor.action.formatDocument").run();
+        let json: any;
         try {
-          const json = JSON.parse(editor.getValue());
-          if (isJsonValid(json)) {
-            onApply(json);
-          }
-          editor.getAction("editor.action.formatDocument").run();
+          json = JSON.parse(editor.getValue());
         } catch (e) {
-          console.log(e);
+          return;
         }
+        const monaco = monacoRef.current!;
+        const markers = monaco.editor.getModelMarkers({ owner: "json" });
+        if (markers.length > 0) {
+          return;
+        }
+        onApply(json);
       }
     }
     // TODO: feature flag 化
