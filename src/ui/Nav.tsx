@@ -1,5 +1,5 @@
 import React from "react";
-import { User } from "./data/user";
+import { User } from "../domain/user";
 import { startAuthentication } from "@simplewebauthn/browser";
 
 async function login() {

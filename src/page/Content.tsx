@@ -1,7 +1,7 @@
 import React from "react";
-import { User } from "./data/user";
-import Nav from "./Nav";
-import Editor from "./Editor";
+import { User } from "../domain/user";
+import Nav from "../ui/Nav";
+import Editor from "../ui/Editor";
 
 export default function Content(props: {
   user: User | null;

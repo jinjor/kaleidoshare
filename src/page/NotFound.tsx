@@ -1,6 +1,6 @@
 import React from "react";
-import { User } from "./data/user";
-import Nav from "./Nav";
+import { User } from "../domain/user";
+import Nav from "../ui/Nav";
 
 export default function NotFound(props: { user: User | null }) {
   const { user } = props;

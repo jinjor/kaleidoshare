@@ -1,10 +1,10 @@
 import React, { useEffect } from "react";
-import Content from "./Content";
-import { User } from "./data/user";
-import Signup from "./Signup";
-import NotFound from "./NotFound";
-import Home from "./Home";
-import Account from "./Account";
+import Content from "./page/Content";
+import { User } from "./domain/user";
+import Signup from "./page/Signup";
+import NotFound from "./page/NotFound";
+import Home from "./page/Home";
+import Account from "./page/Account";
 
 type Route =
   | {

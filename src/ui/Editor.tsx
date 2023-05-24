@@ -1,7 +1,8 @@
 import React, { useCallback, useState } from "react";
 import View from "./View";
-import World, { Settings, WorldOptions } from "./World";
+import World, { WorldOptions } from "./World";
 import SettingEditor from "./SettingEditor";
+import { Settings } from "../domain/generate";
 
 const worldSize = 320;
 const viewSize = 320;

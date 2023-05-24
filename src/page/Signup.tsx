@@ -1,7 +1,7 @@
 import React from "react";
-import { User } from "./data/user";
-import Nav from "./Nav";
-import SignupForm from "./SignupForm";
+import { User } from "../domain/user";
+import Nav from "../ui/Nav";
+import SignupForm from "../ui/SignupForm";
 
 export default function Signup(props: { user: User | null }) {
   const { user } = props;
