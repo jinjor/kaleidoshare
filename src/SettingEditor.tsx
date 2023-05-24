@@ -1,6 +1,23 @@
 import React, { useRef } from "react";
 import Editor from "@monaco-editor/react";
 
+// TODO: JSON Schema にする
+function isJsonValid(json: any) {
+  if (typeof json !== "object") {
+    return false;
+  }
+  if (json === null) {
+    return false;
+  }
+  if (Array.isArray(json)) {
+    return false;
+  }
+  if (typeof json.numObjects !== "number" || json.numObjects < 0) {
+    return false;
+  }
+  return true;
+}
+
 export default function SettingEditor(props: { onApply: (json: any) => void }) {
   const { onApply } = props;
   const editorRef = useRef<any | null>(null);
@@ -16,7 +33,10 @@ export default function SettingEditor(props: { onApply: (json: any) => void }) {
       const editor = editorRef.current!;
       try {
         const json = JSON.parse(editor.getValue());
-        onApply(json);
+        if (isJsonValid(json)) {
+          onApply(json);
+        }
+        editor.getAction("editor.action.formatDocument").run();
       } catch (e) {
         console.log(e);
       }

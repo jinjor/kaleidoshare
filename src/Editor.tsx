@@ -11,11 +11,13 @@ export default function Editor(props: { preview: boolean }) {
 
   const [worldOptions, setWorldOptions] = useState({
     size: worldSize,
-    numBalls: 15,
     spinnerRadiusRatio: 0.5,
     clipRadiusRatio: 0.25,
     ballRadiusRatio: 0.045,
     ballRadiusVarRatio: 0.035,
+    settings: {
+      numObjects: 15,
+    },
   });
   const [world, setWorld] = useState<World | null>(null);
 
@@ -23,8 +25,7 @@ export default function Editor(props: { preview: boolean }) {
     setWorld(world);
   }, []);
   const handleApply = useCallback((json: any) => {
-    console.log(json);
-    setWorldOptions({ ...worldOptions, ...json }); // TODO
+    setWorldOptions({ ...worldOptions, settings: json });
   }, []);
   return (
     <>

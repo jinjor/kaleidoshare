@@ -20,11 +20,14 @@ type World = {
 };
 type WorldOptions = {
   size: number;
-  numBalls: number;
   spinnerRadiusRatio: number;
   clipRadiusRatio: number;
   ballRadiusRatio: number;
   ballRadiusVarRatio: number;
+  settings: Settings;
+};
+type Settings = {
+  numObjects: number;
 };
 
 const World = React.memo(function World(props: {
@@ -66,11 +69,11 @@ export default World;
 function setupWorld(element: HTMLElement, options: WorldOptions) {
   const {
     size,
-    numBalls,
     spinnerRadiusRatio,
     clipRadiusRatio,
     ballRadiusRatio,
     ballRadiusVarRatio,
+    settings,
   } = options;
 
   const spinnerRadius = size * spinnerRadiusRatio;
@@ -112,7 +115,7 @@ function setupWorld(element: HTMLElement, options: WorldOptions) {
   );
 
   const balls: Body[] = [];
-  for (let i = 0; i < numBalls; i++) {
+  for (let i = 0; i < settings.numObjects; i++) {
     balls.push(
       // Bodies.circle(
       //   0,
