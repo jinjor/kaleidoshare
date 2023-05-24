@@ -44,7 +44,13 @@ export function generateObjects(options: {
 function generateShape(shape: Shape, size: number): Body {
   const options = {
     render: {
-      fillStyle: shape.color != null ? generateColor(shape.color) : undefined,
+      fillStyle: shape.fill != null ? generateColor(shape.fill) : "transparent",
+      strokeStyle:
+        shape.stroke != null ? generateColor(shape.stroke) : undefined,
+      lineWidth:
+        shape.strokeWidth != null
+          ? generateLength(shape.strokeWidth) * size
+          : undefined,
     },
   };
   if (shape.type === "circle") {
@@ -66,7 +72,7 @@ function generateLength(length: Length): number {
     return length.min + Math.random() * (length.max - length.min);
   }
 }
-function generateColor(color: Color): string {
+export function generateColor(color: Color): string {
   if (typeof color === "string") {
     return color;
   } else {

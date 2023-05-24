@@ -1,5 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import World from "./World";
+import { Settings } from "../domain/settings";
+import { generateColor } from "../domain/generate";
 
 const generation = 5;
 const f = [
@@ -19,8 +21,12 @@ type TrignaleNode = {
   rotateMatrix: [number, number, number, number];
 };
 
-const View = React.memo(function View(props: { size: number; world: World }) {
-  const { size, world } = props;
+const View = React.memo(function View(props: {
+  size: number;
+  world: World;
+  settings: Settings;
+}) {
+  const { size, world, settings } = props;
 
   const viewRef = useRef<HTMLDivElement>(null);
   const viewRef2 = useRef<HTMLDivElement>(null);
@@ -79,7 +85,7 @@ const View = React.memo(function View(props: { size: number; world: World }) {
       clearInterval(interval);
       document.body.removeChild(styleElement);
     };
-  }, [world]);
+  }, [world, settings]);
   return (
     <div
       style={{
@@ -94,7 +100,10 @@ const View = React.memo(function View(props: { size: number; world: World }) {
           ref={ref}
           key={i}
           style={{
-            backgroundColor: "#eee",
+            backgroundColor:
+              settings.background != null
+                ? generateColor(settings.background)
+                : "#000",
             width: "100%",
             height: "100%",
             overflow: "hidden",

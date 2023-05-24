@@ -10,13 +10,15 @@ const viewSize = 320;
 export default function Editor(props: { preview: boolean }) {
   const { preview } = props;
   const settings: Settings = {
+    background: "#502",
     generators: [
       {
         count: 5,
         shape: {
           type: "circle",
-          radius: { min: 0.06, max: 0.1 },
-          color: ["gray", "lightgray", "white"],
+          radius: { min: 0.04, max: 0.11 },
+          stroke: ["white", "yellow"],
+          strokeWidth: 0.01,
         },
       },
       {
@@ -25,7 +27,7 @@ export default function Editor(props: { preview: boolean }) {
           type: "rectangle",
           width: { min: 0.05, max: 0.12 },
           height: { min: 0.02, max: 0.03 },
-          color: ["cyan", "magenta", "yellow"],
+          fill: ["cyan", "magenta", "yellow"],
         },
       },
     ],
@@ -48,7 +50,13 @@ export default function Editor(props: { preview: boolean }) {
     <>
       <div style={{ display: "flex", gap: 10 }}>
         <World options={worldOptions} hidden={preview} onReady={handleReady} />
-        {world && <View size={viewSize} world={world} />}
+        {world && (
+          <View
+            size={viewSize}
+            world={world}
+            settings={worldOptions.settings}
+          />
+        )}
       </div>
       <SettingEditor settings={worldOptions.settings} onApply={handleApply} />
     </>
