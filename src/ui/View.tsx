@@ -86,6 +86,8 @@ const View = React.memo(function View(props: {
       document.body.removeChild(styleElement);
     };
   }, [world, settings]);
+  const backgroundColor =
+    settings.background != null ? generateColor(settings.background) : "#000";
   return (
     <div
       style={{
@@ -100,10 +102,7 @@ const View = React.memo(function View(props: {
           ref={ref}
           key={i}
           style={{
-            backgroundColor:
-              settings.background != null
-                ? generateColor(settings.background)
-                : "#000",
+            backgroundColor,
             width: "100%",
             height: "100%",
             overflow: "hidden",
