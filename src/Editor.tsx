@@ -22,13 +22,17 @@ export default function Editor(props: { preview: boolean }) {
   const handleReady = useCallback((world: World) => {
     setWorld(world);
   }, []);
+  const handleApply = useCallback((json: any) => {
+    console.log(json);
+    setWorldOptions({ ...worldOptions, ...json }); // TODO
+  }, []);
   return (
     <>
       <div style={{ display: "flex", gap: 10 }}>
         <World options={worldOptions} hidden={preview} onReady={handleReady} />
         {world && <View size={viewSize} world={world} />}
       </div>
-      <SettingEditor />
+      <SettingEditor onApply={handleApply} />
     </>
   );
 }
