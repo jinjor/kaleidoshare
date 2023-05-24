@@ -17,14 +17,26 @@ export default function Editor(props: {
 }) {
   const { preview, onQuitPreview } = props;
   const settings: Settings = {
-    background: "#502",
+    background: "#103",
     generators: [
       {
-        count: 5,
+        count: 20,
         shape: {
-          type: "circle",
-          radius: { min: 0.04, max: 0.11 },
-          stroke: ["white", "yellow"],
+          type: "rectangle",
+          width: {
+            min: 0.06,
+            max: 0.1,
+          },
+          height: 0.08,
+          stroke: {
+            type: "hsl",
+            h: {
+              min: 300,
+              max: 360,
+            },
+            s: 40,
+            l: 60,
+          },
           strokeWidth: 0.01,
         },
       },
@@ -32,9 +44,23 @@ export default function Editor(props: {
         count: 50,
         shape: {
           type: "rectangle",
-          width: { min: 0.05, max: 0.12 },
-          height: { min: 0.02, max: 0.03 },
-          fill: ["cyan", "magenta", "yellow"],
+          width: {
+            min: 0.05,
+            max: 0.12,
+          },
+          height: {
+            min: 0.02,
+            max: 0.03,
+          },
+          fill: {
+            type: "hsl",
+            h: {
+              min: 100,
+              max: 240,
+            },
+            s: 60,
+            l: 50,
+          },
         },
       },
     ],
