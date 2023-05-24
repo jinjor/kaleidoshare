@@ -1,5 +1,6 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
+import schemaPlugin from "./schema-plugin";
 
 export default defineConfig({
   server: {
@@ -7,5 +8,5 @@ export default defineConfig({
       "/api": "http://localhost:8000",
     },
   },
-  plugins: [react()],
+  plugins: [schemaPlugin(), react()],
 });

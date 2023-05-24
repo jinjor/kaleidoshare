@@ -1,30 +1,5 @@
 import { Body, Bodies } from "matter-js";
-
-export type Settings = {
-  generators: Generator[];
-};
-type Generator = {
-  count: number;
-  shape: Shape;
-};
-type Shape = Circle | Rectangle;
-type Circle = {
-  type: "circle";
-  radius: Length;
-  color?: Color;
-};
-type Rectangle = {
-  type: "rectangle";
-  width: Length;
-  height: Length;
-  color?: Color;
-};
-type Length = number | RandomLength;
-type RandomLength = {
-  min: number;
-  max: number;
-};
-type Color = string | string[];
+import { Color, Length, Settings, Shape } from "./settings";
 
 export function generateSpinner(options: {
   size: number;

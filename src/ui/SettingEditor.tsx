@@ -1,6 +1,9 @@
 import React, { useRef } from "react";
 import Editor from "@monaco-editor/react";
-import { Settings } from "../domain/generate";
+import { Settings } from "../domain/settings";
+// @ts-ignore
+import { schema } from "virtual:settings-schema";
+console.log(schema);
 
 // TODO: JSON Schema にする
 function isJsonValid(json: any) {

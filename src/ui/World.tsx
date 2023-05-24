@@ -2,7 +2,8 @@ import React, { useEffect, useRef } from "react";
 
 import { Engine, Render, Runner, Body, Composite, Common } from "matter-js";
 import decomp from "poly-decomp";
-import { Settings, generateObjects, generateSpinner } from "../domain/generate";
+import { generateObjects, generateSpinner } from "../domain/generate";
+import { Settings } from "../domain/settings";
 
 Common.setDecomp(decomp);
 
