@@ -22,7 +22,11 @@ export default function Home(props: { user: User | null }) {
       </Nav>
       <div className="horizontal-center">
         <div className="container">
-          <Editor preview={preview} onQuitPreview={handleQuitPreview} />
+          <Editor
+            user={user}
+            preview={preview}
+            onQuitPreview={handleQuitPreview}
+          />
         </div>
       </div>
     </>

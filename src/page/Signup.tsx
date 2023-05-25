@@ -9,12 +9,15 @@ export default function Signup(props: { user: User | null }) {
     location.href = "/";
     return null;
   }
+  function handleSuccess() {
+    location.href = "/";
+  }
   return (
     <>
       <Nav user={user}></Nav>
       <div className="horizontal-center">
         <div className="container horizontal-center">
-          <SignupForm redirect="/" />
+          <SignupForm onSuccess={handleSuccess} />
         </div>
       </div>
     </>

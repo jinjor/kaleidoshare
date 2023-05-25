@@ -91,10 +91,9 @@ nav ul li a {
 
 .form {
   padding: 30px;
-  min-width: 360px;
+  min-width: 340px;
   background-color: var(--bg-color-float);
   border-radius: var(--border-radius);
-  margin: 20px;
 }
 .form-title {
   font-size: 21px;

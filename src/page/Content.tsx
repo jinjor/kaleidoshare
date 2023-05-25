@@ -2,24 +2,38 @@ import React from "react";
 import { User } from "../domain/user";
 import Nav from "../ui/Nav";
 import Editor from "../ui/Editor";
+import { Settings } from "../domain/settings";
+import NotFound from "./NotFound";
 
 export default function Content(props: {
   user: User | null;
   authorName: string;
-  contentName: string;
+  contentId: string;
 }) {
-  const { user, authorName, contentName } = props;
+  const { user, authorName, contentId } = props;
   const [preview, setPreview] = React.useState(true);
-  const [config, setConfig] = React.useState({});
+  const [content, setContent] = React.useState<
+    { settings: Settings } | null | undefined
+  >(undefined);
   const isSelf = user?.name === authorName;
   const handleQuitPreview = React.useCallback(() => setPreview(false), []);
 
   React.useEffect(() => {
-    fetch(`/api/config/${authorName}/${contentName}`)
+    fetch(`/api/contents/${authorName}/${contentId}`)
       .then((res) => res.json())
-      .then((config) => setConfig(config));
+      .then((content) => {
+        setContent(content);
+      });
     // TODO: error
-  }, [authorName, contentName]);
+  }, [authorName, contentId]);
+
+  if (content === undefined) {
+    return null;
+  }
+  if (content === null) {
+    // TODO
+    return <NotFound user={user} />;
+  }
 
   // TODO: loading
   return (
@@ -42,7 +56,12 @@ export default function Content(props: {
       </Nav>
       <div className="horizontal-center">
         <div className="container">
-          <Editor preview={preview} onQuitPreview={handleQuitPreview} />
+          <Editor
+            user={user}
+            preview={preview}
+            onQuitPreview={handleQuitPreview}
+            settings={content.settings}
+          />
         </div>
       </div>
     </>

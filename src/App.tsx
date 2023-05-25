@@ -19,7 +19,7 @@ type Route =
   | {
       type: "content";
       authorName: string;
-      contentName: string;
+      contentId: string;
     };
 
 function getRoute(pathname: string): Route | null {
@@ -32,10 +32,10 @@ function getRoute(pathname: string): Route | null {
   if (pathname === "/account") {
     return { type: "account" };
   }
-  const match = pathname.match(/^\/content\/([^\/]+)\/([^\/]+)$/);
+  const match = pathname.match(/^\/contents\/([^\/]+)\/([^\/]+)$/);
   if (match) {
-    const [, authorName, contentName] = match;
-    return { type: "content", authorName, contentName };
+    const [, authorName, contentId] = match;
+    return { type: "content", authorName, contentId };
   }
   return null;
 }
@@ -70,7 +70,7 @@ export default function App() {
         <Content
           user={user}
           authorName={route.authorName}
-          contentName={route.contentName}
+          contentId={route.contentId}
         />
       ) : (
         <NotFound user={user} />

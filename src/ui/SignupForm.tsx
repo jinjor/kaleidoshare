@@ -1,46 +1,17 @@
 import React from "react";
-import { startRegistration } from "@simplewebauthn/browser";
+import { register } from "../domain/register";
 
-async function register(name: string) {
-  const res = await fetch("/api/credential/new", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ name }),
-  });
-  if (res.status >= 400) {
-    const { message } = await res.json();
-    alert(message); // TODO
-    throw new Error("Failed"); // TODO: handle error
-  }
-  const registerOps = await res.json();
-  console.log(registerOps);
-  const attResp = await startRegistration(registerOps);
-  console.log(attResp);
-
-  const res2 = await fetch("/api/credential", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(attResp),
-  });
-  if (res2.status >= 400) {
-    const { message } = await res2.json();
-    alert(message); // TODO
-    throw new Error("Failed"); // TODO: handle error
-  }
-  alert("ok"); // TODO
-}
-
-export default function SignupForm(props: { redirect: string }) {
-  const { redirect } = props;
+export default function SignupForm(props: {
+  onSuccess: (userName: string) => void;
+}) {
+  const { onSuccess } = props;
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    await register(data.get("name") as string);
-    location.href = redirect;
+    const userName = data.get("name") as string;
+    await register(userName);
+    alert("ok"); // TODO
+    onSuccess(userName);
   };
   return (
     <form className="form" onSubmit={handleSubmit}>

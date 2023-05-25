@@ -3,73 +3,78 @@ import View from "./View";
 import World, { WorldOptions } from "./World";
 import SettingEditor from "./SettingEditor";
 import { Settings } from "../domain/settings";
+import Operation from "./Operation";
+import { User } from "../domain/user";
 
-// |--- worldSize --|-|--- viewSize ---|-|--- ????Size ---|
+// |--- worldSize --|-|--- viewSize ---|-|-- opetaionSize --|
 //                  gap                gap
 const worldSize = 300;
 const viewSize = 300;
-const ____Size = 300;
-const gap = (960 - (worldSize + viewSize + ____Size)) / 2;
-
+const operationSize = 340;
+const upperHeight = 300;
+const gap = (960 - (worldSize + viewSize + operationSize)) / 2;
+const defaultSettings: Settings = {
+  background: "#103",
+  generators: [
+    {
+      count: 20,
+      shape: {
+        type: "rectangle",
+        width: {
+          min: 0.06,
+          max: 0.1,
+        },
+        height: 0.08,
+        stroke: {
+          type: "hsl",
+          h: {
+            min: 300,
+            max: 360,
+          },
+          s: 40,
+          l: 60,
+        },
+        strokeWidth: 0.01,
+      },
+    },
+    {
+      count: 50,
+      shape: {
+        type: "rectangle",
+        width: {
+          min: 0.05,
+          max: 0.12,
+        },
+        height: {
+          min: 0.02,
+          max: 0.03,
+        },
+        fill: {
+          type: "hsl",
+          h: {
+            min: 100,
+            max: 240,
+          },
+          s: 60,
+          l: 50,
+        },
+      },
+    },
+  ],
+};
 export default function Editor(props: {
+  user: User | null;
   preview: boolean;
+  settings?: Settings;
   onQuitPreview: () => void;
 }) {
-  const { preview, onQuitPreview } = props;
-  const settings: Settings = {
-    background: "#103",
-    generators: [
-      {
-        count: 20,
-        shape: {
-          type: "rectangle",
-          width: {
-            min: 0.06,
-            max: 0.1,
-          },
-          height: 0.08,
-          stroke: {
-            type: "hsl",
-            h: {
-              min: 300,
-              max: 360,
-            },
-            s: 40,
-            l: 60,
-          },
-          strokeWidth: 0.01,
-        },
-      },
-      {
-        count: 50,
-        shape: {
-          type: "rectangle",
-          width: {
-            min: 0.05,
-            max: 0.12,
-          },
-          height: {
-            min: 0.02,
-            max: 0.03,
-          },
-          fill: {
-            type: "hsl",
-            h: {
-              min: 100,
-              max: 240,
-            },
-            s: 60,
-            l: 50,
-          },
-        },
-      },
-    ],
-  };
+  const { user, preview, settings, onQuitPreview } = props;
+
   const [worldOptions, setWorldOptions] = useState<WorldOptions>({
     size: worldSize,
     spinnerRadiusRatio: 0.5,
     clipRadiusRatio: 0.25,
-    settings,
+    settings: settings ?? defaultSettings,
   });
   const [world, setWorld] = useState<World | null>(null);
 
@@ -120,6 +125,12 @@ export default function Editor(props: {
             settings={worldOptions.settings}
           />
         )}
+        <Operation
+          width={operationSize}
+          height={upperHeight}
+          settings={worldOptions.settings}
+          user={user}
+        />
       </div>
       <SettingEditor settings={worldOptions.settings} onApply={handleApply} />
     </>

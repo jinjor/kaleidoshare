@@ -15,6 +15,12 @@ import {
   register,
 } from "./server/auth.ts";
 import { randomHex } from "./server/util.ts";
+import {
+  createContent,
+  getUserContent,
+  removeAllUserContents,
+  updateContent,
+} from "./server/content.ts";
 
 // デバッグのためにデータを全部消す
 const kv = await Deno.openKv();
@@ -148,19 +154,36 @@ router.post("/credential", async (context) => {
     throw e;
   }
 });
-
 routerWithAuth.delete("/user", async (context) => {
   const userName = await context.state.session.get("login");
-  if (userName == null) {
-    context.response.status = 401;
-    context.response.body = JSON.stringify({
-      message: "not authenticated",
-    });
-    return;
-  }
+  await removeAllUserContents(userName); // TODO: 消さなくてもいい？
   await deleteUser(userName);
   await context.state.session.deleteSession();
   context.response.status = 200;
+});
+routerWithAuth.post("/contents/:author", async (context) => {
+  const author = context.params.author; // TODO: check
+  const userName = await context.state.session.get("login");
+  const settings = await context.request.body({ type: "json" }).value;
+  const content = await createContent(userName, settings);
+  context.response.status = 200;
+  context.response.body = JSON.stringify(content);
+});
+routerWithAuth.put("/contents/:author/:contentId", async (context) => {
+  const author = context.params.author; // TODO: check
+  const userName = await context.state.session.get("login");
+  const contentId = context.params.contentId;
+  const settings = await context.request.body({ type: "json" }).value;
+  const content = await updateContent(userName, contentId, settings);
+  context.response.status = 200;
+  context.response.body = JSON.stringify(content);
+});
+router.get("/contents/:author/:contentId", async (context) => {
+  const author = context.params.author;
+  const contentId = context.params.contentId;
+  const content = await getUserContent(author, contentId);
+  context.response.status = 200;
+  context.response.body = JSON.stringify(content);
 });
 
 const app = new Application<AppState>();
