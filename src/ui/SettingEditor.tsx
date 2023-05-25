@@ -3,6 +3,7 @@ import Editor, { Monaco } from "@monaco-editor/react";
 import { Settings } from "../domain/settings";
 // @ts-ignore
 import { schema } from "virtual:settings-schema";
+import { env } from "../domain/env";
 
 const SettingEditor = React.memo(
   (props: { settings: Settings; onApply: (json: any) => void }) => {
@@ -46,8 +47,7 @@ const SettingEditor = React.memo(
         onApply(json);
       }
     }
-    // TODO: feature flag 化
-    if (location.origin !== "http://localhost:5173") {
+    if (env.prod) {
       return <></>;
     }
     return (

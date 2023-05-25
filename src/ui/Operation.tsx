@@ -2,6 +2,7 @@ import React from "react";
 import SignupForm from "./SignupForm";
 import { User } from "../domain/user";
 import { publish } from "../domain/publish";
+import { env } from "../domain/env";
 
 export default function Operation(props: {
   user: User | null;
@@ -27,8 +28,7 @@ export default function Operation(props: {
     location.href = `/contents/${userName}/${contentId}`;
     setFormKey(0);
   };
-  // TODO: feature flag 化
-  if (location.origin !== "http://localhost:5173") {
+  if (env.prod) {
     return <></>;
   }
   return (

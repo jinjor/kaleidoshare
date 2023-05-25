@@ -1,13 +1,13 @@
 import React from "react";
 import { User } from "../domain/user";
 import { login } from "../domain/login";
+import { env } from "../domain/env";
 
 export default function Nav(props: {
   user: User | null;
   children?: React.ReactNode;
 }) {
-  // TODO: feature flag 化
-  if (location.origin !== "http://localhost:5173") {
+  if (env.prod) {
     return <></>;
   }
   const { user, children } = props;
