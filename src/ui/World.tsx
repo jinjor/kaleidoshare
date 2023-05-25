@@ -59,8 +59,22 @@ function setupWorld(element: HTMLElement, options: WorldOptions) {
   const clipRadius = size * clipRadiusRatio;
 
   const engine = Engine.create();
+  const createCanvas = (width: number, height: number) => {
+    const canvas = document.createElement("canvas");
+    canvas.width = width;
+    canvas.height = height;
+    canvas.oncontextmenu = () => false;
+    canvas.onselectstart = () => false;
+    // willReadFrequently は canvas を作って最初に getContext() するときに設定する必要がある
+    // Render.create() に canvas を生成させると内部で getContext() してしまうので、
+    // ここで canvas を生成して getContext() する必要がある
+    // https://stackoverflow.com/questions/74101155/chrome-warning-willreadfrequently-attribute-set-to-true/74136040
+    canvas.getContext("2d", { willReadFrequently: true });
+    return canvas;
+  };
   const render = Render.create({
     element,
+    canvas: createCanvas(size, size),
     engine: engine,
     options: {
       width: size,
