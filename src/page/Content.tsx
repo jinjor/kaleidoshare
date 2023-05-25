@@ -54,7 +54,7 @@ export default function Content(props: {
           </li>
         )}
       </Nav>
-      <div className="horizontal-center">
+      <main className="horizontal-center">
         <div className="container">
           <Editor
             user={user}
@@ -63,7 +63,7 @@ export default function Content(props: {
             settings={content.settings}
           />
         </div>
-      </div>
+      </main>
     </>
   );
 }

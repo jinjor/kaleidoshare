@@ -54,7 +54,6 @@ input:-webkit-autofill:active {
 nav {
   background-color: var(--bg-color-float);
   padding: 15px;
-  margin-bottom: 10px;
 }
 nav ul {
   list-style: none;
@@ -65,7 +64,7 @@ nav ul {
   justify-content: flex-end;
 }
 nav ul li {
-  margin-right: 1rem;
+  margin-left: 15px;
 }
 nav ul li a {
   text-decoration: none;
@@ -79,7 +78,9 @@ nav ul li a {
   align-items: center;
   justify-content: space-between;
 }
-
+main {
+  padding: 10px;
+}
 .horizontal-center {
   display: flex;
   justify-content: center;
@@ -117,7 +118,7 @@ nav ul li a {
   border-color: var(--border-color-invalid);
 }
 .button {
-  padding: 10px;
+  padding: 8px 12px;
   border: var(--border);
   outline: none;
   color: var(--text-color);

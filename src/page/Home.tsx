@@ -20,7 +20,7 @@ export default function Home(props: { user: User | null }) {
           </li>
         )}
       </Nav>
-      <div className="horizontal-center">
+      <main className="horizontal-center">
         <div className="container">
           <Editor
             user={user}
@@ -28,7 +28,7 @@ export default function Home(props: { user: User | null }) {
             onQuitPreview={handleQuitPreview}
           />
         </div>
-      </div>
+      </main>
     </>
   );
 }

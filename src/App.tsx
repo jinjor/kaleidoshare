@@ -5,6 +5,7 @@ import Signup from "./page/Signup";
 import NotFound from "./page/NotFound";
 import Home from "./page/Home";
 import Account from "./page/Account";
+import { ErrorContext, useError } from "./ui/ErrorBar";
 
 type Route =
   | {
@@ -55,11 +56,12 @@ export default function App() {
       })
       .then((user) => setUser(user));
   }, []);
+  const errorContext = useError();
   if (user === undefined) {
     return null;
   }
   return (
-    <>
+    <ErrorContext.Provider value={errorContext}>
       {route?.type === "home" ? (
         <Home user={user} />
       ) : route?.type === "signup" ? (
@@ -75,6 +77,6 @@ export default function App() {
       ) : (
         <NotFound user={user} />
       )}
-    </>
+    </ErrorContext.Provider>
   );
 }

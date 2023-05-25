@@ -68,7 +68,7 @@ export default function Account(props: { user: User | null }) {
   return (
     <>
       <Nav user={user}></Nav>
-      <div className="horizontal-center">
+      <main className="horizontal-center">
         <div className="container horizontal-center">
           <div className="form">
             <h1 className="form-title">Account</h1>
@@ -85,7 +85,7 @@ export default function Account(props: { user: User | null }) {
             </button>
           </div>
         </div>
-      </div>
+      </main>
     </>
   );
 }
