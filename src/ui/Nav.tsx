@@ -34,6 +34,12 @@ export default function Nav(props: {
     <nav className="horizontal-center">
       <div className="container nav-contents">
         <a className="nav-brand" href="/">
+          <img
+            src="/icon.svg"
+            width="30"
+            height="30"
+            style={{ marginRight: 10 }}
+          />
           <img src="/logo.png" width={200} />
         </a>
         <ul>
