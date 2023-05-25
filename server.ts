@@ -72,42 +72,23 @@ router.post("/session/new", async (context) => {
 router.post("/session", async (context) => {
   const response = await context.request.body({ type: "json" }).value;
   const challenge = await context.state.session.get("challenge");
-  try {
-    if (challenge == null) {
-      throw new AuthenticationNotVerifiedError();
-    }
-    const userName = await authenticate(
-      rpID,
-      expectedOrigin,
-      response,
-      challenge
-    );
-    await context.state.session.set("login", userName);
-    context.response.status = 200;
-  } catch (e) {
-    if (
-      e instanceof AuthenticatorNotRegisteredError ||
-      e instanceof AuthenticationNotVerifiedError
-    ) {
-      context.response.status = 401;
-      context.response.body = JSON.stringify({
-        message: "not verified",
-      });
-      return;
-    }
-    throw e;
+  if (challenge == null) {
+    throw new AuthenticationNotVerifiedError();
   }
+  const userName = await authenticate(
+    rpID,
+    expectedOrigin,
+    response,
+    challenge
+  );
+  await context.state.session.set("login", userName);
+  context.response.status = 200;
 });
 router.get("/session", async (context) => {
   const name = await context.state.session.get("login");
+  const user = name == null ? null : { name };
   context.response.status = 200;
-  context.response.body = JSON.stringify(
-    name == null
-      ? null
-      : {
-          name,
-        }
-  );
+  context.response.body = JSON.stringify(user);
 });
 router.delete("/session", async (context) => {
   await context.state.session.deleteSession();
@@ -115,22 +96,11 @@ router.delete("/session", async (context) => {
 });
 router.post("/credential/new", async (context) => {
   const { name: userName } = await context.request.body({ type: "json" }).value;
-  try {
-    const options = await createCredential(rpID, userName, true);
-    await context.state.session.flash("challenge", options.challenge);
-    await context.state.session.flash("userName", userName);
-    context.response.status = 200;
-    context.response.body = JSON.stringify(options);
-  } catch (e) {
-    if (e instanceof UserAlreadyExistsError) {
-      context.response.status = 400;
-      context.response.body = JSON.stringify({
-        message: "User already exists",
-      });
-      return;
-    }
-    throw e;
-  }
+  const options = await createCredential(rpID, userName, true);
+  await context.state.session.flash("challenge", options.challenge);
+  await context.state.session.flash("userName", userName);
+  context.response.status = 200;
+  context.response.body = JSON.stringify(options);
 });
 routerWithAuth.post("/credential/add", async (context) => {
   const userName = await context.state.session.get("login");
@@ -144,23 +114,12 @@ router.post("/credential", async (context) => {
   const response = await context.request.body({ type: "json" }).value;
   const challenge: string = await context.state.session.get("challenge");
   const userName: string = await context.state.session.get("userName");
-  try {
-    if (challenge == null || userName == null) {
-      throw new RegistrationNotVerifiedError();
-    }
-    await register(rpID, expectedOrigin, response, challenge, userName);
-    await context.state.session.set("login", userName);
-    context.response.status = 200;
-  } catch (e) {
-    if (e instanceof RegistrationNotVerifiedError) {
-      context.response.status = 401;
-      context.response.body = JSON.stringify({
-        message: "not verified",
-      });
-      return;
-    }
-    throw e;
+  if (challenge == null || userName == null) {
+    throw new RegistrationNotVerifiedError();
   }
+  await register(rpID, expectedOrigin, response, challenge, userName);
+  await context.state.session.set("login", userName);
+  context.response.status = 200;
 });
 routerWithAuth.delete("/user", async (context) => {
   const userName = await context.state.session.get("login");
@@ -173,59 +132,26 @@ routerWithAuth.post("/contents/:author", async (context) => {
   const author = context.params.author;
   const userName = await context.state.session.get("login");
   const settings = await context.request.body({ type: "json" }).value;
-  try {
-    const content = await createContent(userName, author, settings);
-    context.response.status = 200;
-    context.response.body = JSON.stringify(content);
-  } catch (e) {
-    if (e instanceof AuthorDoesNotMatchError) {
-      context.response.status = 403;
-      context.response.body = JSON.stringify({
-        message: "author does not match",
-      });
-      return;
-    }
-    throw e;
-  }
+  const content = await createContent(userName, author, settings);
+  context.response.status = 200;
+  context.response.body = JSON.stringify(content);
 });
 routerWithAuth.put("/contents/:author/:contentId", async (context) => {
   const author = context.params.author;
   const userName = await context.state.session.get("login");
   const contentId = context.params.contentId;
   const settings = await context.request.body({ type: "json" }).value;
-  try {
-    const content = await updateContent(userName, author, contentId, settings);
-    context.response.status = 200;
-    context.response.body = JSON.stringify(content);
-  } catch (e) {
-    if (e instanceof AuthorDoesNotMatchError) {
-      context.response.status = 403;
-      context.response.body = JSON.stringify({
-        message: "author does not match",
-      });
-      return;
-    }
-    throw e;
-  }
+  const content = await updateContent(userName, author, contentId, settings);
+  context.response.status = 200;
+  context.response.body = JSON.stringify(content);
 });
 routerWithAuth.delete("/contents/:author/:contentId", async (context) => {
   const author = context.params.author;
   const userName = await context.state.session.get("login");
   const contentId = context.params.contentId;
-  try {
-    const content = await removeContent(userName, author, contentId);
-    context.response.status = 200;
-    context.response.body = JSON.stringify(content);
-  } catch (e) {
-    if (e instanceof AuthorDoesNotMatchError) {
-      context.response.status = 403;
-      context.response.body = JSON.stringify({
-        message: "author does not match",
-      });
-      return;
-    }
-    throw e;
-  }
+  const content = await removeContent(userName, author, contentId);
+  context.response.status = 200;
+  context.response.body = JSON.stringify(content);
 });
 router.get("/contents/:author", async (context) => {
   const author = context.params.author;
@@ -256,6 +182,37 @@ app.use(async (context, next) => {
   try {
     await next();
   } catch (e) {
+    if (e instanceof UserAlreadyExistsError) {
+      context.response.status = 400;
+      context.response.body = JSON.stringify({
+        message: "User already exists",
+      });
+      return;
+    }
+    if (e instanceof RegistrationNotVerifiedError) {
+      context.response.status = 401;
+      context.response.body = JSON.stringify({
+        message: "not verified",
+      });
+      return;
+    }
+    if (
+      e instanceof AuthenticatorNotRegisteredError ||
+      e instanceof AuthenticationNotVerifiedError
+    ) {
+      context.response.status = 401;
+      context.response.body = JSON.stringify({
+        message: "not verified",
+      });
+      return;
+    }
+    if (e instanceof AuthorDoesNotMatchError) {
+      context.response.status = 403;
+      context.response.body = JSON.stringify({
+        message: "author does not match",
+      });
+      return;
+    }
     console.error(e);
     context.response.status = 500;
     context.response.body = JSON.stringify({
