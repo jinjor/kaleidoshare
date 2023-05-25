@@ -64,12 +64,20 @@ function generateShape(shape: Shape, size: number): Body {
   };
   if (shape.type === "circle") {
     return Bodies.circle(0, 0, generateLength(shape.radius) * size, options);
-  } else {
+  } else if (shape.type === "rectangle") {
     return Bodies.rectangle(
       0,
       0,
       generateLength(shape.width) * size,
       generateLength(shape.height) * size,
+      options
+    );
+  } else {
+    return Bodies.polygon(
+      0,
+      0,
+      generateInt(shape.sides),
+      generateLength(shape.radius) * size,
       options
     );
   }

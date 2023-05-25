@@ -6,7 +6,7 @@ export type Generator = {
   count: Count;
   shape: Shape;
 };
-export type Shape = Circle | Rectangle;
+export type Shape = Circle | Rectangle | Polygon;
 export type Circle = {
   type: "circle";
   radius: Length;
@@ -18,6 +18,14 @@ export type Rectangle = {
   type: "rectangle";
   width: Length;
   height: Length;
+  fill?: Color;
+  stroke?: Color;
+  strokeWidth?: Length;
+};
+export type Polygon = {
+  type: "polygon";
+  radius: Length;
+  sides: Count;
   fill?: Color;
   stroke?: Color;
   strokeWidth?: Length;
