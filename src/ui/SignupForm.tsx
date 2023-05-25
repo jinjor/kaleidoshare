@@ -16,20 +16,19 @@ export default function SignupForm(props: {
   return (
     <form className="form" onSubmit={handleSubmit}>
       <h1 className="form-title">Signup</h1>
-      <label style={{ display: "block" }}>
-        <div>Name</div>
-        <input
-          autoFocus
-          required
-          className="input"
-          type="text"
-          name="name"
-          minLength={1}
-          maxLength={39}
-          // GitHub と同じルール
-          pattern="^[a-z\d](?:[a-z\d]|-(?=[a-z\d])){0,38}$"
-        />
-      </label>
+      <label style={{ display: "block" }}>Name</label>
+      <input
+        autoFocus
+        required
+        className="input"
+        type="text"
+        name="name"
+        minLength={1}
+        maxLength={39}
+        // GitHub と同じルール
+        pattern="^[a-z\d](?:[a-z\d]|-(?=[a-z\d])){0,38}$"
+      />
+
       <input className="button wide primary" type="submit" value="Signup" />
     </form>
   );

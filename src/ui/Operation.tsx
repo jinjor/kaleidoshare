@@ -28,6 +28,9 @@ export default function Operation(props: {
     location.href = `/contents/${userName}/${contentId}`;
     setFormKey(0);
   };
+  const handleCancel = async () => {
+    setFormKey(0);
+  };
   if (env.prod) {
     return <></>;
   }
@@ -38,7 +41,35 @@ export default function Operation(props: {
           Publish
         </button>
       </div>
-      {formKey > 0 && <SignupForm key={formKey} onSuccess={handlePublish} />}
+      {formKey > 0 && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 1,
+          }}
+        >
+          <div
+            style={{
+              position: "absolute",
+              width: "100%",
+              height: "100%",
+              background: "black",
+              opacity: 0.5,
+            }}
+            onClick={handleCancel}
+          ></div>
+          <div style={{ zIndex: 1 }}>
+            <SignupForm key={formKey} onSuccess={handlePublish} />
+          </div>
+        </div>
+      )}
     </>
   );
 }
