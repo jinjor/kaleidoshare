@@ -3,7 +3,8 @@ import Editor, { Monaco } from "@monaco-editor/react";
 import { Settings } from "../domain/settings";
 // @ts-ignore
 import { schema } from "virtual:settings-schema";
-import { env } from "../domain/env";
+
+const tabSize = 2;
 
 const SettingEditor = React.memo(
   (props: { settings: Settings; onApply: (json: any) => void }) => {
@@ -47,22 +48,19 @@ const SettingEditor = React.memo(
         onApply(json);
       }
     }
-    if (env.prod) {
-      return <></>;
-    }
     return (
       <div tabIndex={0} onKeyDown={handleKeyDown}>
-        <div>Settings</div>
         <Editor
-          height="400px"
+          height="500px"
           theme="vs-dark"
           defaultLanguage="json"
-          defaultValue={JSON.stringify(settings, null, 4)}
+          defaultValue={JSON.stringify(settings, null, tabSize)}
           beforeMount={handleEditorWillMount}
           onMount={handleEditorDidMount}
           options={{
             contextmenu: false,
             scrollBeyondLastLine: false,
+            tabSize,
             autoClosingBrackets: "always",
             autoClosingQuotes: "always",
             formatOnPaste: true,

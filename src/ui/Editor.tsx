@@ -116,7 +116,15 @@ export default function Editor(props: {
   }
   return (
     <>
-      <div style={{ display: "flex", gap }}>
+      <div
+        style={{
+          display: "flex",
+          gap,
+          marginBottom: 10,
+          maxWidth: "100vw",
+          overflow: "scroll",
+        }}
+      >
         <World options={worldOptions} onReady={handleReady} />
         {world && (
           <View
