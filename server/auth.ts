@@ -20,6 +20,7 @@ import type {
 } from "npm:@simplewebauthn/typescript-types";
 import * as base64url from "https://deno.land/std@0.179.0/encoding/base64url.ts";
 import { assert } from "https://deno.land/std@0.183.0/_util/asserts.ts";
+import { openKv } from "./kv.ts";
 
 // Schema:
 // - credentials: credentialID => Credential
@@ -35,7 +36,7 @@ type User = {
 async function getCredential(
   credentialID: Uint8Array
 ): Promise<Credential | null> {
-  const kv = await Deno.openKv();
+  const kv = await openKv();
   const cred = await kv.get<Credential>(["credentials", credentialID]);
   if (cred.value == null) {
     return null;
@@ -47,25 +48,25 @@ async function setCredential(
   credentialID: Uint8Array,
   credential: Credential
 ): Promise<void> {
-  const kv = await Deno.openKv();
+  const kv = await openKv();
   await kv.set(["credentials", credentialID], credential);
 }
 async function deleteCredential(credentialID: Uint8Array): Promise<void> {
-  const kv = await Deno.openKv();
+  const kv = await openKv();
   await kv.delete(["credentials", credentialID]);
 }
 
 async function getUser(userName: string): Promise<User | null> {
-  const kv = await Deno.openKv();
+  const kv = await openKv();
   const cred = await kv.get<User>(["users", userName]);
   return cred.value;
 }
 async function setUser(userName: string, user: User): Promise<void> {
-  const kv = await Deno.openKv();
+  const kv = await openKv();
   await kv.set(["users", userName], user);
 }
 export async function deleteUser(userName: string): Promise<void> {
-  const kv = await Deno.openKv();
+  const kv = await openKv();
   const user = await getUser(userName);
   if (user == null) {
     return;

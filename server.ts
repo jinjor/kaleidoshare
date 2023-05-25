@@ -1,3 +1,4 @@
+// TODO: deps.ts に移動する
 import { Application, Router } from "https://deno.land/x/oak@v12.2.0/mod.ts";
 import {
   CookieStore,
@@ -16,14 +17,21 @@ import {
 } from "./server/auth.ts";
 import { randomHex } from "./server/util.ts";
 import {
+  AuthorDoesNotMatchError,
   createContent,
   getUserContent,
+  listUserContents,
   removeAllUserContents,
+  removeContent,
   updateContent,
 } from "./server/content.ts";
+import { openKv } from "./server/kv.ts";
+
+const apiServerPort: number = parseInt(Deno.env.get("PORT") ?? "8000");
 
 // デバッグのためにデータを全部消す
-const kv = await Deno.openKv();
+// TODO: デバッグの時だけにする
+const kv = await openKv();
 const iter = await kv.list({ prefix: [] });
 for await (const res of iter) {
   console.log("delete", res.key);
@@ -162,21 +170,68 @@ routerWithAuth.delete("/user", async (context) => {
   context.response.status = 200;
 });
 routerWithAuth.post("/contents/:author", async (context) => {
-  const author = context.params.author; // TODO: check
+  const author = context.params.author;
   const userName = await context.state.session.get("login");
   const settings = await context.request.body({ type: "json" }).value;
-  const content = await createContent(userName, settings);
-  context.response.status = 200;
-  context.response.body = JSON.stringify(content);
+  try {
+    const content = await createContent(userName, author, settings);
+    context.response.status = 200;
+    context.response.body = JSON.stringify(content);
+  } catch (e) {
+    if (e instanceof AuthorDoesNotMatchError) {
+      context.response.status = 403;
+      context.response.body = JSON.stringify({
+        message: "author does not match",
+      });
+      return;
+    }
+    throw e;
+  }
 });
 routerWithAuth.put("/contents/:author/:contentId", async (context) => {
-  const author = context.params.author; // TODO: check
+  const author = context.params.author;
   const userName = await context.state.session.get("login");
   const contentId = context.params.contentId;
   const settings = await context.request.body({ type: "json" }).value;
-  const content = await updateContent(userName, contentId, settings);
+  try {
+    const content = await updateContent(userName, author, contentId, settings);
+    context.response.status = 200;
+    context.response.body = JSON.stringify(content);
+  } catch (e) {
+    if (e instanceof AuthorDoesNotMatchError) {
+      context.response.status = 403;
+      context.response.body = JSON.stringify({
+        message: "author does not match",
+      });
+      return;
+    }
+    throw e;
+  }
+});
+routerWithAuth.delete("/contents/:author/:contentId", async (context) => {
+  const author = context.params.author;
+  const userName = await context.state.session.get("login");
+  const contentId = context.params.contentId;
+  try {
+    const content = await removeContent(userName, author, contentId);
+    context.response.status = 200;
+    context.response.body = JSON.stringify(content);
+  } catch (e) {
+    if (e instanceof AuthorDoesNotMatchError) {
+      context.response.status = 403;
+      context.response.body = JSON.stringify({
+        message: "author does not match",
+      });
+      return;
+    }
+    throw e;
+  }
+});
+router.get("/contents/:author", async (context) => {
+  const author = context.params.author;
+  const contents = await listUserContents(author);
   context.response.status = 200;
-  context.response.body = JSON.stringify(content);
+  context.response.body = JSON.stringify(contents);
 });
 router.get("/contents/:author/:contentId", async (context) => {
   const author = context.params.author;
@@ -222,4 +277,4 @@ app.use(async (context, next) => {
     await next();
   }
 });
-await app.listen({ port: 8000 });
+await app.listen({ port: apiServerPort });

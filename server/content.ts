@@ -1,4 +1,5 @@
 import { ulid } from "npm:ulid@2.3.0";
+import { openKv } from "./kv.ts";
 
 // Schema:
 // - contents: contentId => Content
@@ -14,12 +15,12 @@ async function getContent(
   author: string,
   contentId: string
 ): Promise<Content | null> {
-  const kv = await Deno.openKv();
+  const kv = await openKv();
   const content = await kv.get<Content>(["contents", author, contentId]);
   return content.value;
 }
 async function listContent(author: string) {
-  const kv = await Deno.openKv();
+  const kv = await openKv();
   const contents: Content[] = [];
   for await (const entry of kv.list<Content>({
     prefix: ["contents", author],
@@ -33,11 +34,11 @@ async function setContent(
   contentId: string,
   content: Content
 ): Promise<void> {
-  const kv = await Deno.openKv();
+  const kv = await openKv();
   await kv.set(["contents", author, contentId], content);
 }
 async function deleteContent(author: string, contentId: string): Promise<void> {
-  const kv = await Deno.openKv();
+  const kv = await openKv();
   await kv.delete(["contents", author, contentId]);
 }
 
@@ -46,6 +47,12 @@ export class ContentNotFoundError extends Error {
     super("Content not found");
   }
 }
+export class AuthorDoesNotMatchError extends Error {
+  constructor() {
+    super("Author does not match");
+  }
+}
+
 export async function getUserContent(
   author: string,
   contentId: string
@@ -53,14 +60,18 @@ export async function getUserContent(
   const content = await getContent(author, contentId);
   return content;
 }
-export async function listUserContent(author: string): Promise<Content[]> {
+export async function listUserContents(author: string): Promise<Content[]> {
   const contents = await listContent(author);
   return contents;
 }
 export async function createContent(
+  userName: string,
   author: string,
   settings: unknown
 ): Promise<Content> {
+  if (userName !== author) {
+    throw new AuthorDoesNotMatchError();
+  }
   const createdAt = new Date().toISOString();
   const contentId = ulid();
   const content: Content = {
@@ -74,10 +85,14 @@ export async function createContent(
   return content;
 }
 export async function updateContent(
+  userName: string,
   author: string,
   contentId: string,
   settings: unknown
 ): Promise<Content> {
+  if (userName !== author) {
+    throw new AuthorDoesNotMatchError();
+  }
   const updatedAt = new Date().toISOString();
   const content = await getContent(author, contentId);
   if (content == null) {
@@ -89,9 +104,13 @@ export async function updateContent(
   return content;
 }
 export async function removeContent(
+  userName: string,
   author: string,
   contentId: string
 ): Promise<void> {
+  if (userName !== author) {
+    throw new AuthorDoesNotMatchError();
+  }
   const content = await getContent(author, contentId);
   if (content == null) {
     return;
