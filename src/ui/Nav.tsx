@@ -7,9 +7,6 @@ export default function Nav(props: {
   user: User | null;
   children?: React.ReactNode;
 }) {
-  if (env.prod) {
-    return <></>;
-  }
   const { user, children } = props;
 
   const handleLogin = async (event: React.FormEvent<HTMLButtonElement>) => {
@@ -44,7 +41,9 @@ export default function Nav(props: {
         </a>
         <ul>
           {children}
-          {user ? (
+          {env.prod ? (
+            <></>
+          ) : user ? (
             <>
               <li>{user.name}</li>
               <li>
