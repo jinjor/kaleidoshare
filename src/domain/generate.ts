@@ -9,6 +9,14 @@ import {
   Settings,
   Shape,
 } from "./settings";
+import {
+  OutCircle,
+  OutColor,
+  OutFloat,
+  OutPolygon,
+  OutRectangle,
+  OutShape,
+} from "./output";
 
 export function generateSpinner(options: {
   size: number;
@@ -37,49 +45,52 @@ export function generateSpinner(options: {
     }
   );
 }
-export function generateObjects(options: {
-  size: number;
-  settings: Settings;
-}): Body[] {
-  const { size, settings } = options;
-  const objects: Body[] = [];
+export function generateObjects(settings: Settings): OutShape[] {
+  const objects: OutShape[] = [];
   for (const generator of settings.generators) {
     for (let i = 0; i < generateInt(generator.count); i++) {
-      objects.push(generateShape(generator.shape, size));
+      objects.push(generateShape(generator.shape));
     }
   }
+  objects.sort(() => Math.random() - 0.5);
   return objects;
 }
-function generateShape(shape: Shape, size: number): Body {
-  const options = {
-    render: {
-      fillStyle: shape.fill != null ? generateColor(shape.fill) : "transparent",
-      strokeStyle:
-        shape.stroke != null ? generateColor(shape.stroke) : undefined,
-      lineWidth:
-        shape.strokeWidth != null
-          ? generateLength(shape.strokeWidth) * size
-          : undefined,
-    },
-  };
+function generateShape(shape: Shape): OutShape {
   if (shape.type === "circle") {
-    return Bodies.circle(0, 0, generateLength(shape.radius) * size, options);
+    const circle: OutCircle = {
+      type: "circle",
+      radius: generateLength(shape.radius),
+      fill: shape.fill != null ? generateColor(shape.fill) : "transparent",
+      stroke:
+        shape.stroke != null ? generateColor(shape.stroke) : "transparent",
+      strokeWidth:
+        shape.strokeWidth != null ? generateLength(shape.strokeWidth) : 0,
+    };
+    return circle;
   } else if (shape.type === "rectangle") {
-    return Bodies.rectangle(
-      0,
-      0,
-      generateLength(shape.width) * size,
-      generateLength(shape.height) * size,
-      options
-    );
+    const rectangle: OutRectangle = {
+      type: "rectangle",
+      width: generateLength(shape.width),
+      height: generateLength(shape.height),
+      fill: shape.fill != null ? generateColor(shape.fill) : "transparent",
+      stroke:
+        shape.stroke != null ? generateColor(shape.stroke) : "transparent",
+      strokeWidth:
+        shape.strokeWidth != null ? generateLength(shape.strokeWidth) : 0,
+    };
+    return rectangle;
   } else {
-    return Bodies.polygon(
-      0,
-      0,
-      generateInt(shape.sides),
-      generateLength(shape.radius) * size,
-      options
-    );
+    const polygon: OutPolygon = {
+      type: "polygon",
+      sides: generateInt(shape.sides),
+      radius: generateLength(shape.radius),
+      fill: shape.fill != null ? generateColor(shape.fill) : "transparent",
+      stroke:
+        shape.stroke != null ? generateColor(shape.stroke) : "transparent",
+      strokeWidth:
+        shape.strokeWidth != null ? generateLength(shape.strokeWidth) : 0,
+    };
+    return polygon;
   }
 }
 function generateInt(int: Count | Byte | Degree | Percent): number {
@@ -89,13 +100,21 @@ function generateInt(int: Count | Byte | Degree | Percent): number {
     return randomInt(int.min, int.max);
   }
 }
-function generateLength(length: Length): number {
+function generateLength(length: Length): OutFloat {
   if (typeof length === "number") {
     return length;
+  } else if ("frequency" in length) {
+    return {
+      frequency: length.frequency,
+      phase: randomFloat(0, Math.PI * 2),
+      offset: length.offset,
+      amplitude: length.amplitude,
+    };
   } else {
     return randomFloat(length.min, length.max);
   }
 }
+// TODO: OutColor
 export function generateColor(color: Color): string {
   if (typeof color === "string") {
     return color;

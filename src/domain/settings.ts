@@ -40,11 +40,20 @@ export type RandomCount = {
   min: FixedCount;
   max: FixedCount;
 };
-export type Length = FixedLength | RandomLength;
+export type Length = FixedLength | PeriodicLength | RandomLength;
 /**
  * @exclusiveMinimum 0
  */
 export type FixedLength = number;
+export type PeriodicLength = {
+  /**
+   * @minimum 0 // TODO: exclusive
+   * @maximum 30
+   */
+  frequency: number; // TODO: fixed or random
+  offset: FixedLength; // TODO: Length?
+  amplitude: FixedLength; // TODO: Length?
+};
 export type RandomLength = {
   min: FixedLength;
   max: FixedLength;
@@ -76,11 +85,6 @@ export type HSL = {
   l: Percent;
 };
 export type Degree = FixedDegree | RandomDegree;
-/**
- * @minimum 0
- * @maximum 360
- * @TJS-type integer
- */
 export type FixedDegree = number;
 export type RandomDegree = {
   min: FixedDegree;
@@ -90,7 +94,6 @@ export type Percent = FixedPercent | RandomPercent;
 /**
  * @minimum 0
  * @maximum 100
- * @TJS-type integer
  */
 export type FixedPercent = number;
 export type RandomPercent = {

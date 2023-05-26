@@ -1,9 +1,18 @@
 import React, { useEffect, useRef } from "react";
 
-import { Engine, Render, Runner, Body, Composite, Common } from "matter-js";
+import {
+  Engine,
+  Render,
+  Runner,
+  Body,
+  Composite,
+  Common,
+  Bodies,
+} from "matter-js";
 import decomp from "poly-decomp";
 import { generateObjects, generateSpinner } from "../domain/generate";
 import { Settings } from "../domain/settings";
+import { OutColor, OutFloat } from "../domain/output";
 
 Common.setDecomp(decomp);
 
@@ -56,7 +65,7 @@ function setupWorld(element: HTMLElement, options: WorldOptions) {
   const { size, spinnerRadiusRatio, clipRadiusRatio } = options;
 
   const spinnerRadius = size * spinnerRadiusRatio;
-  const clipRadius = size * clipRadiusRatio;
+  const clipRadius = size * clipRadiusRatio; // TODO: 切り抜き範囲を表示
 
   const engine = Engine.create();
   const createCanvas = (width: number, height: number) => {
@@ -83,9 +92,50 @@ function setupWorld(element: HTMLElement, options: WorldOptions) {
     },
   });
   const spinner = generateSpinner(options);
-  const objects = generateObjects(options);
-  Composite.add(engine.world, objects);
+  const objects = generateObjects(options.settings).map((object) => {
+    const options: Matter.IBodyDefinition = {
+      render: {
+        fillStyle: initialColor(object.fill),
+        strokeStyle: initialColor(object.stroke),
+        lineWidth: initialFloat(object.strokeWidth) * size,
+      },
+    };
+    switch (object.type) {
+      case "circle":
+        return Bodies.circle(0, 0, initialFloat(object.radius) * size, options);
+      case "rectangle":
+        return Bodies.rectangle(
+          0,
+          0,
+          initialFloat(object.width) * size,
+          initialFloat(object.height) * size,
+          options
+        );
+      case "polygon":
+        return Bodies.polygon(
+          0,
+          0,
+          object.sides,
+          initialFloat(object.radius) * size,
+          options
+        );
+    }
+  });
   Composite.add(engine.world, [spinner]);
+  Composite.add(engine.world, objects);
+
+  function initialFloat(float: OutFloat) {
+    if (typeof float === "number") {
+      return float;
+    }
+    return float.offset + float.amplitude * Math.sin(float.phase);
+  }
+  function initialColor(color: OutColor) {
+    if (typeof color === "string") {
+      return color;
+    }
+    throw new Error("not implemented");
+  }
 
   Render.run(render);
   Render.lookAt(render, {
