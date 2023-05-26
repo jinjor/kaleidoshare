@@ -9,7 +9,7 @@ Common.setDecomp(decomp);
 
 type World = {
   rotate: () => void;
-  getImageURL: () => string;
+  getImage: () => HTMLImageElement;
 };
 export type WorldOptions = {
   size: number;
@@ -28,11 +28,11 @@ const World = React.memo(function World(props: {
 
   useEffect(() => {
     const worldElement = worldRef.current!;
-    const { render, runner, rotate, getImageURL } = setupWorld(
+    const { render, runner, rotate, getImage } = setupWorld(
       worldElement,
       options
     );
-    onReady({ rotate, getImageURL });
+    onReady({ rotate, getImage });
     return () => {
       Render.stop(render);
       Runner.stop(runner);
@@ -101,20 +101,14 @@ function setupWorld(element: HTMLElement, options: WorldOptions) {
     rotate: () => {
       Body.rotate(spinner, 0.02);
     },
-    getImageURL: () => {
-      const ctx = render.context;
-      const imageData = ctx.getImageData(
-        size / 2 - clipRadius,
-        size / 2 - clipRadius,
-        clipRadius * 2,
-        clipRadius * 2
-      );
-      const canvas = document.createElement("canvas");
-      canvas.width = clipRadius * 2;
-      canvas.height = clipRadius * 2;
-      const ctx2 = canvas.getContext("2d")!;
-      ctx2.putImageData(imageData, 0, 0);
-      return canvas.toDataURL();
+    getImage: () => {
+      const src = render.canvas;
+      const image = new Image();
+      image.crossOrigin = "anonymous";
+      image.width = src.width;
+      image.height = src.height;
+      image.src = src.toDataURL();
+      return image;
     },
   };
 }

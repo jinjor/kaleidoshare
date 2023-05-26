@@ -28,62 +28,28 @@ const View = React.memo(function View(props: {
 }) {
   const { size, world, settings } = props;
 
-  const viewRef = useRef<HTMLDivElement>(null);
-  const viewRef2 = useRef<HTMLDivElement>(null);
+  const viewRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
-    const styleElement = document.createElement("style");
-    styleElement.textContent = `
-    .node0 {
-      background-image: none;
-    }
-    .node1 {
-      background-image: none;
-    }
-    `;
-    document.body.appendChild(styleElement);
-
-    const { rotate, getImageURL } = world;
+    const { rotate, getImage } = world;
 
     const triangleNodes = createTriangleNodes(generation);
 
     const viewElement = viewRef.current!;
-    addElementsIntoView(0, viewElement, triangleNodes, {
-      radius: viewRadiusRatio,
-    });
-    const view2Element = viewRef2.current!;
-    addElementsIntoView(1, view2Element, triangleNodes, {
-      radius: viewRadiusRatio,
-    });
-
-    let count = 0;
     const interval = setInterval(() => {
       rotate();
-      const url = getImageURL();
-
-      // Firefox, Safari でチラつくので、２枚の画像を交互に表示する
-      if (count % 2 === 0) {
-        viewElement.style.zIndex = "0";
-        view2Element.style.zIndex = "1";
-      } else {
-        viewElement.style.zIndex = "1";
-        view2Element.style.zIndex = "0";
-      }
-      // それぞれのノードに url をセットすると CPU 使用率が上がる
-      //（特に FirefoxCP Isolated Web Content）ため、
-      // CSS ルールを変更して一括で画像を変更する。
-      (
-        (styleElement.sheet!.cssRules[count % 2] as any)
-          .style as CSSStyleDeclaration
-      ).backgroundImage = `url(${url})`;
-      count++;
+      const image = getImage();
+      image.onload = () => {
+        const canvas = viewElement;
+        drawTriangles(canvas, image, triangleNodes, {
+          radius: viewRadiusRatio,
+        });
+      };
     }, 1000 / 30);
 
     return () => {
       viewElement.innerHTML = "";
-      view2Element.innerHTML = "";
       clearInterval(interval);
-      document.body.removeChild(styleElement);
     };
   }, [world, settings]);
   const backgroundColor =
@@ -99,22 +65,21 @@ const View = React.memo(function View(props: {
         maxHeight: "100vw", // keep square
       }}
     >
-      {[viewRef, viewRef2].map((ref, i) => (
-        <div
-          ref={ref}
-          key={i}
-          style={{
-            backgroundColor,
-            width: "100%",
-            height: "100%",
-            overflow: "hidden",
-            position: "absolute",
-            left: 0,
-            top: 0,
-            borderRadius: "50%",
-          }}
-        ></div>
-      ))}
+      <canvas
+        ref={viewRef}
+        width={size}
+        height={size}
+        style={{
+          backgroundColor,
+          width: "100%",
+          height: "100%",
+          overflow: "hidden",
+          position: "absolute",
+          left: 0,
+          top: 0,
+          borderRadius: "50%",
+        }}
+      ></canvas>
     </div>
   );
 });
@@ -179,36 +144,40 @@ function stepMatrix(
   const d3 = b2 * c + d2 * d;
   return [a3, b3, c3, d3];
 }
-
-export function addElementsIntoView(
-  num: number,
-  viewElement: HTMLElement,
+function drawTriangles(
+  canvas: HTMLCanvasElement,
+  image: HTMLImageElement,
   triangleNodes: TrignaleNode[],
   options: { radius: number }
 ) {
   const { radius } = options;
+  const windowWidth = image.width / 2;
+  const windowHeight = image.height / 2;
+
+  const ctx = canvas.getContext("2d")!;
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  const scaleX = radius * 4;
+  const scaleY = radius * 4;
+
   for (const node of triangleNodes) {
-    const x = 0.5 - radius + node.x * radius;
-    const y = 0.5 - radius + node.y * radius;
-
-    const el = document.createElement("div");
-    el.style.position = "absolute";
-    el.className = "node" + num;
-    el.style.width = `${radius * 2 * 100}%`;
-    el.style.height = `${radius * 2 * 100}%`;
-    el.style.backgroundSize = "cover";
-    el.style.backgroundRepeat = "no-repeat";
-    el.style.clipPath = `polygon(50% 0%, ${
-      (0.5 + 0.5 * Math.cos(Math.PI / 6)) * 100
-    }% ${(0.5 + 0.5 * Math.sin(Math.PI / 6)) * 100}%, ${
-      (0.5 + 0.5 * Math.cos((Math.PI / 6) * 5)) * 100
-    }% ${(0.5 + 0.5 * Math.sin((Math.PI / 6) * 5)) * 100}%)`;
-
-    el.style.left = `${x * 100}%`;
-    el.style.top = `${y * 100}%`;
-    el.style.transform = `matrix(${node.rotateMatrix
-      .map((n) => n.toFixed(2))
-      .join(",")},0,0)`;
-    viewElement.appendChild(el);
+    const x = canvas.width * 0.5 + windowWidth * 2 * radius * node.x;
+    const y = canvas.height * 0.5 + windowHeight * 2 * radius * node.y;
+    ctx.save();
+    ctx.setTransform(
+      node.rotateMatrix[0] * scaleX,
+      node.rotateMatrix[1] * scaleY,
+      node.rotateMatrix[2] * scaleX,
+      node.rotateMatrix[3] * scaleY,
+      x,
+      y
+    );
+    ctx.beginPath();
+    ctx.moveTo(0, -windowHeight * 0.5);
+    ctx.lineTo(windowWidth * (0.25 * Math.sqrt(3)), windowHeight * 0.25);
+    ctx.lineTo(windowWidth * (-0.25 * Math.sqrt(3)), windowHeight * 0.25);
+    ctx.closePath();
+    ctx.clip();
+    ctx.drawImage(image, -image.width / 2, -image.height / 2);
+    ctx.restore();
   }
 }
