@@ -62,8 +62,8 @@ const View = React.memo(function View(props: {
         width: size,
         height: size,
         position: "relative",
-        minWidth: size,
-        maxHeight: "100vw", // keep square
+        maxWidth: "90vw",
+        maxHeight: "90vw", // keep square
       }}
     >
       <canvas
