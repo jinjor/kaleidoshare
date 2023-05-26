@@ -42,7 +42,8 @@ const View = React.memo(function View(props: {
       image.onload = () => {
         const canvas = viewElement;
         drawTriangles(canvas, image, triangleNodes, {
-          radius: viewRadiusRatio,
+          clipRadiusRatio: 0.25,
+          viewRadiusRatio,
         });
       };
     }, 1000 / 30);
@@ -148,20 +149,23 @@ function drawTriangles(
   canvas: HTMLCanvasElement,
   image: HTMLImageElement,
   triangleNodes: TrignaleNode[],
-  options: { radius: number }
+  options: {
+    clipRadiusRatio: number;
+    viewRadiusRatio: number;
+  }
 ) {
-  const { radius } = options;
-  const windowWidth = image.width / 2;
-  const windowHeight = image.height / 2;
+  const { clipRadiusRatio, viewRadiusRatio } = options;
 
   const ctx = canvas.getContext("2d")!;
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  const scaleX = radius * 4;
-  const scaleY = radius * 4;
+  const scaleX =
+    (canvas.width * viewRadiusRatio) / (image.width * clipRadiusRatio);
+  const scaleY =
+    (canvas.height * viewRadiusRatio) / (image.height * clipRadiusRatio);
 
   for (const node of triangleNodes) {
-    const x = canvas.width * 0.5 + windowWidth * 2 * radius * node.x;
-    const y = canvas.height * 0.5 + windowHeight * 2 * radius * node.y;
+    const x = canvas.width * (0.5 + viewRadiusRatio * node.x);
+    const y = canvas.height * (0.5 + viewRadiusRatio * node.y);
     ctx.save();
     ctx.setTransform(
       node.rotateMatrix[0] * scaleX,
@@ -172,9 +176,15 @@ function drawTriangles(
       y
     );
     ctx.beginPath();
-    ctx.moveTo(0, -windowHeight * 0.5);
-    ctx.lineTo(windowWidth * (0.25 * Math.sqrt(3)), windowHeight * 0.25);
-    ctx.lineTo(windowWidth * (-0.25 * Math.sqrt(3)), windowHeight * 0.25);
+    ctx.moveTo(0, -image.width * clipRadiusRatio);
+    ctx.lineTo(
+      image.width * (clipRadiusRatio * (Math.sqrt(3) / 2)),
+      image.height * (clipRadiusRatio / 2)
+    );
+    ctx.lineTo(
+      image.width * (clipRadiusRatio * (-Math.sqrt(3) / 2)),
+      image.height * (clipRadiusRatio / 2)
+    );
     ctx.closePath();
     ctx.clip();
     ctx.drawImage(image, -image.width / 2, -image.height / 2);
