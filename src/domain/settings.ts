@@ -1,3 +1,4 @@
+// TODO: ジェネリクスにしたら JSON Schema 生成がさらにキツくなるだろうか
 export type Settings = {
   background?: string; // TODO: Color にしたい
   generators: Generator[];
@@ -49,6 +50,7 @@ export type Length = FixedLength | PeriodicLength | RandomLength;
 export type FixedLength = number;
 export type PeriodicLength = {
   frequency: Frequency;
+  // TODO: angle 指定したいかも
   offset: FixedLength | RandomLength;
   amplitude: FixedLength | RandomLength;
 };
