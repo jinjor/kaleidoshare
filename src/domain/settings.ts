@@ -32,7 +32,8 @@ export type Polygon = {
 };
 export type Count = FixedCount | RandomCount;
 /**
- * @exclusiveMinimum 0
+ * @minimum 0
+ * @exclusiveMinimum true
  * @TJS-type integer
  */
 export type FixedCount = number;
@@ -42,12 +43,14 @@ export type RandomCount = {
 };
 export type Length = FixedLength | PeriodicLength | RandomLength;
 /**
- * @exclusiveMinimum 0
+ * @minimum 0
+ * @exclusiveMinimum true
  */
 export type FixedLength = number;
 export type PeriodicLength = {
   /**
-   * @minimum 0 // TODO: exclusive
+   * @minimum 0
+   * @exclusiveMinimum true
    * @maximum 30
    */
   frequency: number; // TODO: fixed or random
