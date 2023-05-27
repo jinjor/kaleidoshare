@@ -9,6 +9,7 @@ import {
   Common,
   Bodies,
   Vertices,
+  Vector,
 } from "matter-js";
 import decomp from "poly-decomp";
 import { generateObjects, generateSpinner } from "../domain/generate";
@@ -180,38 +181,50 @@ function createBody(object: OutShape, size: number): Body {
   }
 }
 function updateBody(object: OutShape, body: Body, size: number, time: number) {
-  const render: Matter.IBodyRenderOptions = {
-    fillStyle: getCurrentColor(object.fill, time),
-    strokeStyle: getCurrentColor(object.stroke, time),
-    lineWidth: getCurrentFloat(object.strokeWidth, time) * size,
-  };
-  // body.render = render;
-  // この辺を参考に
-  // https://github.com/liabru/matter-js/blob/master/src/factory/Bodies.js
-  // TODO: これだと常に角度が初期値なので倒れてくれない
-  // switch (object.type) {
-  //   case "circle": {
-  //     Body.set(body, {
-  //       circleRadius: getCurrentFloat(object.radius, time) * size,
-  //     });
-  //     const path = makePolygonPath(25, object.radius, size, time);
-  //     Body.setVertices(body, Vertices.fromPath(path, body));
-  //     break;
-  //   }
-  //   case "rectangle": {
-  //     const width = getCurrentFloat(object.width, time) * size;
-  //     const height = getCurrentFloat(object.height, time) * size;
-  //     const path =
-  //       "L 0 0 L " + width + " 0 L " + width + " " + height + " L 0 " + height;
-  //     Body.setVertices(body, Vertices.fromPath(path, body));
-  //     break;
-  //   }
-  //   case "polygon": {
-  //     const path = makePolygonPath(object.sides, object.radius, size, time);
-  //     Body.setVertices(body, Vertices.fromPath(path, body));
-  //     break;
-  //   }
-  // }
+  body.render.fillStyle = getCurrentColor(object.fill, time);
+  body.render.strokeStyle = getCurrentColor(object.stroke, time);
+  body.render.lineWidth = getCurrentFloat(object.strokeWidth, time) * size;
+  switch (object.type) {
+    case "circle": {
+      const c = body.position;
+      const currentRadius = Vector.magnitude(Vector.sub(body.vertices[0], c));
+      const nextRadius = getCurrentFloat(object.radius, time) * size;
+      const scale = nextRadius / currentRadius;
+      const vertices = body.vertices.map((v) => {
+        return Vector.add(Vector.mult(Vector.sub(v, c), scale), c);
+      });
+      Body.setVertices(body, Vertices.create(vertices, body));
+      Body.set(body, "circleRadius", nextRadius);
+      break;
+    }
+    case "rectangle": {
+      const [v0, v1, , v3] = body.vertices;
+      const v01 = Vector.sub(v1, v0);
+      const v03 = Vector.sub(v3, v0);
+      const currentWidth = Vector.magnitude(v01);
+      const currentHeight = Vector.magnitude(v03);
+      const nextWidth = getCurrentFloat(object.width, time) * size;
+      const nextHeight = getCurrentFloat(object.height, time) * size;
+      const scaleW = nextWidth / currentWidth;
+      const scaleH = nextHeight / currentHeight;
+      const v4 = Vector.add(v0, Vector.mult(v01, scaleW));
+      const v5 = Vector.add(v4, Vector.mult(v03, scaleH));
+      const v6 = Vector.add(v0, Vector.mult(v03, scaleH));
+      Body.setVertices(body, Vertices.create([v0, v4, v5, v6], body));
+      break;
+    }
+    case "polygon": {
+      const c = body.position;
+      const currentRadius = Vector.magnitude(Vector.sub(body.vertices[0], c));
+      const nextRadius = getCurrentFloat(object.radius, time) * size;
+      const scale = nextRadius / currentRadius;
+      const vertices = body.vertices.map((v) => {
+        return Vector.add(Vector.mult(Vector.sub(v, c), scale), c);
+      });
+      Body.setVertices(body, Vertices.create(vertices, body));
+      break;
+    }
+  }
 }
 function makePolygonPath(
   sides: number,
