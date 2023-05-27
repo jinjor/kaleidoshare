@@ -31,13 +31,12 @@ const View = React.memo(function View(props: {
   const viewRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
-    const { rotate, getImage } = world;
+    const { getImage } = world;
 
     const triangleNodes = createTriangleNodes(generation);
 
     const viewElement = viewRef.current!;
     const interval = setInterval(() => {
-      rotate();
       const image = getImage();
       image.onload = () => {
         const canvas = viewElement;

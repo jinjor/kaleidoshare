@@ -106,7 +106,7 @@ function generateLength(length: Length): OutFloat {
   } else if ("frequency" in length) {
     return {
       frequency: length.frequency,
-      phase: randomFloat(0, Math.PI * 2),
+      angle: randomFloat(0, Math.PI * 2),
       offset: length.offset,
       amplitude: length.amplitude,
     };

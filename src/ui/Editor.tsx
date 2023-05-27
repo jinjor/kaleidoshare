@@ -38,16 +38,14 @@ const defaultSettings: Settings = {
       },
     },
     {
-      count: 50,
+      count: 1,
       shape: {
-        type: "rectangle",
-        width: {
-          min: 0.05,
-          max: 0.12,
-        },
-        height: {
-          min: 0.02,
-          max: 0.03,
+        type: "polygon",
+        sides: 5,
+        radius: {
+          frequency: 0.4,
+          offset: 0.08,
+          amplitude: 0.05,
         },
         fill: {
           type: "hsl",

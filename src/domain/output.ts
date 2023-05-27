@@ -26,7 +26,7 @@ export type OutInt = number;
 export type OutFloat = number | PeriodicNumber;
 export type PeriodicNumber = {
   frequency: number;
-  phase: number;
+  angle: number;
   offset: number;
   amplitude: number;
 };
