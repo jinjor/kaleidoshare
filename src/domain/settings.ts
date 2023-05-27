@@ -48,14 +48,20 @@ export type Length = FixedLength | PeriodicLength | RandomLength;
  */
 export type FixedLength = number;
 export type PeriodicLength = {
-  /**
-   * @minimum 0
-   * @exclusiveMinimum true
-   * @maximum 30
-   */
-  frequency: number; // TODO: fixed or random
-  offset: FixedLength; // TODO: Length?
-  amplitude: FixedLength; // TODO: Length?
+  frequency: Frequency;
+  offset: Length;
+  amplitude: Length;
+};
+export type Frequency = FixedFrequency | RandomFrequency;
+/**
+ * @minimum 0
+ * @exclusiveMinimum true
+ * @maximum 30
+ */
+export type FixedFrequency = number;
+export type RandomFrequency = {
+  min: FixedFrequency;
+  max: FixedFrequency;
 };
 export type RandomLength = {
   min: FixedLength;

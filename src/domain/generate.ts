@@ -4,6 +4,7 @@ import {
   Color,
   Count,
   Degree,
+  Frequency,
   Length,
   Percent,
   Settings,
@@ -105,13 +106,20 @@ function generateLength(length: Length): OutFloat {
     return length;
   } else if ("frequency" in length) {
     return {
-      frequency: length.frequency,
+      frequency: generateFrequency(length.frequency),
       angle: randomFloat(0, Math.PI * 2),
-      offset: length.offset,
-      amplitude: length.amplitude,
+      offset: generateLength(length.offset),
+      amplitude: generateLength(length.amplitude),
     };
   } else {
     return randomFloat(length.min, length.max);
+  }
+}
+function generateFrequency(frequency: Frequency): number {
+  if (typeof frequency === "number") {
+    return frequency;
+  } else {
+    return randomFloat(frequency.min, frequency.max);
   }
 }
 // TODO: OutColor

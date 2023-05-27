@@ -27,8 +27,8 @@ export type OutFloat = number | PeriodicNumber;
 export type PeriodicNumber = {
   frequency: number;
   angle: number;
-  offset: number;
-  amplitude: number;
+  offset: OutFloat;
+  amplitude: OutFloat;
 };
 export type OutColor = string | OutRGB | OutHSL;
 export type OutRGB = {

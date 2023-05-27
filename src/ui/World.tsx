@@ -111,7 +111,6 @@ function setupWorld(element: HTMLElement, options: WorldOptions) {
   const spinnerMatter = generateSpinner(options);
   const objects = generateObjects(options.settings);
   const objectsMatter = objects.map((object) => createBody(object, size));
-  console.log(spinnerMatter, objectsMatter[0]);
 
   Composite.add(engine.world, [spinnerMatter]);
   Composite.add(engine.world, objectsMatter);
@@ -226,29 +225,15 @@ function updateBody(object: OutShape, body: Body, size: number, time: number) {
     }
   }
 }
-function makePolygonPath(
-  sides: number,
-  radius: OutFloat,
-  size: number,
-  time: number
-): string {
-  let path = "";
-  const theta = (2 * Math.PI) / sides;
-  const offset = theta * 0.5;
-  for (let i = 0; i < sides; i++) {
-    const angle = offset + i * theta;
-    const xx = Math.cos(angle) * getCurrentFloat(radius, time) * size;
-    const yy = Math.sin(angle) * getCurrentFloat(radius, time) * size;
-    path += "L " + xx.toFixed(3) + " " + yy.toFixed(3) + " ";
-  }
-  return path;
-}
 function getCurrentFloat(float: OutFloat, time: number): number {
   if (typeof float === "number") {
     return float;
   }
   const angle = float.angle + Math.PI * 2 * float.frequency * (time / 1000);
-  return float.offset + float.amplitude * Math.sin(angle);
+  return (
+    getCurrentFloat(float.offset, time) +
+    getCurrentFloat(float.amplitude, time) * Math.sin(angle)
+  );
 }
 function getCurrentColor(color: OutColor, time: number): string {
   if (typeof color === "string") {
