@@ -110,6 +110,7 @@ function setupWorld(element: HTMLElement, options: WorldOptions) {
   const spinnerMatter = generateSpinner(options);
   const objects = generateObjects(options.settings);
   const objectsMatter = objects.map((object) => createBody(object, size));
+  console.log(spinnerMatter, objectsMatter[0]);
 
   Composite.add(engine.world, [spinnerMatter]);
   Composite.add(engine.world, objectsMatter);
@@ -184,14 +185,16 @@ function updateBody(object: OutShape, body: Body, size: number, time: number) {
     strokeStyle: getCurrentColor(object.stroke, time),
     lineWidth: getCurrentFloat(object.strokeWidth, time) * size,
   };
+  // body.render = render;
   // この辺を参考に
   // https://github.com/liabru/matter-js/blob/master/src/factory/Bodies.js
   switch (object.type) {
     case "circle": {
       Body.set(body, {
         circleRadius: getCurrentFloat(object.radius, time) * size,
-        // render,
       });
+      const path = makePolygonPath(25, object.radius, size, time);
+      Body.setVertices(body, Vertices.fromPath(path, body));
       break;
     }
     case "rectangle": {
@@ -203,21 +206,28 @@ function updateBody(object: OutShape, body: Body, size: number, time: number) {
       break;
     }
     case "polygon": {
-      let path = "";
-      const theta = (2 * Math.PI) / object.sides;
-      const offset = theta * 0.5;
-      for (let i = 0; i < object.sides; i++) {
-        const angle = offset + i * theta;
-        const xx =
-          Math.cos(angle) * getCurrentFloat(object.radius, time) * size;
-        const yy =
-          Math.sin(angle) * getCurrentFloat(object.radius, time) * size;
-        path += "L " + xx.toFixed(3) + " " + yy.toFixed(3) + " ";
-      }
+      const path = makePolygonPath(object.sides, object.radius, size, time);
       Body.setVertices(body, Vertices.fromPath(path, body));
       break;
     }
   }
+}
+function makePolygonPath(
+  sides: number,
+  radius: OutFloat,
+  size: number,
+  time: number
+): string {
+  let path = "";
+  const theta = (2 * Math.PI) / sides;
+  const offset = theta * 0.5;
+  for (let i = 0; i < sides; i++) {
+    const angle = offset + i * theta;
+    const xx = Math.cos(angle) * getCurrentFloat(radius, time) * size;
+    const yy = Math.sin(angle) * getCurrentFloat(radius, time) * size;
+    path += "L " + xx.toFixed(3) + " " + yy.toFixed(3) + " ";
+  }
+  return path;
 }
 function getCurrentFloat(float: OutFloat, time: number): number {
   if (typeof float === "number") {
