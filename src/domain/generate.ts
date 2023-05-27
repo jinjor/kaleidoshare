@@ -60,56 +60,56 @@ function generateShape(shape: Shape): OutShape {
   if (shape.type === "circle") {
     const circle: OutCircle = {
       type: "circle",
-      radius: generateLength(shape.radius),
+      radius: generateFloat(shape.radius),
       fill: shape.fill != null ? generateColor(shape.fill) : "transparent",
       stroke:
         shape.stroke != null ? generateColor(shape.stroke) : "transparent",
       strokeWidth:
-        shape.strokeWidth != null ? generateLength(shape.strokeWidth) : 0,
+        shape.strokeWidth != null ? generateFloat(shape.strokeWidth) : 0,
     };
     return circle;
   } else if (shape.type === "rectangle") {
     const rectangle: OutRectangle = {
       type: "rectangle",
-      width: generateLength(shape.width),
-      height: generateLength(shape.height),
+      width: generateFloat(shape.width),
+      height: generateFloat(shape.height),
       fill: shape.fill != null ? generateColor(shape.fill) : "transparent",
       stroke:
         shape.stroke != null ? generateColor(shape.stroke) : "transparent",
       strokeWidth:
-        shape.strokeWidth != null ? generateLength(shape.strokeWidth) : 0,
+        shape.strokeWidth != null ? generateFloat(shape.strokeWidth) : 0,
     };
     return rectangle;
   } else {
     const polygon: OutPolygon = {
       type: "polygon",
       sides: generateInt(shape.sides),
-      radius: generateLength(shape.radius),
+      radius: generateFloat(shape.radius),
       fill: shape.fill != null ? generateColor(shape.fill) : "transparent",
       stroke:
         shape.stroke != null ? generateColor(shape.stroke) : "transparent",
       strokeWidth:
-        shape.strokeWidth != null ? generateLength(shape.strokeWidth) : 0,
+        shape.strokeWidth != null ? generateFloat(shape.strokeWidth) : 0,
     };
     return polygon;
   }
 }
-function generateInt(int: Count | Byte | Degree | Percent): number {
+function generateInt(int: Count): number {
   if (typeof int === "number") {
     return int;
   } else {
     return randomInt(int.min, int.max);
   }
 }
-function generateLength(length: Length): OutFloat {
+function generateFloat(length: Length | Byte | Degree | Percent): OutFloat {
   if (typeof length === "number") {
     return length;
   } else if ("frequency" in length) {
     return {
       frequency: generateFrequency(length.frequency),
       angle: randomFloat(0, Math.PI * 2),
-      offset: generateLength(length.offset),
-      amplitude: generateLength(length.amplitude),
+      offset: generateFloat(length.offset),
+      amplitude: generateFloat(length.amplitude),
     };
   } else {
     return randomFloat(length.min, length.max);
@@ -122,24 +122,32 @@ function generateFrequency(frequency: Frequency): number {
     return randomFloat(frequency.min, frequency.max);
   }
 }
-// TODO: OutColor
-export function generateColor(color: Color): string {
+export function generateColor(color: Color): OutColor {
   if (typeof color === "string") {
     return color;
   } else if (Array.isArray(color)) {
     return generateColor(color[Math.floor(Math.random() * color.length)]);
   } else if (color.type === "rgb") {
-    return `rgb(${generateInt(color.r)},${generateInt(color.g)},${generateInt(
-      color.b
-    )})`;
+    return {
+      type: "rgb",
+      r: generateFloat(color.r),
+      g: generateFloat(color.g),
+      b: generateFloat(color.b),
+    };
   } else if (color.type === "hsl") {
-    return `hsl(${generateInt(color.h)}deg,${generateInt(
-      color.s
-    )}%,${generateInt(color.l)}%)`;
+    return {
+      type: "hsl",
+      h: generateFloat(color.h),
+      s: generateFloat(color.s),
+      l: generateFloat(color.l),
+    };
   } else {
-    return `rgb(${Math.floor(Math.random() * 256)},${Math.floor(
-      Math.random() * 256
-    )},${Math.floor(Math.random() * 256)})`;
+    return {
+      type: "rgb",
+      r: Math.floor(Math.random() * 256),
+      g: Math.floor(Math.random() * 256),
+      b: Math.floor(Math.random() * 256),
+    };
   }
 }
 function randomInt(min: number, max: number): number {

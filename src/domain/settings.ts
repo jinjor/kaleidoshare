@@ -1,5 +1,5 @@
 export type Settings = {
-  background?: Color;
+  background?: string; // TODO: Color にしたい
   generators: Generator[];
 };
 export type Generator = {
@@ -49,8 +49,8 @@ export type Length = FixedLength | PeriodicLength | RandomLength;
 export type FixedLength = number;
 export type PeriodicLength = {
   frequency: Frequency;
-  offset: Length;
-  amplitude: Length;
+  offset: FixedLength | RandomLength;
+  amplitude: FixedLength | RandomLength;
 };
 export type Frequency = FixedFrequency | RandomFrequency;
 /**
@@ -76,13 +76,18 @@ export type RGB = {
   g: Byte;
   b: Byte;
 };
-export type Byte = FixedByte | RandomByte;
+export type Byte = FixedByte | PeriodicByte | RandomByte;
 /**
  * @mininum 0
  * @maximum 255
  * @TJS-type integer
  */
 export type FixedByte = number;
+export type PeriodicByte = {
+  frequency: Frequency;
+  offset: FixedByte | RandomByte;
+  amplitude: FixedByte | RandomByte;
+};
 export type RandomByte = {
   min: FixedByte;
   max: FixedByte;
@@ -93,18 +98,28 @@ export type HSL = {
   s: Percent;
   l: Percent;
 };
-export type Degree = FixedDegree | RandomDegree;
+export type Degree = FixedDegree | PeriodicDegree | RandomDegree;
 export type FixedDegree = number;
+export type PeriodicDegree = {
+  frequency: Frequency;
+  offset: FixedDegree | RandomDegree;
+  amplitude: FixedDegree | RandomDegree;
+};
 export type RandomDegree = {
   min: FixedDegree;
   max: FixedDegree;
 };
-export type Percent = FixedPercent | RandomPercent;
+export type Percent = FixedPercent | PeriodicPercent | RandomPercent;
 /**
  * @minimum 0
  * @maximum 100
  */
 export type FixedPercent = number;
+export type PeriodicPercent = {
+  frequency: Frequency;
+  offset: FixedPercent | RandomPercent;
+  amplitude: FixedPercent | RandomPercent;
+};
 export type RandomPercent = {
   min: FixedPercent;
   max: FixedPercent;

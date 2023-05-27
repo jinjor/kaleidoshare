@@ -52,8 +52,7 @@ const View = React.memo(function View(props: {
       clearInterval(interval);
     };
   }, [world, settings]);
-  const backgroundColor =
-    settings.background != null ? generateColor(settings.background) : "#000";
+  const backgroundColor = settings.background ?? "#000";
   return (
     <div
       style={{

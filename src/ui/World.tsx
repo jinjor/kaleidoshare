@@ -239,5 +239,17 @@ function getCurrentColor(color: OutColor, time: number): string {
   if (typeof color === "string") {
     return color;
   }
-  throw new Error("not implemented");
+  if (color.type === "rgb") {
+    return `rgb(${getCurrentFloat(color.r, time)}, ${getCurrentFloat(
+      color.g,
+      time
+    )}, ${getCurrentFloat(color.b, time)})`;
+  }
+  if (color.type === "hsl") {
+    return `hsl(${getCurrentFloat(color.h, time)}, ${getCurrentFloat(
+      color.s,
+      time
+    )}%, ${getCurrentFloat(color.l, time)}%)`;
+  }
+  return "transparent";
 }

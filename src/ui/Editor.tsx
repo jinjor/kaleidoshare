@@ -17,7 +17,7 @@ const defaultSettings: Settings = {
   background: "#103",
   generators: [
     {
-      count: 5,
+      count: 10,
       shape: {
         type: "rectangle",
         width: 0.05,
@@ -45,7 +45,7 @@ const defaultSettings: Settings = {
         sides: 3,
         radius: {
           frequency: 0.2,
-          offset: 0.08,
+          offset: 0.12,
           amplitude: 0.05,
         },
         fill: {
@@ -69,7 +69,7 @@ const defaultSettings: Settings = {
         radius: {
           frequency: 0.2,
           offset: 0.08,
-          amplitude: 0.05,
+          amplitude: 0.02,
         },
         fill: {
           type: "hsl",
@@ -79,8 +79,9 @@ const defaultSettings: Settings = {
           },
           s: 60,
           l: {
-            min: 50,
-            max: 80,
+            frequency: 0.2,
+            offset: 50,
+            amplitude: 20,
           },
         },
       },
