@@ -17,14 +17,11 @@ const defaultSettings: Settings = {
   background: "#103",
   generators: [
     {
-      count: 20,
+      count: 15,
       shape: {
         type: "rectangle",
-        width: {
-          min: 0.06,
-          max: 0.1,
-        },
-        height: 0.08,
+        width: 0.06,
+        height: 0.06,
         stroke: {
           type: "hsl",
           h: {
@@ -32,29 +29,31 @@ const defaultSettings: Settings = {
             max: 360,
           },
           s: 40,
-          l: 60,
+          l: 90,
         },
-        strokeWidth: 0.01,
+        strokeWidth: 0.005,
       },
     },
     {
-      count: 1,
+      count: 100,
       shape: {
-        type: "polygon",
-        sides: 5,
+        type: "circle",
         radius: {
-          frequency: 0.4,
-          offset: 0.08,
-          amplitude: 0.05,
+          frequency: 0.2,
+          offset: 0.02,
+          amplitude: 0.01,
         },
         fill: {
           type: "hsl",
           h: {
-            min: 100,
-            max: 240,
+            min: 200,
+            max: 400,
           },
           s: 60,
-          l: 50,
+          l: {
+            min: 50,
+            max: 80,
+          },
         },
       },
     },

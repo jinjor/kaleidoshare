@@ -188,29 +188,30 @@ function updateBody(object: OutShape, body: Body, size: number, time: number) {
   // body.render = render;
   // この辺を参考に
   // https://github.com/liabru/matter-js/blob/master/src/factory/Bodies.js
-  switch (object.type) {
-    case "circle": {
-      Body.set(body, {
-        circleRadius: getCurrentFloat(object.radius, time) * size,
-      });
-      const path = makePolygonPath(25, object.radius, size, time);
-      Body.setVertices(body, Vertices.fromPath(path, body));
-      break;
-    }
-    case "rectangle": {
-      const width = getCurrentFloat(object.width, time) * size;
-      const height = getCurrentFloat(object.height, time) * size;
-      const path =
-        "L 0 0 L " + width + " 0 L " + width + " " + height + " L 0 " + height;
-      Body.setVertices(body, Vertices.fromPath(path, body));
-      break;
-    }
-    case "polygon": {
-      const path = makePolygonPath(object.sides, object.radius, size, time);
-      Body.setVertices(body, Vertices.fromPath(path, body));
-      break;
-    }
-  }
+  // TODO: これだと常に角度が初期値なので倒れてくれない
+  // switch (object.type) {
+  //   case "circle": {
+  //     Body.set(body, {
+  //       circleRadius: getCurrentFloat(object.radius, time) * size,
+  //     });
+  //     const path = makePolygonPath(25, object.radius, size, time);
+  //     Body.setVertices(body, Vertices.fromPath(path, body));
+  //     break;
+  //   }
+  //   case "rectangle": {
+  //     const width = getCurrentFloat(object.width, time) * size;
+  //     const height = getCurrentFloat(object.height, time) * size;
+  //     const path =
+  //       "L 0 0 L " + width + " 0 L " + width + " " + height + " L 0 " + height;
+  //     Body.setVertices(body, Vertices.fromPath(path, body));
+  //     break;
+  //   }
+  //   case "polygon": {
+  //     const path = makePolygonPath(object.sides, object.radius, size, time);
+  //     Body.setVertices(body, Vertices.fromPath(path, body));
+  //     break;
+  //   }
+  // }
 }
 function makePolygonPath(
   sides: number,
