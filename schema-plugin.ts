@@ -1,12 +1,10 @@
-import { resolve } from "path";
-import * as TJS from "typescript-json-schema";
+import * as tsj from "ts-json-schema-generator";
 
 export default function schemaPlugin() {
   const virtualModuleId = "virtual:settings-schema";
   const resolvedVirtualModuleId = "\0" + virtualModuleId;
-  const sourceFile = resolve("src/domain/settings.ts");
+  const path = "src/domain/settings.ts";
   const type = "Settings";
-
   return {
     name: "schema-plugin",
     resolveId(id) {
@@ -16,14 +14,7 @@ export default function schemaPlugin() {
     },
     load(id) {
       if (id === resolvedVirtualModuleId) {
-        const program = TJS.getProgramFromFiles([sourceFile], {
-          strictNullChecks: true,
-        });
-        const schema = TJS.generateSchema(program, type, {
-          ref: false,
-          noExtraProps: true,
-          required: true,
-        });
+        const schema = tsj.createGenerator({ path }).createSchema(type);
         return `export const schema = ${JSON.stringify(schema)};`;
       }
     },
