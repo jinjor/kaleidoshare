@@ -1,13 +1,72 @@
-// TODO: ジェネリクスにしたら JSON Schema 生成がさらにキツくなるだろうか
-export type Settings = {
-  background?: string; // TODO: Color にしたい
-  generators: Generator[];
+/**
+ * @minimum 0
+ * @exclusiveMinimum true
+ * @asType integer
+ */
+export type FixedCount = number;
+/**
+ * @minimum 0
+ * @exclusiveMinimum true
+ * @maximum 30
+ */
+export type FixedFrequency = number;
+/**
+ * @minimum 0
+ * @exclusiveMinimum true
+ */
+export type FixedLength = number;
+/**
+ * @mininum 0
+ * @maximum 255
+ * @asType integer
+ */
+export type FixedByte = number;
+export type FixedDegree = number;
+/**
+ * @minimum 0
+ * @maximum 100
+ */
+export type FixedPercent = number;
+
+/**
+ * @minItems 1
+ */
+export type EnumValue<T> = T[];
+export type RandomValue<T> = {
+  min: T;
+  max: T;
 };
-export type Generator = {
-  count: Count;
-  shape: Shape;
+export type CanBeRandom<T> = T | RandomValue<T>;
+
+export type Frequency = CanBeRandom<FixedFrequency>;
+export type PeriodicValue<T> = {
+  frequency: Frequency;
+  // TODO: angle 指定したいかも
+  offset: T;
+  amplitude: T;
 };
-export type Shape = Circle | Rectangle | Polygon;
+export type CanBePeriodic<T> = T | PeriodicValue<T>;
+
+export type Count = CanBeRandom<FixedCount>;
+export type Length = CanBePeriodic<CanBeRandom<FixedLength>>;
+export type Byte = CanBePeriodic<CanBeRandom<FixedByte>>;
+export type RGB = {
+  type: "rgb";
+  r: Byte;
+  g: Byte;
+  b: Byte;
+};
+export type Degree = CanBePeriodic<CanBeRandom<FixedDegree>>;
+export type Percent = CanBePeriodic<CanBeRandom<FixedPercent>>;
+export type HSL = {
+  type: "hsl";
+  h: Degree;
+  s: Percent;
+  l: Percent;
+};
+export type SingleColor = string | RGB | HSL;
+export type Color = SingleColor | EnumValue<SingleColor>;
+
 export type Circle = {
   type: "circle";
   radius: Length;
@@ -31,102 +90,13 @@ export type Polygon = {
   stroke?: Color;
   strokeWidth?: Length;
 };
-export type Count = FixedCount | RandomCount;
-/**
- * @minimum 0
- * @exclusiveMinimum true
- * @asType integer
- */
-export type FixedCount = number;
-export type RandomCount = {
-  min: FixedCount;
-  max: FixedCount;
-};
-export type Length = FixedLength | PeriodicLength | RandomLength;
-/**
- * @minimum 0
- * @exclusiveMinimum true
- */
-export type FixedLength = number;
-export type PeriodicLength = {
-  frequency: Frequency;
-  // TODO: angle 指定したいかも
-  offset: FixedLength | RandomLength;
-  amplitude: FixedLength | RandomLength;
-};
-export type Frequency = FixedFrequency | RandomFrequency;
-/**
- * @minimum 0
- * @exclusiveMinimum true
- * @maximum 30
- */
-export type FixedFrequency = number;
-export type RandomFrequency = {
-  min: FixedFrequency;
-  max: FixedFrequency;
-};
-export type RandomLength = {
-  min: FixedLength;
-  max: FixedLength;
-};
-export type Color = SingleColor | RandomEnumColor;
-export type SingleColor = string | RGB | HSL;
+export type Shape = Circle | Rectangle | Polygon;
 
-export type RGB = {
-  type: "rgb";
-  r: Byte;
-  g: Byte;
-  b: Byte;
+export type Generator = {
+  count: Count;
+  shape: Shape;
 };
-export type Byte = FixedByte | PeriodicByte | RandomByte;
-/**
- * @mininum 0
- * @maximum 255
- * @asType integer
- */
-export type FixedByte = number;
-export type PeriodicByte = {
-  frequency: Frequency;
-  offset: FixedByte | RandomByte;
-  amplitude: FixedByte | RandomByte;
+export type Settings = {
+  background?: string; // TODO: Color にしたい
+  generators: Generator[];
 };
-export type RandomByte = {
-  min: FixedByte;
-  max: FixedByte;
-};
-export type HSL = {
-  type: "hsl";
-  h: Degree;
-  s: Percent;
-  l: Percent;
-};
-export type Degree = FixedDegree | PeriodicDegree | RandomDegree;
-export type FixedDegree = number;
-export type PeriodicDegree = {
-  frequency: Frequency;
-  offset: FixedDegree | RandomDegree;
-  amplitude: FixedDegree | RandomDegree;
-};
-export type RandomDegree = {
-  min: FixedDegree;
-  max: FixedDegree;
-};
-export type Percent = FixedPercent | PeriodicPercent | RandomPercent;
-/**
- * @minimum 0
- * @maximum 100
- */
-export type FixedPercent = number;
-export type PeriodicPercent = {
-  frequency: Frequency;
-  offset: FixedPercent | RandomPercent;
-  amplitude: FixedPercent | RandomPercent;
-};
-export type RandomPercent = {
-  min: FixedPercent;
-  max: FixedPercent;
-};
-/**
- * @minItems 1
- */
-export type RandomEnumColor = SingleColor[];
