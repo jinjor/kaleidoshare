@@ -35,7 +35,7 @@ export type Count = FixedCount | RandomCount;
 /**
  * @minimum 0
  * @exclusiveMinimum true
- * @TJS-type integer
+ * @asType integer
  */
 export type FixedCount = number;
 export type RandomCount = {
@@ -82,7 +82,7 @@ export type Byte = FixedByte | PeriodicByte | RandomByte;
 /**
  * @mininum 0
  * @maximum 255
- * @TJS-type integer
+ * @asType integer
  */
 export type FixedByte = number;
 export type PeriodicByte = {
