@@ -6,6 +6,7 @@ import NotFound from "./page/NotFound";
 import Home from "./page/Home";
 import Account from "./page/Account";
 import { MessageContext, useMessage } from "./ui/MessageBar";
+import { env } from "./domain/env";
 
 type Route =
   | {
@@ -47,9 +48,14 @@ export default function App() {
 
   const messageContext = useMessage();
   useEffect(() => {
-    getSession()
-      .then((user) => setUser(user))
-      .catch(messageContext.setError);
+    // TODO: 直す
+    if (env.prod) {
+      setUser(null);
+    } else {
+      getSession()
+        .then((user) => setUser(user))
+        .catch(messageContext.setError);
+    }
   }, []);
   if (user === undefined) {
     return null;
