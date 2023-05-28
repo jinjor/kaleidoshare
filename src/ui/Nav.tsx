@@ -1,6 +1,6 @@
 import React from "react";
 import { User } from "../domain/user";
-import { login } from "../domain/login";
+import { login } from "../domain/io";
 import { env } from "../domain/env";
 import ErrorBar from "./ErrorBar";
 

@@ -1,5 +1,5 @@
 import React from "react";
-import { register } from "../domain/register";
+import { register } from "../domain/io";
 
 export default function SignupForm(props: {
   onSuccess: (userName: string) => void;

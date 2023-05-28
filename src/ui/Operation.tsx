@@ -1,7 +1,7 @@
 import React from "react";
 import SignupForm from "./SignupForm";
 import { User } from "../domain/user";
-import { publish } from "../domain/publish";
+import { publish } from "../domain/io";
 import { env } from "../domain/env";
 
 export default function Operation(props: {
