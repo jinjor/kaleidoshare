@@ -1,5 +1,5 @@
 import React from "react";
-import { User } from "../domain/user";
+import { User } from "../domain/io";
 import Nav from "../ui/Nav";
 import Editor from "../ui/Editor";
 

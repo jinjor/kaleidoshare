@@ -1,30 +1,45 @@
 import React, { createContext, useCallback, useContext, useState } from "react";
 
+type InfoType = "success" | "error";
+type Info = {
+  type: InfoType;
+  message: string;
+};
 type ErrorInfo = {
   message: string;
 };
-
-type ErrorContext = {
+type MessageContext = {
   info: ErrorInfo | null;
-  setError: (info: ErrorInfo | null) => void;
+  setError: (info: ErrorInfo) => void;
+  setMessage: (message: string, type?: InfoType) => void;
+  clear: () => void;
 };
 
-export const ErrorContext = createContext<ErrorContext | null>(null);
+export const MessageContext = createContext<MessageContext | null>(null);
 
-export function useError(): ErrorContext {
-  const [info, setInfo] = useState<ErrorInfo | null>(null);
-  const setError = useCallback((info: ErrorInfo | null) => {
-    setInfo(info);
+export function useMessage(): MessageContext {
+  const [info, setInfo] = useState<Info | null>(null);
+  const setError = useCallback((info: ErrorInfo) => {
+    setInfo({ type: "error", message: info.message });
   }, []);
-  return { info, setError };
+  const setMessage = useCallback(
+    (message: string, type: InfoType = "success") => {
+      setInfo({ type, message: message });
+    },
+    []
+  );
+  const clear = useCallback(() => {
+    setInfo(null);
+  }, []);
+  return { info, setError, setMessage, clear };
 }
 
-export default function ErrorBar() {
-  const context = useContext(ErrorContext);
+export default function MessageBar() {
+  const context = useContext(MessageContext);
   if (context?.info == null) {
     return null;
   }
-  const { info, setError } = context;
+  const { info, clear } = context;
   return (
     <div
       className="horizontal-center"
@@ -47,7 +62,7 @@ export default function ErrorBar() {
         <button
           className="button"
           style={{ border: "none" }}
-          onClick={() => setError(null)}
+          onClick={() => clear()}
         >
           <svg viewBox="0 0 1 1" style={{ width: "12px", height: "12px" }}>
             <path

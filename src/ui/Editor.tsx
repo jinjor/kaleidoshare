@@ -4,7 +4,7 @@ import World, { WorldOptions } from "./World";
 import SettingEditor from "./SettingEditor";
 import { Settings } from "../domain/settings";
 import Operation from "./Operation";
-import { User } from "../domain/user";
+import { User } from "../domain/io";
 
 // |--- worldSize --|-|--- viewSize ---|-|-- opetaionSize --|
 //                  gap                gap

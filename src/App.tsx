@@ -1,11 +1,11 @@
 import React, { useEffect } from "react";
 import Content from "./page/Content";
-import { User } from "./domain/user";
+import { User, getSession } from "./domain/io";
 import Signup from "./page/Signup";
 import NotFound from "./page/NotFound";
 import Home from "./page/Home";
 import Account from "./page/Account";
-import { ErrorContext, useError } from "./ui/ErrorBar";
+import { MessageContext, useMessage } from "./ui/MessageBar";
 
 type Route =
   | {
@@ -45,23 +45,17 @@ export default function App() {
   const route = getRoute(window.location.pathname);
   const [user, setUser] = React.useState<User | null | undefined>(undefined);
 
+  const messageContext = useMessage();
   useEffect(() => {
-    fetch("/api/session")
-      .then((res) => {
-        if (res.status >= 400) {
-          // throw new Error("Failed to fetch user"); // TODO: handle error
-          return null; // 現在 prd で 404 になるため null にしておく
-        }
-        return res.json();
-      })
-      .then((user) => setUser(user));
+    getSession()
+      .then((user) => setUser(user))
+      .catch(messageContext.setError);
   }, []);
-  const errorContext = useError();
   if (user === undefined) {
     return null;
   }
   return (
-    <ErrorContext.Provider value={errorContext}>
+    <MessageContext.Provider value={messageContext}>
       {route?.type === "home" ? (
         <Home user={user} />
       ) : route?.type === "signup" ? (
@@ -77,6 +71,6 @@ export default function App() {
       ) : (
         <NotFound user={user} />
       )}
-    </ErrorContext.Provider>
+    </MessageContext.Provider>
   );
 }

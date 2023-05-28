@@ -1,8 +1,8 @@
 import React from "react";
-import { User } from "../domain/user";
-import { login } from "../domain/io";
+import { User } from "../domain/io";
+import { login, logout } from "../domain/io";
 import { env } from "../domain/env";
-import ErrorBar from "./ErrorBar";
+import ErrorBar, { MessageContext } from "./MessageBar";
 
 export default function Nav(props: {
   user: User | null;
@@ -10,24 +10,26 @@ export default function Nav(props: {
 }) {
   const { user, children } = props;
 
+  const messageContext = React.useContext(MessageContext)!;
+
   const handleLogin = async (event: React.FormEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    await login();
-    location.reload();
+    try {
+      await login();
+      location.reload();
+    } catch (e) {
+      messageContext.setError(e);
+    }
   };
   const handleLogout = async (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    const res = await fetch("/api/session", {
-      method: "DELETE",
-    });
-    if (res.status >= 400) {
-      const { message } = await res.json();
-      alert(message); // TODO
-      throw new Error("Failed"); // TODO: handle error
+    try {
+      await logout();
+      location.reload();
+    } catch (e) {
+      messageContext.setError(e);
     }
-    location.reload();
   };
-
   return (
     <>
       <nav className="horizontal-center">

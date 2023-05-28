@@ -162,7 +162,6 @@ test("content", async (t) => {
     assert.strictEqual(contents[0].id, content1Id);
   });
   await t.test("content not found", async (t) => {
-    // TODO: 404?
     {
       const res = await fetch(origin + `/api/contents/${userName}/foo`);
       assert.strictEqual(res.status, 200);

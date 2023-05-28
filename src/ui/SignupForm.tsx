@@ -3,14 +3,14 @@ import { register } from "../domain/io";
 
 export default function SignupForm(props: {
   onSuccess: (userName: string) => void;
+  onError: (error: Error) => void;
 }) {
-  const { onSuccess } = props;
+  const { onSuccess, onError } = props;
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     const userName = data.get("name") as string;
-    await register(userName);
-    alert("ok"); // TODO
+    await register(userName).catch(onError);
     onSuccess(userName);
   };
   return (

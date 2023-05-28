@@ -1,9 +1,10 @@
 import React from "react";
-import { User } from "../domain/user";
+import { User, getContent } from "../domain/io";
 import Nav from "../ui/Nav";
 import Editor from "../ui/Editor";
 import { Settings } from "../domain/settings";
 import NotFound from "./NotFound";
+import { MessageContext } from "../ui/MessageBar";
 
 export default function Content(props: {
   user: User | null;
@@ -18,13 +19,14 @@ export default function Content(props: {
   const isSelf = user?.name === authorName;
   const handleQuitPreview = React.useCallback(() => setPreview(false), []);
 
+  const messageContext = React.useContext(MessageContext)!;
+
   React.useEffect(() => {
-    fetch(`/api/contents/${authorName}/${contentId}`)
-      .then((res) => res.json())
+    getContent(authorName, contentId)
       .then((content) => {
         setContent(content);
-      });
-    // TODO: error
+      })
+      .catch(messageContext.setError);
   }, [authorName, contentId]);
 
   if (content === undefined) {

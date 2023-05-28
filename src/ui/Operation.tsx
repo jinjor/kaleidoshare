@@ -1,8 +1,9 @@
 import React from "react";
 import SignupForm from "./SignupForm";
-import { User } from "../domain/user";
+import { User } from "../domain/io";
 import { publish } from "../domain/io";
 import { env } from "../domain/env";
+import { MessageContext } from "./MessageBar";
 
 export default function Operation(props: {
   user: User | null;
@@ -13,26 +14,39 @@ export default function Operation(props: {
   const { user, settings, width, height } = props;
   const [formKey, setFormKey] = React.useState(0);
 
+  const messageContext = React.useContext(MessageContext)!;
+  const handlePublish = async (userName: string) => {
+    try {
+      const contentId = await publish(userName, settings);
+      location.href = `/contents/${userName}/${contentId}`;
+      setFormKey(0);
+    } catch (e) {
+      messageContext.setError(e);
+    }
+  };
   const handleTryPublish = async (
     event: React.FormEvent<HTMLButtonElement>
   ) => {
     event.preventDefault();
     if (user != null) {
-      handlePublish(user.name);
+      await handlePublish(user.name);
       return;
     }
     setFormKey(Date.now());
   };
-  const handlePublish = async (userName: string) => {
-    const contentId = await publish(userName, settings);
-    location.href = `/contents/${userName}/${contentId}`;
+  const handleSignupSuccess = async (userName: string) => {
     setFormKey(0);
+    await handlePublish(userName);
   };
-  const handleCancel = async () => {
+  const handleSignupFailure = async (error: any) => {
+    setFormKey(0);
+    messageContext.setError(error);
+  };
+  const handleSignupCancel = async () => {
     setFormKey(0);
   };
   if (env.prod) {
-    return <></>;
+    return null;
   }
   return (
     <>
@@ -63,10 +77,14 @@ export default function Operation(props: {
               background: "black",
               opacity: 0.5,
             }}
-            onClick={handleCancel}
+            onClick={handleSignupCancel}
           ></div>
           <div style={{ zIndex: 1 }}>
-            <SignupForm key={formKey} onSuccess={handlePublish} />
+            <SignupForm
+              key={formKey}
+              onSuccess={handleSignupSuccess}
+              onError={handleSignupFailure}
+            />
           </div>
         </div>
       )}
