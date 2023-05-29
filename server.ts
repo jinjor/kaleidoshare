@@ -177,7 +177,10 @@ app.use(
     expireAfterSeconds: 24 * 60 * 60, // 1 day
   })
 );
-app.use(Session.initMiddleware());
+app.use(async (context, next) => {
+  console.log(context.request.url.pathname);
+  await next();
+});
 app.use(async (context, next) => {
   try {
     await next();

@@ -42,11 +42,52 @@ function getRoute(pathname: string): Route | null {
   return null;
 }
 
+const useSPARouting = (callback: () => void) => {
+  useEffect(() => {
+    const handlePopState = () => {
+      callback();
+    };
+    const handleAnchorClick = (e: MouseEvent) => {
+      let target: EventTarget | null = e.target;
+      while (true) {
+        if (target instanceof HTMLAnchorElement) {
+          break;
+        }
+        if (!(target instanceof HTMLElement)) {
+          return;
+        }
+        const parent = target.parentElement;
+        if (parent === target) {
+          return;
+        }
+        target = parent;
+      }
+      const href = target.getAttribute("href");
+      if (href?.startsWith("/") && target.target !== "_blank") {
+        e.preventDefault();
+        window.history.pushState(null, "", href);
+        handlePopState();
+      }
+    };
+    window.addEventListener("popstate", handlePopState);
+    document.addEventListener("click", handleAnchorClick, true);
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+      document.removeEventListener("click", handleAnchorClick);
+    };
+  }, []);
+};
+
 export default function App() {
-  const route = getRoute(window.location.pathname);
+  const initialRoute = getRoute(window.location.pathname);
   const [user, setUser] = React.useState<User | null | undefined>(undefined);
+  const [route, setRoute] = React.useState<Route | null>(initialRoute);
 
   const messageContext = useMessage();
+  useSPARouting(() => {
+    const route = getRoute(window.location.pathname);
+    setRoute(route);
+  });
   useEffect(() => {
     // TODO: 直す
     if (env.prod) {
