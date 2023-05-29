@@ -14,7 +14,7 @@ import {
 import decomp from "poly-decomp";
 import { generateObjects, generateSpinner } from "../domain/generate";
 import { Settings } from "../domain/settings";
-import { OutColor, OutFloat, OutShape } from "../domain/output";
+import { OutColor, OutFloat, OutObject, OutSpinner } from "../domain/output";
 
 Common.setDecomp(decomp);
 
@@ -108,7 +108,8 @@ function setupWorld(element: HTMLElement, options: WorldOptions) {
     return canvas;
   };
 
-  const spinnerMatter = generateSpinner(options);
+  const spinner = generateSpinner(spinnerRadiusRatio);
+  const spinnerMatter = createSpinner(spinner, size);
   const objects = generateObjects(options.settings);
   const objectsMatter = objects.map((object) => createBody(object, size));
 
@@ -145,7 +146,22 @@ function setupWorld(element: HTMLElement, options: WorldOptions) {
     },
   };
 }
-function createBody(object: OutShape, size: number): Body {
+function createSpinner(spinner: OutSpinner, size: number) {
+  return Bodies.fromVertices(
+    0,
+    0,
+    [
+      spinner.vertices.map(({ x, y }) => {
+        return Vector.create(x * size, y * size);
+      }),
+    ],
+    {
+      isStatic: true,
+      render: { fillStyle: "#eea" },
+    }
+  );
+}
+function createBody(object: OutObject, size: number): Body {
   const options: Matter.IBodyDefinition = {
     render: {
       fillStyle: getCurrentColor(object.fill, 0),
@@ -179,7 +195,7 @@ function createBody(object: OutShape, size: number): Body {
       );
   }
 }
-function updateBody(object: OutShape, body: Body, size: number, time: number) {
+function updateBody(object: OutObject, body: Body, size: number, time: number) {
   body.render.fillStyle = getCurrentColor(object.fill, time);
   body.render.strokeStyle = getCurrentColor(object.stroke, time);
   body.render.lineWidth = getCurrentFloat(object.strokeWidth, time) * size;

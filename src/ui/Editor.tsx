@@ -15,7 +15,7 @@ const upperHeight = 300;
 const gap = (960 - (worldSize + viewSize + operationSize)) / 2;
 const defaultSettings: Settings = {
   background: "#103",
-  generators: [
+  objects: [
     {
       count: 10,
       shape: {

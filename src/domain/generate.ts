@@ -1,4 +1,3 @@
-import { Body, Bodies } from "matter-js";
 import {
   Byte,
   Color,
@@ -16,47 +15,49 @@ import {
   OutFloat,
   OutPolygon,
   OutRectangle,
-  OutShape,
+  OutObject,
+  Output,
+  OutSpinner,
 } from "./output";
 
-export function generateSpinner(options: {
-  size: number;
+export function generate(options: {
   spinnerRadiusRatio: number;
-}): Body {
-  const { size, spinnerRadiusRatio } = options;
-  const spinnerRadius = size * spinnerRadiusRatio;
-  return Bodies.fromVertices(
-    0,
-    0,
-    [
-      [
-        posFromAngle((Math.PI / 6) * 1, spinnerRadius * 1.3),
-        posFromAngle((Math.PI / 6) * 5, spinnerRadius * 1.3),
-        posFromAngle((Math.PI / 6) * 9, spinnerRadius * 1.3),
-        posFromAngle((Math.PI / 6) * 0.999, spinnerRadius * 1.3),
-        posFromAngle((Math.PI / 6) * 0.999, spinnerRadius),
-        posFromAngle((Math.PI / 6) * 9, spinnerRadius),
-        posFromAngle((Math.PI / 6) * 5, spinnerRadius),
-        posFromAngle((Math.PI / 6) * 1, spinnerRadius),
-      ],
-    ],
-    {
-      isStatic: true,
-      render: { fillStyle: "#eea" },
-    }
-  );
+  settings: Settings;
+}): Output {
+  const { spinnerRadiusRatio, settings } = options;
+  const spinner = generateSpinner(spinnerRadiusRatio);
+  const objects = generateObjects(settings);
+  return {
+    spinner,
+    objects,
+  };
 }
-export function generateObjects(settings: Settings): OutShape[] {
-  const objects: OutShape[] = [];
-  for (const generator of settings.generators) {
-    for (let i = 0; i < generateInt(generator.count); i++) {
-      objects.push(generateShape(generator.shape));
+
+export function generateSpinner(spinnerRadiusRatio: number): OutSpinner {
+  return {
+    vertices: [
+      posFromAngle((Math.PI / 6) * 1, spinnerRadiusRatio * 1.3),
+      posFromAngle((Math.PI / 6) * 5, spinnerRadiusRatio * 1.3),
+      posFromAngle((Math.PI / 6) * 9, spinnerRadiusRatio * 1.3),
+      posFromAngle((Math.PI / 6) * 0.999, spinnerRadiusRatio * 1.3),
+      posFromAngle((Math.PI / 6) * 0.999, spinnerRadiusRatio),
+      posFromAngle((Math.PI / 6) * 9, spinnerRadiusRatio),
+      posFromAngle((Math.PI / 6) * 5, spinnerRadiusRatio),
+      posFromAngle((Math.PI / 6) * 1, spinnerRadiusRatio),
+    ],
+  };
+}
+export function generateObjects(settings: Settings): OutObject[] {
+  const objects: OutObject[] = [];
+  for (const object of settings.objects) {
+    for (let i = 0; i < generateInt(object.count); i++) {
+      objects.push(generateObject(object.shape));
     }
   }
   objects.sort(() => Math.random() - 0.5);
   return objects;
 }
-function generateShape(shape: Shape): OutShape {
+function generateObject(shape: Shape): OutObject {
   if (shape.type === "circle") {
     const circle: OutCircle = {
       type: "circle",

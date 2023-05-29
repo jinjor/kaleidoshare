@@ -1,4 +1,15 @@
-export type OutShape = OutRectangle | OutCircle | OutPolygon;
+export type Output = {
+  spinner: OutSpinner;
+  objects: OutObject[];
+};
+export type OutSpinner = {
+  vertices: OutVector[];
+};
+export type OutVector = {
+  x: number;
+  y: number;
+};
+export type OutObject = OutRectangle | OutCircle | OutPolygon;
 export type OutRectangle = {
   type: "rectangle";
   width: OutFloat;

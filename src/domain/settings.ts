@@ -92,11 +92,11 @@ export type Polygon = {
 };
 export type Shape = Circle | Rectangle | Polygon;
 
-export type Generator = {
+export type Object = {
   count: Count;
   shape: Shape;
 };
 export type Settings = {
   background?: string; // TODO: Color にしたい
-  generators: Generator[];
+  objects: Object[];
 };
