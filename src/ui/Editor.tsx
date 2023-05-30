@@ -162,6 +162,7 @@ export default function Editor(props: {
           width={operationSize}
           height={upperHeight}
           settings={settings}
+          output={worldOptions.output}
           user={user}
         />
       </div>

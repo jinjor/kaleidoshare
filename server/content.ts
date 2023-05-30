@@ -7,6 +7,7 @@ export type Content = {
   id: string;
   author: string;
   settings: unknown;
+  output: unknown;
   createdAt: string;
   updatedAt: string;
 };
@@ -67,7 +68,8 @@ export async function listUserContents(author: string): Promise<Content[]> {
 export async function createContent(
   userName: string,
   author: string,
-  settings: unknown
+  settings: unknown,
+  output: unknown
 ): Promise<Content> {
   if (userName !== author) {
     throw new AuthorDoesNotMatchError();
@@ -78,6 +80,7 @@ export async function createContent(
     id: contentId,
     author,
     settings,
+    output,
     createdAt,
     updatedAt: createdAt,
   };
@@ -88,7 +91,8 @@ export async function updateContent(
   userName: string,
   author: string,
   contentId: string,
-  settings: unknown
+  settings: unknown,
+  output: unknown
 ): Promise<Content> {
   if (userName !== author) {
     throw new AuthorDoesNotMatchError();
@@ -100,6 +104,7 @@ export async function updateContent(
   }
   content.updatedAt = updatedAt;
   content.settings = settings;
+  content.output = output;
   await setContent(author, contentId, content);
   return content;
 }

@@ -8,16 +8,17 @@ import { MessageContext } from "./MessageBar";
 export default function Operation(props: {
   user: User | null;
   settings: any;
+  output: any;
   width: number;
   height: number;
 }) {
-  const { user, settings, width, height } = props;
+  const { user, settings, output, width, height } = props;
   const [formKey, setFormKey] = React.useState(0);
 
   const messageContext = React.useContext(MessageContext)!;
   const handlePublish = async (userName: string) => {
     try {
-      const contentId = await publish(userName, settings);
+      const contentId = await publish(userName, settings, output);
       location.href = `/contents/${userName}/${contentId}`;
       setFormKey(0);
     } catch (e) {

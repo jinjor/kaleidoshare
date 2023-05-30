@@ -131,8 +131,9 @@ routerWithAuth.delete("/user", async (context) => {
 routerWithAuth.post("/contents/:author", async (context) => {
   const author = context.params.author;
   const userName = await context.state.session.get("login");
-  const settings = await context.request.body({ type: "json" }).value;
-  const content = await createContent(userName, author, settings);
+  const { settings, output } = await context.request.body({ type: "json" })
+    .value;
+  const content = await createContent(userName, author, settings, output);
   context.response.status = 200;
   context.response.body = JSON.stringify(content);
 });
@@ -140,8 +141,15 @@ routerWithAuth.put("/contents/:author/:contentId", async (context) => {
   const author = context.params.author;
   const userName = await context.state.session.get("login");
   const contentId = context.params.contentId;
-  const settings = await context.request.body({ type: "json" }).value;
-  const content = await updateContent(userName, author, contentId, settings);
+  const { settings, output } = await context.request.body({ type: "json" })
+    .value;
+  const content = await updateContent(
+    userName,
+    author,
+    contentId,
+    settings,
+    output
+  );
   context.response.status = 200;
   context.response.body = JSON.stringify(content);
 });
