@@ -1,21 +1,18 @@
 import React from "react";
-import { User, getContent } from "../domain/io";
+import { Content, User, getContent } from "../domain/io";
 import Nav from "../ui/Nav";
 import Editor from "../ui/Editor";
-import { Settings } from "../domain/settings";
 import NotFound from "./NotFound";
 import { MessageContext } from "../ui/MessageBar";
 
-export default function Content(props: {
+export default function ContentPage(props: {
   user: User | null;
   authorName: string;
   contentId: string;
 }) {
   const { user, authorName, contentId } = props;
   const [preview, setPreview] = React.useState(true);
-  const [content, setContent] = React.useState<
-    { settings: Settings } | null | undefined
-  >(undefined);
+  const [content, setContent] = React.useState<Content | null | undefined>();
   const isSelf = user?.name === authorName;
   const handleQuitPreview = React.useCallback(() => setPreview(false), []);
 
@@ -62,7 +59,7 @@ export default function Content(props: {
             user={user}
             preview={preview}
             onQuitPreview={handleQuitPreview}
-            settings={content.settings}
+            content={content}
           />
         </div>
       </main>

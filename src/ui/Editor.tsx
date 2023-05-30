@@ -4,7 +4,9 @@ import World, { WorldOptions } from "./World";
 import SettingEditor from "./SettingEditor";
 import { Settings } from "../domain/settings";
 import Operation from "./Operation";
-import { User } from "../domain/io";
+import { Content, User } from "../domain/io";
+import { Output } from "../domain/output";
+import { generate } from "../domain/generate";
 
 // |--- worldSize --|-|--- viewSize ---|-|-- opetaionSize --|
 //                  gap                gap
@@ -91,16 +93,20 @@ const defaultSettings: Settings = {
 export default function Editor(props: {
   user: User | null;
   preview: boolean;
-  settings?: Settings;
+  content?: Content;
   onQuitPreview: () => void;
 }) {
-  const { user, preview, settings, onQuitPreview } = props;
+  const { user, preview, content, onQuitPreview } = props;
 
+  const spinnerRadiusRatio = 0.5;
+  const [settings, setSettings] = useState<Settings>(
+    content?.settings ?? defaultSettings
+  );
   const [worldOptions, setWorldOptions] = useState<WorldOptions>({
     size: worldSize,
-    spinnerRadiusRatio: 0.5,
+    spinnerRadiusRatio,
     clipRadiusRatio: 0.25,
-    settings: settings ?? defaultSettings,
+    output: content?.output ?? generate(spinnerRadiusRatio, settings),
   });
   const [world, setWorld] = useState<World | null>(null);
 
@@ -108,7 +114,10 @@ export default function Editor(props: {
     setWorld(world);
   }, []);
   const handleApply = useCallback((json: any) => {
-    setWorldOptions({ ...worldOptions, settings: json });
+    const settings = json as Settings;
+    const output: Output = generate(spinnerRadiusRatio, settings);
+    setSettings(settings);
+    setWorldOptions({ ...worldOptions, output });
   }, []);
   const quitPreview = useCallback(() => {
     onQuitPreview();
@@ -131,11 +140,7 @@ export default function Editor(props: {
           }}
           onClick={quitPreview}
         >
-          <View
-            size={viewSize * 2}
-            world={world}
-            settings={worldOptions.settings}
-          />
+          <View size={viewSize * 2} world={world} settings={settings} />
         </div>
       </>
     );
@@ -152,21 +157,15 @@ export default function Editor(props: {
         }}
       >
         <World options={worldOptions} onReady={handleReady} />
-        {world && (
-          <View
-            size={viewSize}
-            world={world}
-            settings={worldOptions.settings}
-          />
-        )}
+        {world && <View size={viewSize} world={world} settings={settings} />}
         <Operation
           width={operationSize}
           height={upperHeight}
-          settings={worldOptions.settings}
+          settings={settings}
           user={user}
         />
       </div>
-      <SettingEditor settings={worldOptions.settings} onApply={handleApply} />
+      <SettingEditor settings={settings} onApply={handleApply} />
     </>
   );
 }

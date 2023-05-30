@@ -12,9 +12,13 @@ import {
   Vector,
 } from "matter-js";
 import decomp from "poly-decomp";
-import { generateObjects, generateSpinner } from "../domain/generate";
-import { Settings } from "../domain/settings";
-import { OutColor, OutFloat, OutObject, OutSpinner } from "../domain/output";
+import {
+  OutColor,
+  OutFloat,
+  OutObject,
+  OutSpinner,
+  Output,
+} from "../domain/output";
 
 Common.setDecomp(decomp);
 
@@ -25,7 +29,7 @@ export type WorldOptions = {
   size: number;
   spinnerRadiusRatio: number;
   clipRadiusRatio: number;
-  settings: Settings;
+  output: Output;
 };
 
 const World = React.memo(function World(props: {
@@ -107,10 +111,8 @@ function setupWorld(element: HTMLElement, options: WorldOptions) {
     canvas.getContext("2d", { willReadFrequently: true });
     return canvas;
   };
-
-  const spinner = generateSpinner(spinnerRadiusRatio);
-  const spinnerMatter = createSpinner(spinner, size);
-  const objects = generateObjects(options.settings);
+  const spinnerMatter = createSpinner(options.output.spinner, size);
+  const objects = options.output.objects;
   const objectsMatter = objects.map((object) => createBody(object, size));
 
   Composite.add(engine.world, [spinnerMatter]);

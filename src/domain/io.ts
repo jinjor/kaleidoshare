@@ -2,6 +2,8 @@ import {
   startRegistration,
   startAuthentication,
 } from "@simplewebauthn/browser";
+import { Settings } from "./settings";
+import { Output } from "./output";
 
 async function request(
   input: RequestInfo | URL,
@@ -101,7 +103,8 @@ export async function logout() {
 
 export async function publish(
   userName: string,
-  settings: any
+  settings: Settings,
+  output: Output
 ): Promise<string> {
   // TODO: encode
   const res = await request(`/api/contents/${userName}`, {
@@ -109,7 +112,10 @@ export async function publish(
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(settings),
+    body: JSON.stringify({
+      settings,
+      output,
+    }),
   });
   const { id } = await res.json();
   return id;
@@ -153,5 +159,6 @@ export type User = {
 };
 export type Content = {
   id: string;
-  settings: any;
+  settings: Settings;
+  output: Output;
 };

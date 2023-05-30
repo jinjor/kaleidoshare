@@ -20,11 +20,10 @@ import {
   OutSpinner,
 } from "./output";
 
-export function generate(options: {
-  spinnerRadiusRatio: number;
-  settings: Settings;
-}): Output {
-  const { spinnerRadiusRatio, settings } = options;
+export function generate(
+  spinnerRadiusRatio: number,
+  settings: Settings
+): Output {
   const spinner = generateSpinner(spinnerRadiusRatio);
   const objects = generateObjects(settings);
   return {
@@ -33,7 +32,7 @@ export function generate(options: {
   };
 }
 
-export function generateSpinner(spinnerRadiusRatio: number): OutSpinner {
+function generateSpinner(spinnerRadiusRatio: number): OutSpinner {
   return {
     vertices: [
       posFromAngle((Math.PI / 6) * 1, spinnerRadiusRatio * 1.3),
@@ -47,7 +46,7 @@ export function generateSpinner(spinnerRadiusRatio: number): OutSpinner {
     ],
   };
 }
-export function generateObjects(settings: Settings): OutObject[] {
+function generateObjects(settings: Settings): OutObject[] {
   const objects: OutObject[] = [];
   for (const object of settings.objects) {
     for (let i = 0; i < generateInt(object.count); i++) {
