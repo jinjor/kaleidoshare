@@ -1,12 +1,16 @@
 class CookieJar {
   private cookies = new Map<string, string>();
-  read(headers: Headers) {
-    this.cookies = new Map(
-      (headers.get("set-cookie") ?? "")
-        .split(",")
-        .map((s) => s.split(";")[0])
-        .map((s) => s.split("=") as [string, string])
-    );
+  read(headers: any) {
+    const entries = headers.getSetCookie() as string[];
+    this.cookies = new Map();
+    for (const entry of entries) {
+      const [k, v] = entry.split(";")[0].split("=");
+      if (entry.includes("1970 00:00:00 GMT")) {
+        this.cookies.delete(k);
+      } else {
+        this.cookies.set(k, v);
+      }
+    }
   }
   write(headers: HeadersInit): HeadersInit {
     return {

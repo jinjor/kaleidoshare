@@ -186,7 +186,7 @@ app.use(
   })
 );
 app.use(async (context, next) => {
-  console.log(context.request.url.pathname);
+  console.log(context.request.method, context.request.url.pathname);
   await next();
 });
 app.use(async (context, next) => {
