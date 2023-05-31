@@ -3,6 +3,7 @@ import Editor, { Monaco } from "@monaco-editor/react";
 import { Settings } from "../domain/settings";
 // @ts-ignore
 import { schema } from "virtual:settings-schema";
+import { env } from "../domain/env";
 
 const tabSize = 2;
 
@@ -55,8 +56,10 @@ const SettingEditor = React.memo(
       onApply(json);
     }
     function handleKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
-      // TODO: OS によって切り替える
-      if (event.key === "s" && (event.ctrlKey || event.metaKey)) {
+      if (
+        event.key === "s" &&
+        (env.os === "mac" ? event.metaKey : event.ctrlKey)
+      ) {
         event.stopPropagation();
         event.preventDefault();
         save();

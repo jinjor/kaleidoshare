@@ -43,11 +43,7 @@ export default function Operation(props: {
   if (env.prod) {
     return null;
   }
-  const commandToRegenerate =
-    // TODO: env に移す
-    navigator.userAgent.toLowerCase().indexOf("mac") >= 0
-      ? "⌘ + S"
-      : "Ctrl + S";
+  const commandToRegenerate = env.os === "mac" ? "⌘ + S" : "Ctrl + S";
   return (
     <>
       <div className="form" style={{ width, height, boxSizing: "border-box" }}>
