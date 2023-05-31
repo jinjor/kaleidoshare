@@ -54,32 +54,21 @@ const View = React.memo(function View(props: {
   }, [world, settings]);
   const backgroundColor = settings.background ?? "#000";
   return (
-    <div
+    <canvas
+      ref={viewRef}
+      width={size}
+      height={size}
       style={{
-        backgroundColor: "#111",
-        width: size,
-        height: size,
-        position: "relative",
-        maxWidth: "90vw",
-        maxHeight: "90vw", // keep square
+        backgroundColor,
+        width: "100%",
+        height: "100%",
+        overflow: "hidden",
+        position: "absolute",
+        left: 0,
+        top: 0,
+        borderRadius: "50%",
       }}
-    >
-      <canvas
-        ref={viewRef}
-        width={size}
-        height={size}
-        style={{
-          backgroundColor,
-          width: "100%",
-          height: "100%",
-          overflow: "hidden",
-          position: "absolute",
-          left: 0,
-          top: 0,
-          borderRadius: "50%",
-        }}
-      ></canvas>
-    </div>
+    ></canvas>
   );
 });
 export default View;

@@ -180,7 +180,18 @@ export default function Editor(props: {
           }}
           onClick={quitPreview}
         >
-          <View size={viewSize * 2} world={world} settings={settings} />
+          <div
+            style={{
+              backgroundColor: "#111",
+              maxWidth: "90vh",
+              maxHeight: "90vh",
+              position: "relative",
+              width: "90vw",
+              height: "90vw",
+            }}
+          >
+            <View size={viewSize * 2} world={world} settings={settings} />
+          </div>
         </div>
       </>
     );
@@ -197,7 +208,18 @@ export default function Editor(props: {
         }}
       >
         <World options={worldOptions} onReady={handleWorldReady} />
-        {world && <View size={viewSize} world={world} settings={settings} />}
+        <div
+          style={{
+            backgroundColor: "#111",
+            width: viewSize,
+            height: viewSize,
+            position: "relative",
+            minWidth: viewSize,
+          }}
+        >
+          {world && <View size={viewSize} world={world} settings={settings} />}
+        </div>
+
         <Operation
           width={operationSize}
           height={upperHeight}
