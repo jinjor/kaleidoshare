@@ -130,6 +130,10 @@ main {
   line-height: 1;
   justify-content: center;
 }
+.button:disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
 .button:hover,
 .button:active {
   border-color: var(--border-color-active);

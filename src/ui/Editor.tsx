@@ -145,11 +145,19 @@ export default function Editor(props: {
         }
       }
     : null;
+  const handleChange = useCallback(() => {
+    setSaved(false);
+  }, []);
   const handleApply = useCallback((json: any) => {
     const settings = json as Settings;
     const output: Output = generate(spinnerRadiusRatio, settings);
     setSettings(settings);
     setWorldOptions({ ...worldOptions, output });
+    // 保存操作の直後にフォーマットされ handleChange が呼ばれてしまうため、
+    // その後に saved を true にする
+    setTimeout(() => {
+      setSaved(true);
+    }, 100);
   }, []);
   const quitPreview = useCallback(() => {
     onQuitPreview();
@@ -200,6 +208,7 @@ export default function Editor(props: {
       </div>
       <SettingEditor
         settings={settings}
+        onChange={handleChange}
         onApply={handleApply}
         onReady={handleSettingsEditorReady}
       />

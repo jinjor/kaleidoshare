@@ -1,18 +1,15 @@
 /**
- * @minimum 0
- * @exclusiveMinimum true
+ * @exclusiveMinimum 0
  * @asType integer
  */
 export type FixedCount = number;
 /**
- * @minimum 0
- * @exclusiveMinimum true
+ * @exclusiveMinimum 0
  * @maximum 30
  */
 export type FixedFrequency = number;
 /**
- * @minimum 0
- * @exclusiveMinimum true
+ * @exclusiveMinimum 0
  */
 export type FixedLength = number;
 /**
