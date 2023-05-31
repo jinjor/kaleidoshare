@@ -1,12 +1,13 @@
 import React, { useCallback, useState } from "react";
 import View from "./View";
 import World, { WorldOptions } from "./World";
-import SettingEditor from "./SettingEditor";
+import SettingEditor, { SettingsEditorController } from "./SettingEditor";
 import { Settings } from "../domain/settings";
 import Operation from "./Operation";
-import { Content, User } from "../domain/io";
+import { Content, User, publish } from "../domain/io";
 import { Output } from "../domain/output";
 import { generate } from "../domain/generate";
+import { MessageContext } from "./MessageBar";
 
 // |--- worldSize --|-|--- viewSize ---|-|-- opetaionSize --|
 //                  gap                gap
@@ -99,6 +100,8 @@ export default function Editor(props: {
   const { user, preview, content, onQuitPreview } = props;
 
   const spinnerRadiusRatio = 0.5;
+  const messageContext = React.useContext(MessageContext)!;
+
   const [settings, setSettings] = useState<Settings>(
     content?.settings ?? defaultSettings
   );
@@ -106,13 +109,42 @@ export default function Editor(props: {
     size: worldSize,
     spinnerRadiusRatio,
     clipRadiusRatio: 0.25,
-    output: content?.output ?? generate(spinnerRadiusRatio, settings),
+    output: content?.output ?? generate(spinnerRadiusRatio, settings), // TODO: ここじゃなくない？
   });
   const [world, setWorld] = useState<World | null>(null);
+  const [settingsController, setSettingsController] =
+    useState<SettingsEditorController | null>(null);
+  const [saved, setSaved] = useState<boolean>(false);
 
-  const handleReady = useCallback((world: World) => {
+  const handleWorldReady = useCallback((world: World) => {
     setWorld(world);
   }, []);
+  const handleSettingsEditorReady = useCallback(
+    (controller: SettingsEditorController) => {
+      setSettingsController(controller);
+    },
+    []
+  );
+  const handleRegenerate =
+    settingsController != null
+      ? () => {
+          settingsController.save();
+        }
+      : null;
+  const handlePublish = saved
+    ? async (userName: string) => {
+        try {
+          const contentId = await publish(
+            userName,
+            settings,
+            worldOptions.output
+          );
+          location.href = `/contents/${userName}/${contentId}`;
+        } catch (e) {
+          messageContext.setError(e);
+        }
+      }
+    : null;
   const handleApply = useCallback((json: any) => {
     const settings = json as Settings;
     const output: Output = generate(spinnerRadiusRatio, settings);
@@ -125,7 +157,7 @@ export default function Editor(props: {
   if (world && preview) {
     return (
       <>
-        <World options={worldOptions} onReady={handleReady} />
+        <World options={worldOptions} onReady={handleWorldReady} />
         <div
           style={{
             position: "fixed",
@@ -156,17 +188,21 @@ export default function Editor(props: {
           overflow: "scroll",
         }}
       >
-        <World options={worldOptions} onReady={handleReady} />
+        <World options={worldOptions} onReady={handleWorldReady} />
         {world && <View size={viewSize} world={world} settings={settings} />}
         <Operation
           width={operationSize}
           height={upperHeight}
-          settings={settings}
-          output={worldOptions.output}
           user={user}
+          onRegenerate={handleRegenerate}
+          onPublish={handlePublish}
         />
       </div>
-      <SettingEditor settings={settings} onApply={handleApply} />
+      <SettingEditor
+        settings={settings}
+        onApply={handleApply}
+        onReady={handleSettingsEditorReady}
+      />
     </>
   );
 }

@@ -6,9 +6,17 @@ import { schema } from "virtual:settings-schema";
 
 const tabSize = 2;
 
+export type SettingsEditorController = {
+  save(): void;
+};
+
 const SettingEditor = React.memo(
-  (props: { settings: Settings; onApply: (json: any) => void }) => {
-    const { settings, onApply } = props;
+  (props: {
+    settings: Settings;
+    onApply: (json: any) => void;
+    onReady: (controller: SettingsEditorController) => void;
+  }) => {
+    const { settings, onApply, onReady } = props;
     const monacoRef = useRef<Monaco | null>(null);
     const editorRef = useRef<any | null>(null);
     function handleEditorWillMount(monaco: Monaco) {
@@ -26,26 +34,32 @@ const SettingEditor = React.memo(
     function handleEditorDidMount(editor: any, monaco: Monaco) {
       editorRef.current = editor;
       monacoRef.current = monaco;
+      onReady({
+        save,
+      });
+    }
+    function save() {
+      const editor = editorRef.current!;
+      editor.getAction("editor.action.formatDocument").run();
+      let json: any;
+      try {
+        json = JSON.parse(editor.getValue());
+      } catch (e) {
+        return;
+      }
+      const monaco = monacoRef.current!;
+      const markers = monaco.editor.getModelMarkers({ owner: "json" });
+      if (markers.length > 0) {
+        return;
+      }
+      onApply(json);
     }
     function handleKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
       // TODO: OS によって切り替える
       if (event.key === "s" && (event.ctrlKey || event.metaKey)) {
         event.stopPropagation();
         event.preventDefault();
-        const editor = editorRef.current!;
-        editor.getAction("editor.action.formatDocument").run();
-        let json: any;
-        try {
-          json = JSON.parse(editor.getValue());
-        } catch (e) {
-          return;
-        }
-        const monaco = monacoRef.current!;
-        const markers = monaco.editor.getModelMarkers({ owner: "json" });
-        if (markers.length > 0) {
-          return;
-        }
-        onApply(json);
+        save();
       }
     }
     return (

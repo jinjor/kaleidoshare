@@ -1,30 +1,24 @@
-import React from "react";
+import React, { ReactNode } from "react";
 import SignupForm from "./SignupForm";
 import { User } from "../domain/io";
-import { publish } from "../domain/io";
 import { env } from "../domain/env";
 import { MessageContext } from "./MessageBar";
 
 export default function Operation(props: {
   user: User | null;
-  settings: any;
-  output: any;
   width: number;
   height: number;
+  onRegenerate: (() => void) | null;
+  onPublish: ((userName: string) => void) | null;
 }) {
-  const { user, settings, output, width, height } = props;
+  const { user, width, height, onRegenerate, onPublish } = props;
   const [formKey, setFormKey] = React.useState(0);
 
   const messageContext = React.useContext(MessageContext)!;
-  const handlePublish = async (userName: string) => {
-    try {
-      const contentId = await publish(userName, settings, output);
-      location.href = `/contents/${userName}/${contentId}`;
-      setFormKey(0);
-    } catch (e) {
-      messageContext.setError(e);
-    }
+  const handlePublish = (userName: string) => {
+    onPublish?.(userName);
   };
+  // TODO: これも外でやる
   const handleTryPublish = async (
     event: React.FormEvent<HTMLButtonElement>
   ) => {
@@ -49,10 +43,28 @@ export default function Operation(props: {
   if (env.prod) {
     return null;
   }
+  const commandToRegenerate =
+    // TODO: env に移す
+    navigator.userAgent.toLowerCase().indexOf("mac") >= 0
+      ? "⌘ + S"
+      : "Ctrl + S";
   return (
     <>
       <div className="form" style={{ width, height, boxSizing: "border-box" }}>
-        <button className="button wide primary" onClick={handleTryPublish}>
+        <button
+          className="button wide"
+          disabled={onRegenerate == null}
+          onClick={() => onRegenerate?.()}
+        >
+          Save and Generate <ForceBaseline>(</ForceBaseline>
+          {commandToRegenerate}
+          <ForceBaseline>)</ForceBaseline>
+        </button>
+        <button
+          className="button wide primary"
+          disabled={onPublish == null}
+          onClick={handleTryPublish}
+        >
           Publish
         </button>
       </div>
@@ -92,3 +104,11 @@ export default function Operation(props: {
     </>
   );
 }
+const ForceBaseline = (props: { children: ReactNode }) => {
+  const { children } = props;
+  return (
+    <span style={{ verticalAlign: "top", fontSize: "smaller" }}>
+      {children}
+    </span>
+  );
+};
