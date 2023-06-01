@@ -1,5 +1,6 @@
 /**
  * @exclusiveMinimum 0
+ * @maximum 500
  * @asType integer
  */
 export type FixedCount = number;
@@ -27,6 +28,7 @@ export type FixedPercent = number;
 
 /**
  * @minItems 1
+ * @maxItems 500
  */
 export type EnumValue<T> = T[];
 export type RandomValue<T> = {
@@ -95,5 +97,8 @@ export type Object = {
 };
 export type Settings = {
   background?: string; // TODO: Color にしたい
+  /**
+   * @maxItems 100
+   */
   objects: Object[];
 };
