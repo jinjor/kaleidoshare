@@ -16,17 +16,18 @@ if (DENO_DEPLOYMENT_ID == null) {
     console.log("delete", res.key);
     kv.delete(res.key);
   }
-} else {
-  console.log(DENO_DEPLOYMENT_ID);
 }
 
 type AppState = {
   session: Session;
 };
 
-const port = 5173;
-const rpID = "localhost";
-const expectedOrigin = `http://${rpID}:${port}`;
+// 以下では認証できない
+// - https://kaleidoshare-${DENO_DEPLOYMENT_ID}.deno.dev
+// - http://localhost:4173
+const rpID = DENO_DEPLOYMENT_ID != null ? `kaleidoshare.deno.dev` : "localhost";
+const expectedOrigin =
+  DENO_DEPLOYMENT_ID != null ? `https://${rpID}` : `http://${rpID}:5173`;
 
 const { router, routerWithAuth } = createRouters(rpID, expectedOrigin);
 
