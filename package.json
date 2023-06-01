@@ -23,7 +23,7 @@
     "dev:frontend": "vite",
     "dev:backend": "deno run -A --unstable ./server.ts",
     "build": "run-s build:*",
-    "build:schema": "ts-json-schema-generator --path 'schema/**/*.ts' --out schema/schema.json --additional-properties false",
+    "build:schema": "ts-json-schema-generator --path 'schema/**/*.mts' --out schema/schema.json --additional-properties false",
     "build:frontend": "vite build",
     "preview": "run-p preview:*",
     "preview:frontend": "vite preview",
