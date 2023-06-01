@@ -6,13 +6,18 @@ import { createRouters, handleError } from "./server/api.ts";
 
 const apiServerPort: number = parseInt(Deno.env.get("PORT") ?? "8000");
 
-// デバッグのためにデータを全部消す
-// TODO: デバッグの時だけにする
-const kv = await openKv();
-const iter = await kv.list({ prefix: [] });
-for await (const res of iter) {
-  console.log("delete", res.key);
-  kv.delete(res.key);
+const DENO_DEPLOYMENT_ID = Deno.env.get("DENO_DEPLOYMENT_ID");
+
+if (DENO_DEPLOYMENT_ID == null) {
+  // デバッグのためにデータを全部消す
+  const kv = await openKv();
+  const iter = await kv.list({ prefix: [] });
+  for await (const res of iter) {
+    console.log("delete", res.key);
+    kv.delete(res.key);
+  }
+} else {
+  console.log(DENO_DEPLOYMENT_ID);
 }
 
 type AppState = {
