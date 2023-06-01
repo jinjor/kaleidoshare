@@ -76,7 +76,10 @@ test("content", async (t) => {
   await t.test("cannot create other's content", async (t) => {
     const res = await fetch(origin + `/api/contents/foo`, {
       method: "POST",
-      body: JSON.stringify({ settings: {} }),
+      body: JSON.stringify({
+        settings: { objects: [] },
+        output: { spinner: { vertices: [] }, objects: [] },
+      }),
     });
     assert.strictEqual(res.status, 403);
     await res.json();
@@ -84,7 +87,10 @@ test("content", async (t) => {
   await t.test("cannot update other's content", async (t) => {
     const res = await fetch(origin + `/api/contents/foo/bar`, {
       method: "PUT",
-      body: JSON.stringify({ settings: {} }),
+      body: JSON.stringify({
+        settings: { objects: [] },
+        output: { spinner: { vertices: [] }, objects: [] },
+      }),
     });
     assert.strictEqual(res.status, 403);
     await res.json();
@@ -98,42 +104,89 @@ test("content", async (t) => {
   });
   let content1Id = "x";
   let content2Id = "y";
+  const createBody = {
+    settings: { background: "#123", objects: [] },
+    output: { spinner: { vertices: [{ x: 1, y: 1 }] }, objects: [] },
+  };
+  const updateBody = {
+    settings: { background: "#456", objects: [] },
+    output: { spinner: { vertices: [{ x: 2, y: 2 }] }, objects: [] },
+  };
   await t.test("create content", async (t) => {
     {
       const res = await fetch(origin + `/api/contents/${userName}`, {
         method: "POST",
-        body: JSON.stringify({ settings: {} }),
+        body: JSON.stringify(createBody),
       });
       assert.strictEqual(res.status, 200);
-      const { id, author, createdAt, updatedAt } = await res.json();
+      const { id, author, createdAt, updatedAt, settings, output } =
+        await res.json();
       content1Id = id;
       assert.strictEqual(typeof id, "string");
       assert.strictEqual(author, userName);
       assert.strictEqual(createdAt, updatedAt);
+      assert.deepStrictEqual(settings, createBody.settings);
+      assert.deepStrictEqual(output, createBody.output);
     }
     {
       const res = await fetch(origin + `/api/contents/${userName}`, {
         method: "POST",
-        body: JSON.stringify({ settings: {} }),
+        body: JSON.stringify(createBody),
       });
       assert.strictEqual(res.status, 200);
       const { id } = await res.json();
       content2Id = id;
     }
   });
+  await t.test("cannot create invalid content", async (t) => {
+    const res = await fetch(origin + `/api/contents/${userName}`, {
+      method: "POST",
+      body: JSON.stringify({
+        settings: { objects: [] },
+        output: {
+          spinner: {
+            vertices: new Array(100).fill({ x: 0, y: 0 }),
+          },
+          objects: [],
+        },
+      }),
+    });
+    assert.strictEqual(res.status, 400);
+  });
   await t.test("update content", async (t) => {
     const res = await fetch(
       origin + `/api/contents/${userName}/${content1Id}`,
       {
         method: "PUT",
-        body: JSON.stringify({ settings: {} }),
+        body: JSON.stringify(updateBody),
       }
     );
     assert.strictEqual(res.status, 200);
-    const { id, author, createdAt, updatedAt } = await res.json();
+    const { id, author, createdAt, updatedAt, settings, output } =
+      await res.json();
     assert.strictEqual(id, content1Id);
     assert.strictEqual(author, userName);
     assert.notStrictEqual(createdAt, updatedAt);
+    assert.deepStrictEqual(settings, updateBody.settings);
+    assert.deepStrictEqual(output, updateBody.output);
+  });
+  await t.test("cannot update invalid content", async (t) => {
+    const res = await fetch(
+      origin + `/api/contents/${userName}/${content1Id}`,
+      {
+        method: "PUT",
+        body: JSON.stringify({
+          settings: { objects: [] },
+          output: {
+            spinner: {
+              vertices: new Array(100).fill({ x: 0, y: 0 }),
+            },
+            objects: [],
+          },
+        }),
+      }
+    );
+    assert.strictEqual(res.status, 400);
   });
   await t.test("delete content", async (t) => {
     const res = await fetch(

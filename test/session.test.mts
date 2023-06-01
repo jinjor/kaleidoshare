@@ -74,6 +74,14 @@ test("session", async (t) => {
   });
   const userName = "test";
   await t.test("signup", async (t) => {
+    await t.test("invalid request", async (t) => {
+      const res = await fetch(origin + "/api/credential/new", {
+        method: "POST",
+        body: JSON.stringify({ name: "a".repeat(100) }),
+      });
+      assert.strictEqual(res.status, 400);
+      await res.json();
+    });
     await t.test("request registration", async (t) => {
       const res = await fetch(origin + "/api/credential/new", {
         method: "POST",

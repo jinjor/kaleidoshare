@@ -1,9 +1,5 @@
-// TODO: deps.ts に移動する
-import { Application, Router } from "https://deno.land/x/oak@v12.2.0/mod.ts";
-import {
-  CookieStore,
-  Session,
-} from "https://deno.land/x/oak_sessions@v4.1.4/mod.ts";
+import { Application, Router } from "oak";
+import { CookieStore, Session } from "oak_sessions";
 import {
   AuthenticationNotVerifiedError,
   AuthenticatorNotRegisteredError,
@@ -31,8 +27,17 @@ import schema from "./schema/schema.json" assert { type: "json" };
 import { Settings } from "./schema/settings.mts";
 import { Output } from "./schema/output.mts";
 
-// @ts-ignore ?
-const ajv = new Ajv();
+const ajv = new Ajv.default();
+const validateSignupUser = ajv.compile({
+  ...schema,
+  type: "object",
+  required: ["name"],
+  properties: {
+    name: {
+      $ref: "#/definitions/UserName",
+    },
+  },
+}) as ValidateFunction<{ name: string }>;
 const validatePublishRequest = ajv.compile({
   ...schema,
   type: "object",
@@ -53,7 +58,7 @@ function validate<T>(validate: ValidateFunction<T>, data: unknown): T {
   return data as T;
 }
 class BadRequest extends Error {
-  constructor(public errors: unknown[]) {
+  constructor(public errors: unknown) {
     super();
   }
 }
@@ -126,7 +131,8 @@ router.delete("/session", async (context) => {
   context.response.status = 200;
 });
 router.post("/credential/new", async (context) => {
-  const { name: userName } = await context.request.body({ type: "json" }).value;
+  const json = await context.request.body({ type: "json" }).value;
+  const { name: userName } = validate(validateSignupUser, json);
   const options = await createCredential(rpID, userName, true);
   await context.state.session.flash("challenge", options.challenge);
   await context.state.session.flash("userName", userName);
@@ -163,7 +169,7 @@ routerWithAuth.post("/contents/:author", async (context) => {
   const author = context.params.author;
   const userName = await context.state.session.get("login");
   const body = await context.request.body({ type: "json" }).value;
-  const { settings, output } = validate<any>(validatePublishRequest, body);
+  const { settings, output } = validate(validatePublishRequest, body);
   const content = await createContent(userName, author, settings, output);
   context.response.status = 200;
   context.response.body = JSON.stringify(content);
@@ -173,8 +179,7 @@ routerWithAuth.put("/contents/:author/:contentId", async (context) => {
   const userName = await context.state.session.get("login");
   const contentId = context.params.contentId;
   const body = await context.request.body({ type: "json" }).value;
-  const { settings, output } = validate<any>(validatePublishRequest, body);
-  console.log(settings, output);
+  const { settings, output } = validate(validatePublishRequest, body);
   const content = await updateContent(
     userName,
     author,
