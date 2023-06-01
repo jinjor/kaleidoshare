@@ -1,4 +1,4 @@
-import { ulid } from "npm:ulid@2.3.0";
+import { ulid } from "ulid";
 import { openKv } from "./kv.ts";
 
 // Schema:

@@ -1,5 +1,6 @@
 {
   "deno.enable": true,
   "deno.unstable": true,
-  "deno.enablePaths": ["server.ts", "server"]
+  "deno.enablePaths": ["server.ts", "server"],
+  "deno.importMap": "deno.json"
 }

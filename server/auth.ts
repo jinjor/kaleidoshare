@@ -9,17 +9,17 @@ import {
   GenerateRegistrationOptionsOpts,
   GenerateAuthenticationOptionsOpts,
   VerifyAuthenticationResponseOpts,
-} from "npm:@simplewebauthn/server@^7.2.0";
-import { isoUint8Array } from "npm:@simplewebauthn/server/helpers";
+} from "simplewebauthn/server";
+import { isoUint8Array } from "simplewebauthn/server/helpers";
 import type {
   RegistrationResponseJSON,
   AuthenticationResponseJSON,
   AuthenticatorDevice,
   PublicKeyCredentialCreationOptionsJSON,
   PublicKeyCredentialRequestOptionsJSON,
-} from "npm:@simplewebauthn/typescript-types";
-import * as base64url from "https://deno.land/std@0.179.0/encoding/base64url.ts";
-import { assert } from "https://deno.land/std@0.183.0/_util/asserts.ts";
+} from "simplewebauthn/typescript-types";
+import * as base64url from "std/encoding/base64url";
+import { assert } from "std/_util/asserts";
 import { openKv } from "./kv.ts";
 
 // Schema:

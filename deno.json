@@ -1,0 +1,12 @@
+{
+  "imports": {
+    "simplewebauthn/server": "npm:@simplewebauthn/server@^7.2.0",
+    "simplewebauthn/server/helpers": "npm:@simplewebauthn/server@^7.2.0/helpers",
+    "simplewebauthn/typescript-types": "npm:@simplewebauthn/typescript-types",
+    "std/encoding/base64url": "https://deno.land/std@0.179.0/encoding/base64url.ts",
+    "std/_util/asserts": "https://deno.land/std@0.183.0/_util/asserts.ts",
+    "ulid": "npm:ulid@2.3.0",
+    "ajv": "npm:ajv@8.12.0"
+  },
+  "scopes": {}
+}

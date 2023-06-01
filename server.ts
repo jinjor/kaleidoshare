@@ -26,7 +26,7 @@ import {
   updateContent,
 } from "./server/content.ts";
 import { openKv } from "./server/kv.ts";
-import Ajv, { ValidateFunction } from "npm:ajv@8.12.0";
+import Ajv, { ValidateFunction } from "ajv";
 import schema from "./schema/schema.json" assert { type: "json" };
 import { Settings } from "./schema/settings.mts";
 import { Output } from "./schema/output.mts";
