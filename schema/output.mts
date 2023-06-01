@@ -1,8 +1,14 @@
 export type Output = {
   spinner: OutSpinner;
+  /**
+   * @maxItems 1000
+   */
   objects: OutObject[];
 };
 export type OutSpinner = {
+  /**
+   * @maxItems 25
+   */
   vertices: OutVector[];
 };
 export type OutVector = {
@@ -36,6 +42,9 @@ export type OutPolygon = {
 export type OutInt = number;
 export type OutFloat = number | PeriodicNumber;
 export type PeriodicNumber = {
+  /**
+   * @max 30
+   */
   frequency: number;
   angle: number;
   offset: OutFloat;

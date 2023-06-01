@@ -1,6 +1,6 @@
 /**
  * @exclusiveMinimum 0
- * @maximum 500
+ * @maximum 100
  * @asType integer
  */
 export type FixedCount = number;
@@ -98,7 +98,7 @@ export type Object = {
 export type Settings = {
   background?: string; // TODO: Color にしたい
   /**
-   * @maxItems 100
+   * @maxItems 10
    */
   objects: Object[];
 };

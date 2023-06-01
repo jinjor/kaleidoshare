@@ -2,8 +2,10 @@ import {
   startRegistration,
   startAuthentication,
 } from "@simplewebauthn/browser";
-import { Settings } from "./settings";
-import { Output } from "./output";
+import { Settings } from "../../schema/settings.mjs";
+import { Output } from "../../schema/output.mjs";
+import { Content } from "../../schema/content.mjs";
+import { User } from "../../schema/user.mjs";
 
 async function request(
   input: RequestInfo | URL,
@@ -153,12 +155,3 @@ export async function getContent(
   });
   return await res.json();
 }
-
-export type User = {
-  name: string;
-};
-export type Content = {
-  id: string;
-  settings: Settings;
-  output: Output;
-};

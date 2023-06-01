@@ -8,7 +8,7 @@ import {
   Percent,
   Settings,
   Shape,
-} from "./settings";
+} from "../../schema/settings.mjs";
 import {
   OutCircle,
   OutColor,
@@ -18,7 +18,7 @@ import {
   OutObject,
   Output,
   OutSpinner,
-} from "./output";
+} from "../../schema/output.mjs";
 
 export function generate(
   spinnerRadiusRatio: number,

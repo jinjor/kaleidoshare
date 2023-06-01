@@ -20,12 +20,14 @@
   },
   "scripts": {
     "dev": "run-p dev:*",
-    "dev:vite": "vite",
-    "dev:server": "deno run -A --unstable ./server.ts",
-    "build": "vite build",
+    "dev:frontend": "vite",
+    "dev:backend": "deno run -A --unstable ./server.ts",
+    "build": "run-s build:*",
+    "build:schema": "ts-json-schema-generator --path 'schema/**/*.ts' --out schema/schema.json --additional-properties false",
+    "build:frontend": "vite build",
     "preview": "run-p preview:*",
-    "preview:vite": "vite preview",
-    "preview:server": "deno run -A --unstable ./server.ts",
+    "preview:frontend": "vite preview",
+    "preview:backend": "deno run -A --unstable ./server.ts",
     "stub": "cd dist && deno run -A https://deno.land/std@0.157.0/http/file_server.ts",
     "test": "node --loader tsx --test ./test/*.test.mts"
   }

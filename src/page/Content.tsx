@@ -1,5 +1,7 @@
 import React from "react";
-import { Content, User, getContent } from "../domain/io";
+import { getContent } from "../domain/io";
+import { User } from "../../schema/user";
+import { Content } from "../../schema/content";
 import Nav from "../ui/Nav";
 import Editor from "../ui/Editor";
 import NotFound from "./NotFound";

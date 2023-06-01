@@ -26,6 +26,37 @@ import {
   updateContent,
 } from "./server/content.ts";
 import { openKv } from "./server/kv.ts";
+import Ajv, { ValidateFunction } from "npm:ajv@8.12.0";
+import schema from "./schema/schema.json" assert { type: "json" };
+import { Settings } from "./schema/settings.mts";
+import { Output } from "./schema/output.mts";
+
+// @ts-ignore ?
+const ajv = new Ajv();
+const validatePublishRequest = ajv.compile({
+  ...schema,
+  type: "object",
+  required: ["settings", "output"],
+  properties: {
+    settings: {
+      $ref: "#/definitions/Settings",
+    },
+    output: {
+      $ref: "#/definitions/Output",
+    },
+  },
+}) as ValidateFunction<{ settings: Settings; output: Output }>;
+function validate<T>(validate: ValidateFunction<T>, data: unknown): T {
+  if (!validate(data)) {
+    throw new BadRequest(validate.errors);
+  }
+  return data as T;
+}
+class BadRequest extends Error {
+  constructor(public errors: unknown[]) {
+    super();
+  }
+}
 
 const apiServerPort: number = parseInt(Deno.env.get("PORT") ?? "8000");
 
@@ -131,8 +162,8 @@ routerWithAuth.delete("/user", async (context) => {
 routerWithAuth.post("/contents/:author", async (context) => {
   const author = context.params.author;
   const userName = await context.state.session.get("login");
-  const { settings, output } = await context.request.body({ type: "json" })
-    .value;
+  const body = await context.request.body({ type: "json" }).value;
+  const { settings, output } = validate<any>(validatePublishRequest, body);
   const content = await createContent(userName, author, settings, output);
   context.response.status = 200;
   context.response.body = JSON.stringify(content);
@@ -141,8 +172,9 @@ routerWithAuth.put("/contents/:author/:contentId", async (context) => {
   const author = context.params.author;
   const userName = await context.state.session.get("login");
   const contentId = context.params.contentId;
-  const { settings, output } = await context.request.body({ type: "json" })
-    .value;
+  const body = await context.request.body({ type: "json" }).value;
+  const { settings, output } = validate<any>(validatePublishRequest, body);
+  console.log(settings, output);
   const content = await updateContent(
     userName,
     author,
@@ -193,6 +225,13 @@ app.use(async (context, next) => {
   try {
     await next();
   } catch (e) {
+    if (e instanceof BadRequest) {
+      context.response.status = 400;
+      context.response.body = JSON.stringify({
+        message: "Bad request", // このメッセージを見るのは攻撃者だけ
+      });
+      return;
+    }
     if (e instanceof UserAlreadyExistsError) {
       context.response.status = 400;
       context.response.body = JSON.stringify({

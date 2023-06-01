@@ -1,5 +1,6 @@
 import React from "react";
 import { register } from "../domain/io";
+import schema from "../../schema/schema.json";
 
 export default function SignupForm(props: {
   onSuccess: (userName: string) => void;
@@ -23,10 +24,9 @@ export default function SignupForm(props: {
         className="input"
         type="text"
         name="name"
-        minLength={1}
-        maxLength={39}
-        // GitHub と同じルール
-        pattern="^[a-z\d](?:[a-z\d]|-(?=[a-z\d])){0,38}$"
+        minLength={schema.definitions.UserName.minLength}
+        maxLength={schema.definitions.UserName.maxLength}
+        pattern={schema.definitions.UserName.pattern}
       />
 
       <input className="button wide primary" type="submit" value="Signup" />

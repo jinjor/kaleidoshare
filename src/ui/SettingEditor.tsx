@@ -1,12 +1,14 @@
 import React, { useRef } from "react";
 import Editor, { Monaco } from "@monaco-editor/react";
-import { Settings } from "../domain/settings";
-// @ts-ignore
-import { schema } from "virtual:settings-schema";
+import { Settings } from "../../schema/settings.mjs";
+import schema from "../../schema/schema.json";
 import { env } from "../domain/env";
 import Ajv from "ajv";
 const ajv = new Ajv();
-const validate = ajv.compile(schema);
+const validate = ajv.compile<Settings>({
+  ...schema,
+  $ref: "#/definitions/Settings",
+});
 
 const tabSize = 2;
 
