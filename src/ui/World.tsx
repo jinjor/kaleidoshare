@@ -29,14 +29,14 @@ export type WorldOptions = {
   size: number;
   spinnerRadiusRatio: number;
   clipRadiusRatio: number;
-  output: Output;
 };
 
 const World = React.memo(function World(props: {
   options: WorldOptions;
+  output: Output;
   onReady: (world: World) => void;
 }) {
-  const { options, onReady } = props;
+  const { options, output, onReady } = props;
 
   const worldRef = useRef<HTMLDivElement>(null);
 
@@ -44,7 +44,8 @@ const World = React.memo(function World(props: {
     const worldElement = worldRef.current!;
     const { render, runner, engine, update } = setupWorld(
       worldElement,
-      options
+      options,
+      output
     );
     onReady({
       getImage: () => {
@@ -77,7 +78,7 @@ const World = React.memo(function World(props: {
       running = false;
       worldElement.innerHTML = "";
     };
-  }, [options]);
+  }, [options, output]);
 
   return (
     <div
@@ -91,7 +92,11 @@ const World = React.memo(function World(props: {
 });
 export default World;
 
-function setupWorld(element: HTMLElement, options: WorldOptions) {
+function setupWorld(
+  element: HTMLElement,
+  options: WorldOptions,
+  output: Output
+) {
   const { size, spinnerRadiusRatio, clipRadiusRatio } = options;
 
   const spinnerRadius = size * spinnerRadiusRatio;
@@ -111,8 +116,8 @@ function setupWorld(element: HTMLElement, options: WorldOptions) {
     canvas.getContext("2d", { willReadFrequently: true });
     return canvas;
   };
-  const spinnerMatter = createSpinner(options.output.spinner, size);
-  const objects = options.output.objects;
+  const spinnerMatter = createSpinner(output.spinner, size);
+  const objects = output.objects;
   const objectsMatter = objects.map((object) => createBody(object, size));
 
   Composite.add(engine.world, [spinnerMatter]);

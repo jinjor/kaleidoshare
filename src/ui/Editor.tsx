@@ -94,6 +94,12 @@ const defaultSettings: Settings = {
     },
   ],
 };
+const spinnerRadiusRatio = 0.5;
+const worldOptions: WorldOptions = {
+  size: worldSize,
+  spinnerRadiusRatio,
+  clipRadiusRatio: 0.25,
+};
 export default function Editor(props: {
   user: User | null;
   initiallyPreview: boolean;
@@ -102,19 +108,15 @@ export default function Editor(props: {
 }) {
   const { user, initiallyPreview, content, authorName } = props;
 
-  const spinnerRadiusRatio = 0.5;
   const messageContext = React.useContext(MessageContext)!;
 
   const [preview, setPreview] = React.useState(initiallyPreview);
   const [settings, setSettings] = useState<Settings>(
     content?.settings ?? defaultSettings
   );
-  const [worldOptions, setWorldOptions] = useState<WorldOptions>({
-    size: worldSize,
-    spinnerRadiusRatio,
-    clipRadiusRatio: 0.25,
-    output: content?.output ?? generate(spinnerRadiusRatio, settings), // TODO: ここじゃなくない？
-  });
+  const [output, setOutput] = useState<Output>(
+    content?.output ?? generate(spinnerRadiusRatio, settings)
+  );
   const [world, setWorld] = useState<World | null>(null);
   const [settingsController, setSettingsController] =
     useState<SettingsEditorController | null>(null);
@@ -130,8 +132,7 @@ export default function Editor(props: {
     },
     []
   );
-  const handlePreview =
-    worldOptions.output != null ? () => setPreview(true) : null;
+  const handlePreview = output != null ? () => setPreview(true) : null;
   const handleRegenerate =
     settingsController != null && !warningShown
       ? () => {
@@ -141,11 +142,7 @@ export default function Editor(props: {
   const handlePublish = saved
     ? async (userName: string) => {
         try {
-          const contentId = await publish(
-            userName,
-            settings,
-            worldOptions.output
-          );
+          const contentId = await publish(userName, settings, output);
           location.href = `/contents/${userName}/${contentId}`;
         } catch (e) {
           messageContext.setError(e);
@@ -159,7 +156,7 @@ export default function Editor(props: {
     const settings = json as Settings;
     const output: Output = generate(spinnerRadiusRatio, settings);
     setSettings(settings);
-    setWorldOptions({ ...worldOptions, output });
+    setOutput(output);
     // 保存操作の直後にフォーマットされ handleChange が呼ばれてしまうため、
     // その後に saved を true にする
     setTimeout(() => {
@@ -176,7 +173,11 @@ export default function Editor(props: {
   if (world && preview) {
     return (
       <>
-        <World options={worldOptions} onReady={handleWorldReady} />
+        <World
+          options={worldOptions}
+          output={output}
+          onReady={handleWorldReady}
+        />
         <div
           style={{
             position: "fixed",
@@ -217,7 +218,11 @@ export default function Editor(props: {
           overflow: "scroll",
         }}
       >
-        <World options={worldOptions} onReady={handleWorldReady} />
+        <World
+          options={worldOptions}
+          output={output}
+          onReady={handleWorldReady}
+        />
         <div
           style={{
             backgroundColor: "#111",
