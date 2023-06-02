@@ -54,9 +54,6 @@ export default function Operation(props: {
     event.preventDefault();
     onPreview?.();
   };
-  if (env.prod) {
-    return null;
-  }
   const commandToRegenerate = env.os === "mac" ? "⌘ + S" : "Ctrl + S";
   return (
     <>
