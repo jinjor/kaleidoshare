@@ -1,4 +1,5 @@
 import React, { createContext, useCallback, useContext, useState } from "react";
+import { AppError } from "../domain/error";
 
 type InfoType = "success" | "error";
 type Info = {
@@ -20,7 +21,12 @@ export const MessageContext = createContext<MessageContext | null>(null);
 export function useMessage(): MessageContext {
   const [info, setInfo] = useState<Info | null>(null);
   const setError = useCallback((info: ErrorInfo) => {
-    setInfo({ type: "error", message: info.message });
+    if (info instanceof AppError) {
+      setInfo({ type: "error", message: info.message });
+    } else {
+      // TODO: 本当はここでエラーをサーバーに送信する
+      setInfo({ type: "error", message: "Unexpected error" });
+    }
   }, []);
   const setMessage = useCallback(
     (message: string, type: InfoType = "success") => {

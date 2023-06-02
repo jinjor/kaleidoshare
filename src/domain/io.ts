@@ -6,6 +6,7 @@ import { Settings } from "../../schema/settings.mjs";
 import { Output } from "../../schema/output.mjs";
 import { Content } from "../../schema/content.mjs";
 import { User } from "../../schema/user.mjs";
+import { AppError } from "./error.js";
 
 async function request(
   input: RequestInfo | URL,
@@ -23,15 +24,15 @@ async function request(
     });
   } catch (e) {
     if (controller.signal.aborted) {
-      throw new Error("Timeout");
+      throw new AppError("Timeout");
     }
-    throw new Error(e.message);
+    throw e;
   } finally {
     clearTimeout(timeout);
   }
   if (res.status >= 400) {
     const { message } = await res.json();
-    throw new Error(message);
+    throw new AppError(message);
   }
   return res;
 }
@@ -76,7 +77,7 @@ export async function addCredential(): Promise<boolean> {
   const registerOps = await res.json();
   try {
     const attResp = await startRegistration(registerOps);
-    await fetch("/api/credential", {
+    await request("/api/credential", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -94,7 +95,7 @@ export async function addCredential(): Promise<boolean> {
 }
 
 export async function deleteAccount(): Promise<void> {
-  await fetch("/api/user", {
+  await request("/api/user", {
     method: "DELETE",
   });
 }
@@ -109,7 +110,7 @@ export async function login(): Promise<boolean> {
   const authenticateOps = await res.json();
   try {
     const authResp = await startAuthentication(authenticateOps);
-    await fetch("/api/session", {
+    await request("/api/session", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
