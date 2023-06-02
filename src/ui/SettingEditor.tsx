@@ -23,6 +23,7 @@ const SettingEditor = React.memo(
     onChange: () => void;
     onApply: (json: any) => void;
     onReady: (controller: SettingsEditorController) => void;
+    onWarningShownChange: (warningShown: boolean) => void;
   }) => {
     const { settings, onChange, onApply, onReady } = props;
     const monacoRef = useRef<Monaco | null>(null);
@@ -68,6 +69,14 @@ const SettingEditor = React.memo(
         save();
       }
     }
+    const handleValidate = (markers: any[]) => {
+      const hasWarning = markers.some(
+        (marker) =>
+          marker.severity === monacoRef.current!.MarkerSeverity.Error ||
+          marker.severity === monacoRef.current!.MarkerSeverity.Warning
+      );
+      props.onWarningShownChange(hasWarning);
+    };
     return (
       <div tabIndex={0} onKeyDown={handleKeyDown} className="setting-editor">
         <Editor
@@ -77,6 +86,7 @@ const SettingEditor = React.memo(
           beforeMount={handleEditorWillMount}
           onMount={handleEditorDidMount}
           onChange={onChange}
+          onValidate={handleValidate}
           options={{
             contextmenu: false,
             scrollBeyondLastLine: false,

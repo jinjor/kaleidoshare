@@ -47,22 +47,32 @@ export default function Operation(props: {
   return (
     <>
       <div className="form" style={{ width, height, boxSizing: "border-box" }}>
-        <button
-          className="button wide"
-          disabled={onRegenerate == null}
-          onClick={() => onRegenerate?.()}
-        >
-          Save and Generate <ForceBaseline>(</ForceBaseline>
-          {commandToRegenerate}
-          <ForceBaseline>)</ForceBaseline>
-        </button>
-        <button
-          className="button wide primary"
-          disabled={onPublish == null}
-          onClick={handleTryPublish}
-        >
-          Publish
-        </button>
+        <div className="form-item">
+          <button
+            className="button wide"
+            disabled={onRegenerate == null}
+            onClick={() => onRegenerate?.()}
+          >
+            Generate <ForceBaseline>(</ForceBaseline>
+            {commandToRegenerate}
+            <ForceBaseline>)</ForceBaseline>
+          </button>
+          <div className="help">
+            {onRegenerate == null ? "Setting is not valid" : null}
+          </div>
+        </div>
+        <div className="form-item">
+          <button
+            className="button wide primary"
+            disabled={onPublish == null}
+            onClick={handleTryPublish}
+          >
+            Publish
+          </button>
+          <div className="help">
+            {onPublish == null ? "Generate to finish editing" : null}
+          </div>
+        </div>
       </div>
       {formKey > 0 && (
         <div

@@ -159,13 +159,6 @@ main {
   display: block;
   width: 100%;
 }
-.button.wide:not(:first-child) {
-  margin-top: 30px;
-}
-.button.wide:not(:last-child) {
-  margin-bottom: 30px;
-}
-
 .button.primary {
   background-color: var(--accent-color);
 }
@@ -181,4 +174,15 @@ main {
 .button.danger:active {
   border-color: var(--border-color-danger-active);
   color: var(--text-color-danger-active);
+}
+.form-item:not(:first-child) {
+  margin-top: 25px;
+}
+.form-item:not(:last-child) {
+  margin-bottom: 25px;
+}
+.help {
+  font-size: 12px;
+  color: #999;
+  height: 16px;
 }

@@ -116,7 +116,8 @@ export default function Editor(props: {
   const [world, setWorld] = useState<World | null>(null);
   const [settingsController, setSettingsController] =
     useState<SettingsEditorController | null>(null);
-  const [saved, setSaved] = useState<boolean>(false);
+  const [saved, setSaved] = useState<boolean>(true);
+  const [warningShown, setWarningShown] = useState<boolean>(false);
 
   const handleWorldReady = useCallback((world: World) => {
     setWorld(world);
@@ -128,7 +129,7 @@ export default function Editor(props: {
     []
   );
   const handleRegenerate =
-    settingsController != null
+    settingsController != null && !warningShown
       ? () => {
           settingsController.save();
         }
@@ -164,6 +165,10 @@ export default function Editor(props: {
   const quitPreview = useCallback(() => {
     onQuitPreview();
   }, [onQuitPreview]);
+  const handleWarningShownChange = useCallback((warningShown) => {
+    setWarningShown(warningShown);
+  }, []);
+
   if (world && preview) {
     return (
       <>
@@ -234,6 +239,7 @@ export default function Editor(props: {
         onChange={handleChange}
         onApply={handleApply}
         onReady={handleSettingsEditorReady}
+        onWarningShownChange={handleWarningShownChange}
       />
     </>
   );

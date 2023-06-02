@@ -19,19 +19,24 @@ export default function SignupForm(props: {
   return (
     <form className="form" onSubmit={handleSubmit}>
       <h1 className="form-title">Signup</h1>
-      <label style={{ display: "block" }}>Name</label>
+      <div className="form-item">
+        <label style={{ display: "block" }}>Name</label>
+        <input
+          autoFocus
+          required
+          className="input"
+          type="text"
+          name="name"
+          minLength={schema.definitions.UserName.minLength}
+          maxLength={schema.definitions.UserName.maxLength}
+          pattern={schema.definitions.UserName.pattern}
+        />
+      </div>
       <input
-        autoFocus
-        required
-        className="input"
-        type="text"
-        name="name"
-        minLength={schema.definitions.UserName.minLength}
-        maxLength={schema.definitions.UserName.maxLength}
-        pattern={schema.definitions.UserName.pattern}
+        className="button wide primary form-item"
+        type="submit"
+        value="Signup"
       />
-
-      <input className="button wide primary" type="submit" value="Signup" />
     </form>
   );
 }
