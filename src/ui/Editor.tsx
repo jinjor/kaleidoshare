@@ -173,11 +173,14 @@ export default function Editor(props: {
   if (world && preview) {
     return (
       <>
-        <World
-          options={worldOptions}
-          output={output}
-          onReady={handleWorldReady}
-        />
+        {/** World の状態をリセットされないように HTML 構造を下と合わせておく */}
+        <div>
+          <World
+            options={worldOptions}
+            output={output}
+            onReady={handleWorldReady}
+          />
+        </div>
         <div
           style={{
             position: "fixed",
