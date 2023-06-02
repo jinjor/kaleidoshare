@@ -1,8 +1,8 @@
 import React, { useCallback } from "react";
-import { User } from "../domain/io";
 import Nav from "../ui/Nav";
 import SignupForm from "../ui/SignupForm";
 import { MessageContext } from "../ui/MessageBar";
+import { User } from "../../schema/user.mjs";
 
 export default function Signup(props: { user: User | null }) {
   const { user } = props;

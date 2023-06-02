@@ -1,12 +1,13 @@
 import React, { useEffect } from "react";
 import Content from "./page/Content";
-import { User, getSession } from "./domain/io";
+import { getSession } from "./domain/io";
 import Signup from "./page/Signup";
 import NotFound from "./page/NotFound";
 import Home from "./page/Home";
 import Account from "./page/Account";
 import { MessageContext, useMessage } from "./ui/MessageBar";
 import { env } from "./domain/env";
+import { User } from "../schema/user.mjs";
 
 type Route =
   | {

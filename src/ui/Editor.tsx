@@ -2,14 +2,14 @@ import React, { useCallback, useState } from "react";
 import View from "./View";
 import World, { WorldOptions } from "./World";
 import SettingEditor, { SettingsEditorController } from "./SettingEditor";
-import { Settings } from "../../schema/settings";
+import { Settings } from "../../schema/settings.mjs";
 import Operation from "./Operation";
 import { publish } from "../domain/io";
-import { Output } from "../../schema/output";
+import { Output } from "../../schema/output.mjs";
 import { generate } from "../domain/generate";
 import { MessageContext } from "./MessageBar";
-import { User } from "../../schema/user";
-import { Content } from "../../schema/content";
+import { User } from "../../schema/user.mjs";
+import { Content } from "../../schema/content.mjs";
 
 // |--- worldSize --|-|--- viewSize ---|-|-- opetaionSize --|
 //                  gap                gap

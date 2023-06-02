@@ -1,8 +1,8 @@
 import React from "react";
-import { User } from "../domain/io";
 import Nav from "../ui/Nav";
 import { addCredential, deleteAccount } from "../domain/io";
 import { MessageContext } from "../ui/MessageBar";
+import { User } from "../../schema/user.mjs";
 
 export default function Account(props: { user: User | null }) {
   const { user } = props;

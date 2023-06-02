@@ -1,8 +1,8 @@
 import React from "react";
-import { User } from "../domain/io";
 import { login, logout } from "../domain/io";
 import { env } from "../domain/env";
 import ErrorBar, { MessageContext } from "./MessageBar";
+import { User } from "../../schema/user.mjs";
 
 export default function Nav(props: {
   user: User | null;
