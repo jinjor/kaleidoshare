@@ -8,10 +8,20 @@ export default function Operation(props: {
   user: User | null;
   width: number;
   height: number;
+  onPreview: (() => void) | null;
   onRegenerate: (() => void) | null;
   onPublish: ((userName: string) => void) | null;
+  allowedToPublish: boolean;
 }) {
-  const { user, width, height, onRegenerate, onPublish } = props;
+  const {
+    user,
+    width,
+    height,
+    onPreview,
+    onRegenerate,
+    onPublish,
+    allowedToPublish,
+  } = props;
   const [formKey, setFormKey] = React.useState(0);
 
   const messageContext = React.useContext(MessageContext)!;
@@ -40,6 +50,10 @@ export default function Operation(props: {
   const handleSignupCancel = async () => {
     setFormKey(0);
   };
+  const handlePreview = async (event: React.FormEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    onPreview?.();
+  };
   if (env.prod) {
     return null;
   }
@@ -63,16 +77,30 @@ export default function Operation(props: {
         </div>
         <div className="form-item">
           <button
-            className="button wide primary"
-            disabled={onPublish == null}
-            onClick={handleTryPublish}
+            className="button wide"
+            disabled={onPreview == null}
+            onClick={handlePreview}
           >
-            Publish
+            Preview
           </button>
           <div className="help">
-            {onPublish == null ? "Generate to finish editing" : null}
+            {onPreview == null ? "Nothing to preview" : null}
           </div>
         </div>
+        {allowedToPublish && (
+          <div className="form-item">
+            <button
+              className="button wide primary"
+              disabled={onPublish == null}
+              onClick={handleTryPublish}
+            >
+              Publish
+            </button>
+            <div className="help">
+              {onPublish == null ? "Generate to finish editing" : null}
+            </div>
+          </div>
+        )}
       </div>
       {formKey > 0 && (
         <div

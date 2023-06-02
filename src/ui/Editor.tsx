@@ -10,6 +10,7 @@ import { generate } from "../domain/generate";
 import { MessageContext } from "./MessageBar";
 import { User } from "../../schema/user.mjs";
 import { Content } from "../../schema/content.mjs";
+import { env } from "../domain/env";
 
 // |--- worldSize --|-|--- viewSize ---|-|-- opetaionSize --|
 //                  gap                gap
@@ -95,15 +96,16 @@ const defaultSettings: Settings = {
 };
 export default function Editor(props: {
   user: User | null;
-  preview: boolean;
+  initiallyPreview: boolean;
+  authorName: string | null;
   content?: Content;
-  onQuitPreview: () => void;
 }) {
-  const { user, preview, content, onQuitPreview } = props;
+  const { user, initiallyPreview, content, authorName } = props;
 
   const spinnerRadiusRatio = 0.5;
   const messageContext = React.useContext(MessageContext)!;
 
+  const [preview, setPreview] = React.useState(initiallyPreview);
   const [settings, setSettings] = useState<Settings>(
     content?.settings ?? defaultSettings
   );
@@ -128,6 +130,8 @@ export default function Editor(props: {
     },
     []
   );
+  const handlePreview =
+    worldOptions.output != null ? () => setPreview(true) : null;
   const handleRegenerate =
     settingsController != null && !warningShown
       ? () => {
@@ -163,8 +167,8 @@ export default function Editor(props: {
     }, 100);
   }, []);
   const quitPreview = useCallback(() => {
-    onQuitPreview();
-  }, [onQuitPreview]);
+    setPreview(false);
+  }, []);
   const handleWarningShownChange = useCallback((warningShown) => {
     setWarningShown(warningShown);
   }, []);
@@ -225,13 +229,16 @@ export default function Editor(props: {
         >
           {world && <View size={viewSize} world={world} settings={settings} />}
         </div>
-
         <Operation
           width={operationSize}
           height={upperHeight}
           user={user}
+          onPreview={handlePreview}
           onRegenerate={handleRegenerate}
           onPublish={handlePublish}
+          allowedToPublish={
+            !env.prod && (authorName == null || authorName === user?.name)
+          }
         />
       </div>
       <SettingEditor
