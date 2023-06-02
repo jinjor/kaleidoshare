@@ -36,7 +36,7 @@ async function request(
   return res;
 }
 
-export async function register(name: string) {
+export async function register(name: string): Promise<boolean> {
   const res = await request("/api/credential/new", {
     method: "POST",
     headers: {
@@ -45,17 +45,28 @@ export async function register(name: string) {
     body: JSON.stringify({ name }),
   });
   const registerOps = await res.json();
-  const attResp = await startRegistration(registerOps);
-  await request("/api/credential", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(attResp),
-  });
+  try {
+    const attResp = await startRegistration(registerOps);
+    await request("/api/credential", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(attResp),
+    });
+    return true;
+  } catch (e) {
+    // ユーザーがキャンセルしたかタイムアウトした時 NotAllowedError が発生する
+    // 前者の場合は何もする必要がない
+    // 後者の場合も画面にエラーが表示されるのでやはり何もする必要がない
+    if (e.name === "NotAllowedError") {
+      return false;
+    }
+    throw e;
+  }
 }
 
-export async function addCredential() {
+export async function addCredential(): Promise<boolean> {
   const res = await request("/api/credential/add", {
     method: "POST",
     headers: {
@@ -63,23 +74,32 @@ export async function addCredential() {
     },
   });
   const registerOps = await res.json();
-  const attResp = await startRegistration(registerOps);
-  await fetch("/api/credential", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(attResp),
-  });
+  try {
+    const attResp = await startRegistration(registerOps);
+    await fetch("/api/credential", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(attResp),
+    });
+    return true;
+  } catch (e) {
+    // 上と同様
+    if (e.name === "NotAllowedError") {
+      return false;
+    }
+    throw e;
+  }
 }
 
-export async function deleteAccount() {
+export async function deleteAccount(): Promise<void> {
   await fetch("/api/user", {
     method: "DELETE",
   });
 }
 
-export async function login() {
+export async function login(): Promise<boolean> {
   const res = await request("/api/session/new", {
     method: "POST",
     headers: {
@@ -87,17 +107,26 @@ export async function login() {
     },
   });
   const authenticateOps = await res.json();
-  const authResp = await startAuthentication(authenticateOps);
-  await fetch("/api/session", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(authResp),
-  });
+  try {
+    const authResp = await startAuthentication(authenticateOps);
+    await fetch("/api/session", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(authResp),
+    });
+    return true;
+  } catch (e) {
+    // 上と同様
+    if (e.name === "NotAllowedError") {
+      return false;
+    }
+    throw e;
+  }
 }
 
-export async function logout() {
+export async function logout(): Promise<void> {
   await request("/api/session", {
     method: "DELETE",
   });

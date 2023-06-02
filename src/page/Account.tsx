@@ -18,8 +18,10 @@ export default function Account(props: { user: User | null }) {
   ) => {
     event.preventDefault();
     try {
-      await addCredential();
-      // TODO: success message
+      const done = await addCredential();
+      if (done) {
+        // TODO: success message
+      }
     } catch (e) {
       messageContext.setError(e);
     }

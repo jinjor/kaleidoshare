@@ -15,8 +15,10 @@ export default function Nav(props: {
   const handleLogin = async (event: React.FormEvent<HTMLButtonElement>) => {
     event.preventDefault();
     try {
-      await login();
-      location.reload();
+      const done = await login();
+      if (done) {
+        location.reload();
+      }
     } catch (e) {
       messageContext.setError(e);
     }

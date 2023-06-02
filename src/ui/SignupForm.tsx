@@ -11,8 +11,10 @@ export default function SignupForm(props: {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     const userName = data.get("name") as string;
-    await register(userName).catch(onError);
-    onSuccess(userName);
+    const done = await register(userName).catch(onError);
+    if (done) {
+      onSuccess(userName);
+    }
   };
   return (
     <form className="form" onSubmit={handleSubmit}>
