@@ -68,9 +68,8 @@ const SettingEditor = React.memo(
       }
     }
     return (
-      <div tabIndex={0} onKeyDown={handleKeyDown}>
+      <div tabIndex={0} onKeyDown={handleKeyDown} className="setting-editor">
         <Editor
-          height="500px"
           theme="vs-dark"
           defaultLanguage="json"
           defaultValue={JSON.stringify(settings, null, tabSize)}

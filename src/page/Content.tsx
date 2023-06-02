@@ -55,8 +55,8 @@ export default function ContentPage(props: {
           </li>
         )}
       </Nav>
-      <main className="horizontal-center">
-        <div className="container">
+      <main className="horizontal-center" style={{ flexGrow: 1 }}>
+        <div className="container editor-wrapper">
           <Editor
             user={user}
             preview={preview}

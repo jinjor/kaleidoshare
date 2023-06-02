@@ -204,7 +204,6 @@ export default function Editor(props: {
         style={{
           display: "flex",
           gap,
-          marginBottom: 10,
           maxWidth: "100vw",
           overflow: "scroll",
         }}

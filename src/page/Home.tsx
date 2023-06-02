@@ -20,8 +20,8 @@ export default function Home(props: { user: User | null }) {
           </li>
         )}
       </Nav>
-      <main className="horizontal-center">
-        <div className="container">
+      <main className="horizontal-center" style={{ flexGrow: 1 }}>
+        <div className="container editor-wrapper">
           <Editor
             user={user}
             preview={preview}
