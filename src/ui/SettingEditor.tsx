@@ -5,10 +5,11 @@ import schema from "../../schema/schema.json";
 import { env } from "../domain/env";
 import Ajv from "ajv";
 const ajv = new Ajv();
-const validate = ajv.compile<Settings>({
+const settingSchema = {
   ...schema,
   $ref: "#/definitions/Settings",
-});
+};
+const validate = ajv.compile<Settings>(settingSchema);
 
 const tabSize = 2;
 
@@ -33,7 +34,7 @@ const SettingEditor = React.memo(
           {
             uri: window.location.href,
             fileMatch: ["*"],
-            schema,
+            schema: settingSchema,
           },
         ],
       });
