@@ -39,7 +39,7 @@ body {
 hr {
   border: none;
   border-top: var(--border);
-  margin: 30px 0;
+  margin: 10px 0;
 }
 a {
   color: var(--text-color);
@@ -111,10 +111,13 @@ main {
   min-width: 340px;
   background-color: var(--bg-color-float);
   border-radius: var(--border-radius);
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
 }
 .form-title {
   font-size: 21px;
-  margin: 0 0 20px;
+  margin: 0;
 }
 .input,
 .input:active,
@@ -174,12 +177,6 @@ main {
 .button.danger:active {
   border-color: var(--border-color-danger-active);
   color: var(--text-color-danger-active);
-}
-.form-item:not(:first-child) {
-  margin-top: 25px;
-}
-.form-item:not(:last-child) {
-  margin-bottom: 25px;
 }
 .help {
   font-size: 12px;

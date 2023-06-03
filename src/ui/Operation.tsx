@@ -1,6 +1,6 @@
 import React, { ReactNode } from "react";
 import SignupForm from "./SignupForm";
-import { User } from "../../schema/schema.js";
+import { Content, User } from "../../schema/schema.js";
 import { env } from "../domain/env";
 import { MessageContext } from "./MessageBar";
 
@@ -11,17 +11,10 @@ export default function Operation(props: {
   onPreview: (() => void) | null;
   onRegenerate: (() => void) | null;
   onPublish: ((userName: string) => void) | null;
-  allowedToPublish: boolean;
+  content: Content | null;
 }) {
-  const {
-    user,
-    width,
-    height,
-    onPreview,
-    onRegenerate,
-    onPublish,
-    allowedToPublish,
-  } = props;
+  const { user, width, height, onPreview, onRegenerate, onPublish, content } =
+    props;
   const [formKey, setFormKey] = React.useState(0);
 
   const messageContext = React.useContext(MessageContext)!;
@@ -55,6 +48,8 @@ export default function Operation(props: {
     onPreview?.();
   };
   const commandToRegenerate = env.os === "mac" ? "⌘ + S" : "Ctrl + S";
+  const allowedToPublish =
+    !env.prod && (content == null || content.author === user?.name);
   return (
     <>
       <div className="form" style={{ width, height, boxSizing: "border-box" }}>
@@ -96,6 +91,11 @@ export default function Operation(props: {
             <div className="help">
               {onPublish == null ? "Generate to finish editing" : null}
             </div>
+          </div>
+        )}
+        {content != null && (
+          <div style={{ marginTop: "auto", fontSize: "14px" }}>
+            Created by {content.author}
           </div>
         )}
       </div>

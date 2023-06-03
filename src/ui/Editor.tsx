@@ -264,9 +264,7 @@ export default function Editor(props: {
           onPreview={handlePreview}
           onRegenerate={handleRegenerate}
           onPublish={handlePublish}
-          allowedToPublish={
-            !env.prod && (content == null || content.author === user?.name)
-          }
+          content={content}
         />
       </div>
       <SettingEditor
