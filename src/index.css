@@ -24,7 +24,6 @@ html {
 body {
   margin: 0;
   padding: 0;
-  font-family: "Roboto", sans-serif;
   font-size: 16px;
   font-family: "Montserrat", "游ゴシック", YuGothic, "ヒラギノ角ゴ ProN W3",
     "Hiragino Kaku Gothic ProN", "メイリオ", Meiryo, sans-serif;
@@ -178,6 +177,34 @@ main {
   border-color: var(--border-color-danger-active);
   color: var(--text-color-danger-active);
 }
+.select {
+  border: var(--border);
+  border-radius: var(--border-radius);
+  display: inline-flex;
+  padding-right: 16px;
+  position: relative;
+}
+.select select {
+  outline: none;
+  appearance: none;
+  padding: 8px 12px;
+  border: none;
+  background: none;
+  color: var(--text-color);
+  font-size: var(--font-size);
+  line-height: 1;
+  cursor: pointer;
+}
+.select::after {
+  content: "▼";
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  font-size: 10px;
+}
+
 .help {
   font-size: 12px;
   color: #999;

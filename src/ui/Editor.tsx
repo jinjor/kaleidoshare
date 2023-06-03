@@ -7,8 +7,8 @@ import Operation from "./Operation";
 import { createContent, updateContent } from "../domain/io";
 import { generate } from "../domain/generate";
 import { MessageContext } from "./MessageBar";
-import { env } from "../domain/env";
 import { RoutingContext } from "../Routing";
+import examples from "../domain/example";
 
 // |--- worldSize --|-|--- viewSize ---|-|-- opetaionSize --|
 //                  gap                gap
@@ -17,81 +17,7 @@ const viewSize = 300;
 const operationSize = 340;
 const upperHeight = 300;
 const gap = (960 - (worldSize + viewSize + operationSize)) / 2;
-const defaultSettings: Settings = {
-  background: "#103",
-  objects: [
-    {
-      count: 10,
-      shape: {
-        type: "rectangle",
-        width: 0.05,
-        height: {
-          frequency: 0.2,
-          offset: 0.1,
-          amplitude: 0.05,
-        },
-        stroke: {
-          type: "hsl",
-          h: {
-            min: 300,
-            max: 360,
-          },
-          s: 40,
-          l: 90,
-        },
-        strokeWidth: 0.005,
-      },
-    },
-    {
-      count: 2,
-      shape: {
-        type: "polygon",
-        sides: 3,
-        radius: {
-          frequency: 0.2,
-          offset: 0.12,
-          amplitude: 0.05,
-        },
-        fill: {
-          type: "hsl",
-          h: {
-            min: 200,
-            max: 400,
-          },
-          s: 60,
-          l: {
-            min: 50,
-            max: 80,
-          },
-        },
-      },
-    },
-    {
-      count: 3,
-      shape: {
-        type: "circle",
-        radius: {
-          frequency: 0.2,
-          offset: 0.08,
-          amplitude: 0.02,
-        },
-        fill: {
-          type: "hsl",
-          h: {
-            min: 200,
-            max: 400,
-          },
-          s: 60,
-          l: {
-            frequency: 0.2,
-            offset: 50,
-            amplitude: 20,
-          },
-        },
-      },
-    },
-  ],
-};
+
 const spinnerRadiusRatio = 0.5;
 const worldOptions: WorldOptions = {
   size: worldSize,
@@ -109,11 +35,13 @@ export default function Editor(props: {
   const messageContext = React.useContext(MessageContext)!;
 
   const [preview, setPreview] = React.useState(initiallyPreview);
-  const [settings, setSettings] = useState<Settings>(
-    content?.settings ?? defaultSettings
+  const [settings, setSettings] = useState<Settings | null>(
+    content?.settings ?? null
   );
+  const [selectedExampleIndex, setSelectedExampleIndex] = useState<number>(0);
+  const usedSettings = settings ?? examples[selectedExampleIndex].settings;
   const [output, setOutput] = useState<Output>(
-    content?.output ?? generate(spinnerRadiusRatio, settings)
+    content?.output ?? generate(spinnerRadiusRatio, usedSettings)
   );
   const [world, setWorld] = useState<World | null>(null);
   const [settingsController, setSettingsController] =
@@ -150,28 +78,34 @@ export default function Editor(props: {
     setPreview(false);
   };
   const handleRegenerate =
-    settingsController != null && !warningShown
+    settings == null
+      ? () => {
+          const example = examples[selectedExampleIndex];
+          setOutput(generate(spinnerRadiusRatio, example.settings));
+        }
+      : settingsController != null && !warningShown
       ? () => {
           settingsController.save();
         }
       : null;
-  const handlePublish = saved
-    ? async (userName: string) => {
-        try {
-          if (content == null) {
-            const contentId = await createContent(userName, settings, output);
-            routingContext.goTo(
-              `/contents/${userName}/${contentId}/edit`,
-              true
-            );
-          } else {
-            await updateContent(content.author, content.id, settings, output);
+  const handlePublish =
+    settings && saved
+      ? async (userName: string) => {
+          try {
+            if (content == null) {
+              const contentId = await createContent(userName, settings, output);
+              routingContext.goTo(
+                `/contents/${userName}/${contentId}/edit`,
+                true
+              );
+            } else {
+              await updateContent(content.author, content.id, settings, output);
+            }
+          } catch (e) {
+            messageContext.setError(e);
           }
-        } catch (e) {
-          messageContext.setError(e);
         }
-      }
-    : null;
+      : null;
   const handleChange = useCallback(() => {
     setSaved(false);
   }, []);
@@ -225,7 +159,7 @@ export default function Editor(props: {
               height: "90vw",
             }}
           >
-            <View size={viewSize * 2} world={world} settings={settings} />
+            <View size={viewSize * 2} world={world} settings={usedSettings} />
           </div>
         </div>
       </>
@@ -255,7 +189,9 @@ export default function Editor(props: {
             minWidth: viewSize,
           }}
         >
-          {world && <View size={viewSize} world={world} settings={settings} />}
+          {world && (
+            <View size={viewSize} world={world} settings={usedSettings} />
+          )}
         </div>
         <Operation
           width={operationSize}
@@ -267,13 +203,52 @@ export default function Editor(props: {
           content={content}
         />
       </div>
-      <SettingEditor
-        settings={settings}
-        onChange={handleChange}
-        onApply={handleApply}
-        onReady={handleSettingsEditorReady}
-        onWarningShownChange={handleWarningShownChange}
-      />
+      {settings != null ? (
+        <SettingEditor
+          settings={settings}
+          onChange={handleChange}
+          onApply={handleApply}
+          onReady={handleSettingsEditorReady}
+          onWarningShownChange={handleWarningShownChange}
+        />
+      ) : (
+        <div
+          className="form"
+          style={{ alignItems: "flex-start", display: "inline-flex" }}
+        >
+          <div className="form-title">Getting started</div>
+          <div>
+            <div className="select">
+              <select
+                style={{ minWidth: "20ch" }}
+                defaultValue={selectedExampleIndex}
+                onChange={(e) => {
+                  const index = Number(e.target.value);
+                  setSelectedExampleIndex(index);
+                  setOutput(
+                    generate(spinnerRadiusRatio, examples[index].settings)
+                  );
+                }}
+              >
+                {examples.map((example, index) => (
+                  <option key={index} value={index}>
+                    {example.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <button
+              className="button primary"
+              onClick={(e) => {
+                e.preventDefault();
+                setSettings(examples[selectedExampleIndex].settings);
+              }}
+            >
+              Start editing
+            </button>
+          </div>
+        </div>
+      )}
     </>
   );
 }

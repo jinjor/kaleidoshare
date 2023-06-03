@@ -89,7 +89,9 @@ export default function Operation(props: {
               Publish
             </button>
             <div className="help">
-              {onPublish == null ? "Generate to finish editing" : null}
+              {onPublish == null
+                ? "Generate to finish editing" // TODO: example から generate しても publish できない
+                : null}
             </div>
           </div>
         )}
