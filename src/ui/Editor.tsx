@@ -2,14 +2,11 @@ import React, { useCallback, useState } from "react";
 import View from "./View";
 import World, { WorldOptions } from "./World";
 import SettingEditor, { SettingsEditorController } from "./SettingEditor";
-import { Settings } from "../../schema/settings.mjs";
+import { Settings, Output, User, Content } from "../../schema/schema.js";
 import Operation from "./Operation";
 import { createContent, updateContent } from "../domain/io";
-import { Output } from "../../schema/output.mjs";
 import { generate } from "../domain/generate";
 import { MessageContext } from "./MessageBar";
-import { User } from "../../schema/user.mjs";
-import { Content } from "../../schema/content.mjs";
 import { env } from "../domain/env";
 import { RoutingContext } from "../Routing";
 
@@ -104,10 +101,9 @@ const worldOptions: WorldOptions = {
 export default function Editor(props: {
   user: User | null;
   initiallyPreview: boolean;
-  authorName: string | null;
-  content?: Content; // TODO: ここに author 入ってるはず
+  content: Content | null;
 }) {
-  const { user, initiallyPreview, content, authorName } = props;
+  const { user, initiallyPreview, content } = props;
 
   const routingContext = React.useContext(RoutingContext)!;
   const messageContext = React.useContext(MessageContext)!;
@@ -137,15 +133,19 @@ export default function Editor(props: {
   const handlePreview =
     output != null
       ? () => {
-          if (content != null && authorName != null) {
-            routingContext.changeUrl(`/contents/${authorName}/${content.id}`);
+          if (content != null) {
+            routingContext.changeUrl(
+              `/contents/${content.author}/${content.id}`
+            );
           }
           setPreview(true);
         }
       : null;
   const quitPreview = () => {
-    if (content != null && authorName != null) {
-      routingContext.changeUrl(`/contents/${authorName}/${content.id}/edit`);
+    if (content != null) {
+      routingContext.changeUrl(
+        `/contents/${content.author}/${content.id}/edit`
+      );
     }
     setPreview(false);
   };
@@ -158,16 +158,14 @@ export default function Editor(props: {
   const handlePublish = saved
     ? async (userName: string) => {
         try {
-          if (content == null && authorName == null) {
+          if (content == null) {
             const contentId = await createContent(userName, settings, output);
             routingContext.goTo(
               `/contents/${userName}/${contentId}/edit`,
               true
             );
-          } else if (content != null && authorName != null) {
-            await updateContent(authorName, content.id, settings, output);
           } else {
-            throw new Error("Unreachable");
+            await updateContent(content.author, content.id, settings, output);
           }
         } catch (e) {
           messageContext.setError(e);
@@ -267,7 +265,7 @@ export default function Editor(props: {
           onRegenerate={handleRegenerate}
           onPublish={handlePublish}
           allowedToPublish={
-            !env.prod && (authorName == null || authorName === user?.name)
+            !env.prod && (content == null || content.author === user?.name)
           }
         />
       </div>

@@ -1,7 +1,6 @@
 import React from "react";
 import { getContent } from "../domain/io";
-import { User } from "../../schema/user.mjs";
-import { Content } from "../../schema/content.mjs";
+import { User, Content } from "../../schema/schema.js";
 import Nav from "../ui/Nav";
 import Editor from "../ui/Editor";
 import NotFound from "./NotFound";
@@ -37,12 +36,7 @@ export default function ContentPage(props: {
       <Nav user={user}></Nav>
       <main className="horizontal-center" style={{ flexGrow: 1 }}>
         <div className="container editor-wrapper">
-          <Editor
-            user={user}
-            initiallyPreview={!edit}
-            authorName={authorName}
-            content={content}
-          />
+          <Editor user={user} initiallyPreview={!edit} content={content} />
         </div>
       </main>
     </>

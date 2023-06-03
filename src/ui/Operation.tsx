@@ -1,6 +1,6 @@
 import React, { ReactNode } from "react";
 import SignupForm from "./SignupForm";
-import { User } from "../../schema/user.mjs";
+import { User } from "../../schema/schema.js";
 import { env } from "../domain/env";
 import { MessageContext } from "./MessageBar";
 

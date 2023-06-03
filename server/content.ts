@@ -1,16 +1,9 @@
 import { ulid } from "ulid";
 import { openKv } from "./kv.ts";
+import { Content } from "../schema/schema.ts";
 
 // Schema:
 // - contents: contentId => Content
-export type Content = {
-  id: string;
-  author: string;
-  settings: unknown;
-  output: unknown;
-  createdAt: string;
-  updatedAt: string;
-};
 
 async function getContent(
   author: string,

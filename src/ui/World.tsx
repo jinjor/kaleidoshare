@@ -18,7 +18,7 @@ import {
   OutObject,
   OutSpinner,
   Output,
-} from "../../schema/output.mjs";
+} from "../../schema/schema.js";
 
 Common.setDecomp(decomp);
 

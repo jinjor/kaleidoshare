@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import World from "./World";
-import { Settings } from "../../schema/settings.mjs";
+import { Settings } from "../../schema/schema.js";
 
 const generation = 5;
 const f = [

@@ -1,6 +1,6 @@
 import React, { useRef } from "react";
 import Editor, { Monaco } from "@monaco-editor/react";
-import { Settings } from "../../schema/settings.mjs";
+import { Settings } from "../../schema/schema.js";
 import schema from "../../schema/schema.json";
 import { env } from "../domain/env";
 import Ajv from "ajv";

@@ -2,7 +2,7 @@ import React from "react";
 import Nav from "../ui/Nav";
 import { addCredential, deleteAccount } from "../domain/io";
 import { MessageContext } from "../ui/MessageBar";
-import { User } from "../../schema/user.mjs";
+import { User } from "../../schema/schema.js";
 import { RoutingContext } from "../Routing";
 
 export default function Account(props: { user: User | null }) {

@@ -2,7 +2,7 @@ import React, { useCallback } from "react";
 import Nav from "../ui/Nav";
 import SignupForm from "../ui/SignupForm";
 import { MessageContext } from "../ui/MessageBar";
-import { User } from "../../schema/user.mjs";
+import { User } from "../../schema/schema.js";
 import { RoutingContext } from "../Routing";
 
 export default function Signup(props: { user: User | null }) {

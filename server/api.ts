@@ -22,8 +22,7 @@ import {
 
 import Ajv, { ValidateFunction } from "ajv";
 import schema from "../schema/schema.json" assert { type: "json" };
-import { Settings } from "../schema/settings.mts";
-import { Output } from "../schema/output.mts";
+import { Settings, Output } from "../schema/schema.ts";
 
 const ajv = new Ajv.default();
 function validate<T>(validate: ValidateFunction<T>, data: unknown): T {

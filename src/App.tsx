@@ -7,7 +7,7 @@ import Home from "./page/Home";
 import Account from "./page/Account";
 import { MessageContext, useMessage } from "./ui/MessageBar";
 import { env } from "./domain/env";
-import { User } from "../schema/user.mjs";
+import { User } from "../schema/schema.js";
 import { RoutingContext, useSPARouting } from "./Routing";
 
 type Route =

@@ -2,10 +2,7 @@ import {
   startRegistration,
   startAuthentication,
 } from "@simplewebauthn/browser";
-import { Settings } from "../../schema/settings.mjs";
-import { Output } from "../../schema/output.mjs";
-import { Content } from "../../schema/content.mjs";
-import { User } from "../../schema/user.mjs";
+import { Settings, Output, Content, User } from "../../schema/schema.js";
 import { AppError } from "./error.js";
 
 async function request(
