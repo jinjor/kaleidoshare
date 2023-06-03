@@ -51,9 +51,8 @@ export default function Nav(props: {
               <></>
             ) : user ? (
               <>
-                <li>{user.name}</li>
                 <li>
-                  <a href="/account">Account</a>
+                  <a href="/account">{user.name}</a>
                 </li>
                 <li>
                   <button className="button" onClick={handleLogout}>
