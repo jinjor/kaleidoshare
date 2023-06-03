@@ -3,14 +3,12 @@ import Nav from "../ui/Nav";
 import { addCredential, deleteAccount } from "../domain/io";
 import { MessageContext } from "../ui/MessageBar";
 import { User } from "../../schema/user.mjs";
+import { RoutingContext } from "../Routing";
 
 export default function Account(props: { user: User | null }) {
   const { user } = props;
-  if (user == null) {
-    location.href = "/";
-    return null;
-  }
 
+  const routingContext = React.useContext(RoutingContext)!;
   const messageContext = React.useContext(MessageContext)!;
 
   const handleAddCredential = async (
@@ -35,12 +33,16 @@ export default function Account(props: { user: User | null }) {
     try {
       await deleteAccount();
       // TODO: success message
-      location.href = "/";
+      routingContext.goTo("/", true);
     } catch (e) {
       messageContext.setError(e);
     }
   };
 
+  if (user == null) {
+    routingContext.goTo("/", false);
+    return null;
+  }
   return (
     <>
       <Nav user={user}></Nav>

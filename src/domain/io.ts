@@ -133,26 +133,6 @@ export async function logout(): Promise<void> {
   });
 }
 
-export async function publish(
-  userName: string,
-  settings: Settings,
-  output: Output
-): Promise<string> {
-  // TODO: encode
-  const res = await request(`/api/contents/${userName}`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      settings,
-      output,
-    }),
-  });
-  const { id } = await res.json();
-  return id;
-}
-
 export async function getSession(): Promise<User | null> {
   const res = await request("/api/session", {
     method: "GET",
@@ -184,4 +164,43 @@ export async function getContent(
     },
   });
   return await res.json();
+}
+
+export async function createContent(
+  userName: string,
+  settings: Settings,
+  output: Output
+): Promise<string> {
+  // TODO: encode
+  const res = await request(`/api/contents/${userName}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      settings,
+      output,
+    }),
+  });
+  const { id } = await res.json();
+  return id;
+}
+
+export async function updateContent(
+  userName: string,
+  contentId: string,
+  settings: Settings,
+  output: Output
+): Promise<void> {
+  // TODO: encode
+  await request(`/api/contents/${userName}/${contentId}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      settings,
+      output,
+    }),
+  });
 }

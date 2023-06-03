@@ -3,17 +3,20 @@ import Nav from "../ui/Nav";
 import SignupForm from "../ui/SignupForm";
 import { MessageContext } from "../ui/MessageBar";
 import { User } from "../../schema/user.mjs";
+import { RoutingContext } from "../Routing";
 
 export default function Signup(props: { user: User | null }) {
   const { user } = props;
-  if (user !== null) {
-    location.href = "/";
-    return null;
-  }
+  const routingContext = React.useContext(RoutingContext)!;
   const messageContext = React.useContext(MessageContext)!;
   const handleSuccess = useCallback(() => {
-    location.href = "/";
-  }, []);
+    routingContext.goTo("/", true);
+  }, [routingContext]);
+
+  if (user !== null) {
+    routingContext.goTo("/", false);
+    return null;
+  }
   return (
     <>
       <Nav user={user}></Nav>

@@ -11,8 +11,9 @@ export default function ContentPage(props: {
   user: User | null;
   authorName: string;
   contentId: string;
+  edit: boolean;
 }) {
-  const { user, authorName, contentId } = props;
+  const { user, authorName, contentId, edit } = props;
   const [content, setContent] = React.useState<Content | null | undefined>();
   const messageContext = React.useContext(MessageContext)!;
 
@@ -38,7 +39,7 @@ export default function ContentPage(props: {
         <div className="container editor-wrapper">
           <Editor
             user={user}
-            initiallyPreview={true}
+            initiallyPreview={!edit}
             authorName={authorName}
             content={content}
           />

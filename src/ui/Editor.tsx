@@ -4,13 +4,14 @@ import World, { WorldOptions } from "./World";
 import SettingEditor, { SettingsEditorController } from "./SettingEditor";
 import { Settings } from "../../schema/settings.mjs";
 import Operation from "./Operation";
-import { publish } from "../domain/io";
+import { createContent, updateContent } from "../domain/io";
 import { Output } from "../../schema/output.mjs";
 import { generate } from "../domain/generate";
 import { MessageContext } from "./MessageBar";
 import { User } from "../../schema/user.mjs";
 import { Content } from "../../schema/content.mjs";
 import { env } from "../domain/env";
+import { RoutingContext } from "../Routing";
 
 // |--- worldSize --|-|--- viewSize ---|-|-- opetaionSize --|
 //                  gap                gap
@@ -104,10 +105,11 @@ export default function Editor(props: {
   user: User | null;
   initiallyPreview: boolean;
   authorName: string | null;
-  content?: Content;
+  content?: Content; // TODO: ここに author 入ってるはず
 }) {
   const { user, initiallyPreview, content, authorName } = props;
 
+  const routingContext = React.useContext(RoutingContext)!;
   const messageContext = React.useContext(MessageContext)!;
 
   const [preview, setPreview] = React.useState(initiallyPreview);
@@ -132,7 +134,21 @@ export default function Editor(props: {
     },
     []
   );
-  const handlePreview = output != null ? () => setPreview(true) : null;
+  const handlePreview =
+    output != null
+      ? () => {
+          if (content != null && authorName != null) {
+            routingContext.changeUrl(`/contents/${authorName}/${content.id}`);
+          }
+          setPreview(true);
+        }
+      : null;
+  const quitPreview = () => {
+    if (content != null && authorName != null) {
+      routingContext.changeUrl(`/contents/${authorName}/${content.id}/edit`);
+    }
+    setPreview(false);
+  };
   const handleRegenerate =
     settingsController != null && !warningShown
       ? () => {
@@ -142,8 +158,17 @@ export default function Editor(props: {
   const handlePublish = saved
     ? async (userName: string) => {
         try {
-          const contentId = await publish(userName, settings, output);
-          location.href = `/contents/${userName}/${contentId}`;
+          if (content == null && authorName == null) {
+            const contentId = await createContent(userName, settings, output);
+            routingContext.goTo(
+              `/contents/${userName}/${contentId}/edit`,
+              true
+            );
+          } else if (content != null && authorName != null) {
+            await updateContent(authorName, content.id, settings, output);
+          } else {
+            throw new Error("Unreachable");
+          }
         } catch (e) {
           messageContext.setError(e);
         }
@@ -162,9 +187,6 @@ export default function Editor(props: {
     setTimeout(() => {
       setSaved(true);
     }, 100);
-  }, []);
-  const quitPreview = useCallback(() => {
-    setPreview(false);
   }, []);
   const handleWarningShownChange = useCallback((warningShown) => {
     setWarningShown(warningShown);

@@ -8,6 +8,7 @@ import Account from "./page/Account";
 import { MessageContext, useMessage } from "./ui/MessageBar";
 import { env } from "./domain/env";
 import { User } from "../schema/user.mjs";
+import { RoutingContext, useSPARouting } from "./Routing";
 
 type Route =
   | {
@@ -23,6 +24,7 @@ type Route =
       type: "content";
       authorName: string;
       contentId: string;
+      edit: boolean;
     };
 
 function getRoute(pathname: string): Route | null {
@@ -35,59 +37,36 @@ function getRoute(pathname: string): Route | null {
   if (pathname === "/account") {
     return { type: "account" };
   }
-  const match = pathname.match(/^\/contents\/([^\/]+)\/([^\/]+)$/);
-  if (match) {
-    const [, authorName, contentId] = match;
-    return { type: "content", authorName, contentId };
+  {
+    const match = pathname.match(/^\/contents\/([^\/]+)\/([^\/]+)$/);
+    if (match) {
+      const [, authorName, contentId] = match;
+      return { type: "content", authorName, contentId, edit: false };
+    }
+  }
+  {
+    const match = pathname.match(/^\/contents\/([^\/]+)\/([^\/]+)\/edit$/);
+    if (match) {
+      const [, authorName, contentId] = match;
+      return { type: "content", authorName, contentId, edit: true };
+    }
   }
   return null;
 }
-
-const useSPARouting = (callback: () => void) => {
-  useEffect(() => {
-    const handlePopState = () => {
-      callback();
-    };
-    const handleAnchorClick = (e: MouseEvent) => {
-      let target: EventTarget | null = e.target;
-      while (true) {
-        if (target instanceof HTMLAnchorElement) {
-          break;
-        }
-        if (!(target instanceof HTMLElement)) {
-          return;
-        }
-        const parent = target.parentElement;
-        if (parent === target) {
-          return;
-        }
-        target = parent;
-      }
-      const href = target.getAttribute("href");
-      if (href?.startsWith("/") && target.target !== "_blank") {
-        e.preventDefault();
-        window.history.pushState(null, "", href);
-        handlePopState();
-      }
-    };
-    window.addEventListener("popstate", handlePopState);
-    document.addEventListener("click", handleAnchorClick, true);
-    return () => {
-      window.removeEventListener("popstate", handlePopState);
-      document.removeEventListener("click", handleAnchorClick);
-    };
-  }, []);
-};
 
 export default function App() {
   const initialRoute = getRoute(window.location.pathname);
   const [user, setUser] = React.useState<User | null | undefined>(undefined);
   const [route, setRoute] = React.useState<Route | null>(initialRoute);
+  const [sessionKey, setSessionKey] = React.useState<number>(Date.now());
 
   const messageContext = useMessage();
-  useSPARouting(() => {
+  const routingContext = useSPARouting((refreshSession) => {
     const route = getRoute(window.location.pathname);
     setRoute(route);
+    if (refreshSession) {
+      setSessionKey(Date.now());
+    }
   });
   useEffect(() => {
     // TODO: 直す
@@ -98,27 +77,30 @@ export default function App() {
         .then((user) => setUser(user))
         .catch(messageContext.setError);
     }
-  }, []);
+  }, [sessionKey]);
   if (user === undefined) {
     return null;
   }
   return (
-    <MessageContext.Provider value={messageContext}>
-      {route?.type === "home" ? (
-        <Home user={user} />
-      ) : route?.type === "signup" ? (
-        <Signup user={user} />
-      ) : route?.type === "account" ? (
-        <Account user={user} />
-      ) : route?.type === "content" ? (
-        <Content
-          user={user}
-          authorName={route.authorName}
-          contentId={route.contentId}
-        />
-      ) : (
-        <NotFound user={user} />
-      )}
-    </MessageContext.Provider>
+    <RoutingContext.Provider value={routingContext}>
+      <MessageContext.Provider value={messageContext}>
+        {route?.type === "home" ? (
+          <Home user={user} />
+        ) : route?.type === "signup" ? (
+          <Signup user={user} />
+        ) : route?.type === "account" ? (
+          <Account user={user} />
+        ) : route?.type === "content" ? (
+          <Content
+            user={user}
+            authorName={route.authorName}
+            contentId={route.contentId}
+            edit={route.edit}
+          />
+        ) : (
+          <NotFound user={user} />
+        )}
+      </MessageContext.Provider>
+    </RoutingContext.Provider>
   );
 }
