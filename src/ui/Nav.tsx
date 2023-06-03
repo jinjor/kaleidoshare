@@ -3,10 +3,12 @@ import { login, logout } from "../domain/io";
 import { env } from "../domain/env";
 import ErrorBar, { MessageContext } from "./MessageBar";
 import { User } from "../../schema/schema.js";
+import { RoutingContext } from "../Routing";
 
 export default function Nav(props: { user: User | null }) {
   const { user } = props;
 
+  const routingContext = React.useContext(RoutingContext)!;
   const messageContext = React.useContext(MessageContext)!;
 
   const handleLogin = async (event: React.FormEvent<HTMLButtonElement>) => {
@@ -14,7 +16,7 @@ export default function Nav(props: { user: User | null }) {
     try {
       const done = await login();
       if (done) {
-        location.reload();
+        routingContext.goTo(location.pathname, true);
       }
     } catch (e) {
       messageContext.setError(e);
