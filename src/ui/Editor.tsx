@@ -111,6 +111,7 @@ export default function Editor(props: {
 
   const routingContext = React.useContext(RoutingContext)!;
   const messageContext = React.useContext(MessageContext)!;
+  const previewRef = React.useRef<HTMLDivElement>(null);
 
   const [preview, setPreview] = React.useState(initiallyPreview);
   const [settings, setSettings] = useState<Settings>(
@@ -141,6 +142,14 @@ export default function Editor(props: {
             routingContext.changeUrl(`/contents/${authorName}/${content.id}`);
           }
           setPreview(true);
+          // setTimeout(() => {
+          //   const element = previewRef.current!;
+          //   if ("webkitRequestFullscreen" in element) {
+          //     (element as any).webkitRequestFullscreen();
+          //   } else {
+          //     element.requestFullscreen();
+          //   }
+          // });
         }
       : null;
   const quitPreview = () => {
@@ -204,6 +213,7 @@ export default function Editor(props: {
           />
         </div>
         <div
+          ref={previewRef}
           style={{
             position: "fixed",
             top: 0,
