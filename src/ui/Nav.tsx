@@ -4,11 +4,8 @@ import { env } from "../domain/env";
 import ErrorBar, { MessageContext } from "./MessageBar";
 import { User } from "../../schema/user.mjs";
 
-export default function Nav(props: {
-  user: User | null;
-  children?: React.ReactNode;
-}) {
-  const { user, children } = props;
+export default function Nav(props: { user: User | null }) {
+  const { user } = props;
 
   const messageContext = React.useContext(MessageContext)!;
 
@@ -46,10 +43,7 @@ export default function Nav(props: {
             <img src="/logo.png" width={200} />
           </a>
           <ul>
-            {children}
-            {env.prod ? (
-              <></>
-            ) : user ? (
+            {env.prod ? null : user ? (
               <>
                 <li>
                   <a href="/account">{user.name}</a>
