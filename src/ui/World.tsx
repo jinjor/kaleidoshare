@@ -105,6 +105,7 @@ function setupWorld(
   const engine = Engine.create();
   const createCanvas = (width: number, height: number) => {
     const canvas = document.createElement("canvas");
+    canvas.style.display = "block"; // これがないとスクロールバーが出現する
     canvas.width = width;
     canvas.height = height;
     canvas.oncontextmenu = () => false;
