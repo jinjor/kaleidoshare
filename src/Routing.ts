@@ -46,7 +46,7 @@ export function useSPARouting(
     document.addEventListener("click", handleAnchorClick, true);
     return () => {
       window.removeEventListener("popstate", handlePopState);
-      document.removeEventListener("click", handleAnchorClick);
+      document.removeEventListener("click", handleAnchorClick, true);
     };
   }, []);
   return { goTo, changeUrl };
