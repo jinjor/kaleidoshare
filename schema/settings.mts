@@ -1,5 +1,5 @@
 /**
- * @exclusiveMinimum 0
+ * @minimum 0
  * @maximum 100
  * @asType integer
  */
