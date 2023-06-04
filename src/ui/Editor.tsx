@@ -212,41 +212,35 @@ export default function Editor(props: {
           onWarningShownChange={handleWarningShownChange}
         />
       ) : (
-        <div
-          className="form"
-          style={{ alignItems: "flex-start", display: "inline-flex" }}
-        >
+        <div className="form">
           <div className="form-title">Getting started</div>
-          <div>
-            <div className="select">
-              <select
-                style={{ minWidth: "20ch" }}
-                defaultValue={selectedExampleIndex}
-                onChange={(e) => {
-                  const index = Number(e.target.value);
-                  setSelectedExampleIndex(index);
-                  setOutput(
-                    generate(spinnerRadiusRatio, examples[index].settings)
-                  );
-                }}
-              >
-                {examples.map((example, index) => (
-                  <option key={index} value={index}>
-                    {example.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <button
-              className="button primary"
-              onClick={(e) => {
-                e.preventDefault();
-                setSettings(examples[selectedExampleIndex].settings);
+          <div className="select">
+            <select
+              defaultValue={selectedExampleIndex}
+              onChange={(e) => {
+                const index = Number(e.target.value);
+                setSelectedExampleIndex(index);
+                setOutput(
+                  generate(spinnerRadiusRatio, examples[index].settings)
+                );
               }}
             >
-              Start editing
-            </button>
+              {examples.map((example, index) => (
+                <option key={index} value={index}>
+                  {example.name}
+                </option>
+              ))}
+            </select>
           </div>
+          <button
+            className="button primary wide"
+            onClick={(e) => {
+              e.preventDefault();
+              setSettings(examples[selectedExampleIndex].settings);
+            }}
+          >
+            Start editing
+          </button>
         </div>
       )}
     </>
