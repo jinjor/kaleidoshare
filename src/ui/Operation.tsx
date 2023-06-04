@@ -59,9 +59,15 @@ export default function Operation(props: {
             disabled={onRegenerate == null}
             onClick={() => onRegenerate?.()}
           >
-            Generate <ForceBaseline>(</ForceBaseline>
-            {commandToRegenerate}
-            <ForceBaseline>)</ForceBaseline>
+            Generate
+            {!env.mobile && (
+              <>
+                {" "}
+                <ForceBaseline>(</ForceBaseline>
+                {commandToRegenerate}
+                <ForceBaseline>)</ForceBaseline>
+              </>
+            )}
           </button>
           <div className="help">
             {onRegenerate == null ? "Setting is not valid" : null}
