@@ -212,3 +212,43 @@ main {
   color: #999;
   height: 16px;
 }
+
+.message-bar {
+  position: absolute;
+  top: 10px;
+  z-index: 2;
+  text-align: center;
+  width: 100%;
+  overflow: hidden;
+  transition: max-height 0.5s ease-in-out;
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+  box-sizing: border-box;
+}
+.message-bar:not(.show) {
+  max-height: 0;
+}
+.message-bar.show {
+  max-height: 100px;
+}
+.message-bar-inner {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 200px;
+  max-width: 100%;
+  margin: 0 auto;
+  border-radius: var(--border-radius);
+  padding: 8px 16px;
+  border-style: solid;
+  border-width: 1px;
+}
+.message-bar.success .message-bar-inner {
+  background-color: #122;
+  border-color: #366;
+}
+.message-bar.error .message-bar-inner {
+  background-color: #312;
+  border-color: #735;
+}

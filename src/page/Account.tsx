@@ -18,7 +18,7 @@ export default function Account(props: { user: User | null }) {
     try {
       const done = await addCredential();
       if (done) {
-        // TODO: success message
+        messageContext.setMessage("Credential added");
       }
     } catch (e) {
       messageContext.setError(e);
@@ -32,7 +32,7 @@ export default function Account(props: { user: User | null }) {
     event.preventDefault();
     try {
       await deleteAccount();
-      // TODO: success message
+      messageContext.setMessage("Account deleted");
       routingContext.goTo("/", true);
     } catch (e) {
       messageContext.setError(e);

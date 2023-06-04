@@ -1,4 +1,10 @@
-import React, { createContext, useCallback, useContext, useState } from "react";
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import { AppError } from "../domain/error";
 
 type InfoType = "success" | "error";
@@ -10,10 +16,9 @@ type ErrorInfo = {
   message: string;
 };
 type MessageContext = {
-  info: ErrorInfo | null;
+  info: Info | null;
   setError: (info: ErrorInfo) => void;
   setMessage: (message: string, type?: InfoType) => void;
-  clear: () => void;
 };
 
 export const MessageContext = createContext<MessageContext | null>(null);
@@ -34,41 +39,40 @@ export function useMessage(): MessageContext {
     },
     []
   );
-  const clear = useCallback(() => {
-    setInfo(null);
-  }, []);
-  return { info, setError, setMessage, clear };
+  return { info, setError, setMessage };
 }
 
 export default function MessageBar() {
-  const context = useContext(MessageContext);
-  if (context?.info == null) {
-    return null;
-  }
-  const { info, clear } = context;
+  const context = useContext(MessageContext)!;
+  const [show, setShow] = useState(false);
+  useEffect(() => {
+    if (context.info != null) {
+      setShow(true);
+      const timeout = setTimeout(
+        () => {
+          setShow(false);
+        },
+        context.info.type === "error" ? 5000 : 3000
+      );
+      return () => {
+        clearTimeout(timeout);
+      };
+    }
+  }, [context.info]);
+  const message = context.info?.message ?? "";
+  const { info } = context;
   return (
     <div
-      className="horizontal-center"
-      style={{
-        position: "absolute",
-        backgroundColor: "#834",
-        width: "100%",
-        zIndex: 2,
-      }}
+      className={["message-bar", info?.type ?? "", show ? "show" : ""].join(
+        " "
+      )}
     >
-      <div
-        className="container"
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-        }}
-      >
-        <p style={{ margin: "12px 0" }}>{info.message}</p>
+      <div className="message-bar-inner">
+        <p style={{ margin: 0 }}>{message}</p>
         <button
           className="button"
-          style={{ border: "none" }}
-          onClick={() => clear()}
+          style={{ border: "none", marginRight: -16 }}
+          onClick={() => setShow(false)}
         >
           <svg viewBox="0 0 1 1" style={{ width: "12px", height: "12px" }}>
             <path
