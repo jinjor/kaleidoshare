@@ -183,7 +183,6 @@ main {
   border: var(--border);
   border-radius: var(--border-radius);
   display: inline-flex;
-  padding-right: 16px;
   position: relative;
 }
 .select select {
@@ -196,6 +195,7 @@ main {
   font-size: var(--font-size);
   line-height: 1;
   cursor: pointer;
+  width: 100%;
 }
 .select::after {
   content: "▼";
