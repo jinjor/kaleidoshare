@@ -252,3 +252,14 @@ main {
   background-color: #312;
   border-color: #735;
 }
+button.link {
+  border: none;
+  outline: none;
+  appearance: none;
+  color: inherit;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+  font-weight: bold;
+  text-decoration: underline;
+}

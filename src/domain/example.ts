@@ -83,17 +83,21 @@ export const example1: Example = {
   },
 };
 export const example2: Example = {
-  name: "example 2",
+  name: "Snow",
   settings: {
-    background: "#103",
+    background: "#124",
     objects: [
       {
         count: 100,
         shape: {
           type: "circle",
-          radius: { min: 0.015, max: 0.03 },
-          stroke: "#eee",
-          strokeWidth: 0.005,
+          radius: {
+            min: 0.01,
+            max: 0.04,
+          },
+          stroke: "#28e",
+          strokeWidth: 0.01,
+          fill: ["transparent", "#ddd", "#8be"],
         },
       },
     ],

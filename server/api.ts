@@ -102,6 +102,7 @@ export function createRouters(
     );
     await context.state.session.set("login", userName);
     context.response.status = 200;
+    context.response.body = JSON.stringify({ name: userName });
   });
   router.get("/session", async (context) => {
     const name = await context.state.session.get("login");
@@ -216,7 +217,7 @@ export function handleError(context: Context, e: unknown) {
   if (e instanceof RegistrationNotVerifiedError) {
     context.response.status = 401;
     context.response.body = JSON.stringify({
-      message: "not verified",
+      message: "Registration failed",
     });
     return;
   }
@@ -226,14 +227,14 @@ export function handleError(context: Context, e: unknown) {
   ) {
     context.response.status = 401;
     context.response.body = JSON.stringify({
-      message: "not verified",
+      message: "Authentication failed",
     });
     return;
   }
   if (e instanceof AuthorDoesNotMatchError) {
     context.response.status = 403;
     context.response.body = JSON.stringify({
-      message: "author does not match",
+      message: "Author does not match",
     });
     return;
   }

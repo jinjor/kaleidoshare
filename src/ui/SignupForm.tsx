@@ -1,9 +1,9 @@
 import React from "react";
-import { register } from "../domain/io";
+import { login, register } from "../domain/io";
 import schema from "../../schema/schema.json";
 
 export default function SignupForm(props: {
-  onSuccess: (userName: string) => void;
+  onSuccess: (userName: string, isLogin: boolean) => void;
   onError: (error: Error) => void;
   onCancel: () => void;
 }) {
@@ -12,9 +12,24 @@ export default function SignupForm(props: {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     const userName = data.get("name") as string;
-    const done = await register(userName).catch(onError);
-    if (done) {
-      onSuccess(userName);
+    try {
+      const done = await register(userName);
+      if (done) {
+        onSuccess(userName, false);
+      }
+    } catch (e) {
+      onError(e);
+    }
+  };
+  const handleLogin = async (event: React.FormEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    try {
+      const user = await login();
+      if (user != null) {
+        onSuccess(user.name, true);
+      }
+    } catch (e) {
+      onError(e);
     }
   };
   return (
@@ -64,6 +79,12 @@ export default function SignupForm(props: {
             type="submit"
             value="Signup"
           />
+          <div className="help">
+            Already have an account? -{" "}
+            <button className="link" onClick={handleLogin}>
+              Login
+            </button>
+          </div>
         </form>
       </div>
     </div>

@@ -17,9 +17,9 @@ export default function Nav(props: { user: User | null }) {
     event.preventDefault();
     setFormKey(Date.now());
   };
-  const handleSignupSuccess = async (userName: string) => {
+  const handleSignupSuccess = async (_userName: string, isLogin: boolean) => {
     setFormKey(0);
-    messageContext.setMessage(`Signed up`);
+    messageContext.setMessage(isLogin ? "Hello" : "Welcome");
     routingContext.refreshSession();
   };
   const handleSignupFailure = async (error: any) => {
@@ -35,7 +35,7 @@ export default function Nav(props: { user: User | null }) {
     try {
       const done = await login();
       if (done) {
-        messageContext.setMessage(`Logged in`);
+        messageContext.setMessage("Hello");
         routingContext.refreshSession();
       }
     } catch (e) {
@@ -46,7 +46,8 @@ export default function Nav(props: { user: User | null }) {
     event.preventDefault();
     try {
       await logout();
-      location.reload();
+      messageContext.setMessage("Bye");
+      routingContext.refreshSession();
     } catch (e) {
       messageContext.setError(e);
     }

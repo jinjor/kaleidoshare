@@ -97,7 +97,7 @@ export async function deleteAccount(): Promise<void> {
   });
 }
 
-export async function login(): Promise<boolean> {
+export async function login(): Promise<User | null> {
   const res = await request("/api/session/new", {
     method: "POST",
     headers: {
@@ -107,18 +107,18 @@ export async function login(): Promise<boolean> {
   const authenticateOps = await res.json();
   try {
     const authResp = await startAuthentication(authenticateOps);
-    await request("/api/session", {
+    const res = await request("/api/session", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(authResp),
     });
-    return true;
+    return res.json();
   } catch (e) {
     // 上と同様
     if (e.name === "NotAllowedError") {
-      return false;
+      return null;
     }
     throw e;
   }

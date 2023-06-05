@@ -102,7 +102,7 @@ export default function Operation(props: {
           </div>
         )}
         {content != null && (
-          <div style={{ marginTop: "auto", fontSize: "14px" }}>
+          <div className="help" style={{ marginTop: "auto" }}>
             Created by {content.author}
           </div>
         )}
