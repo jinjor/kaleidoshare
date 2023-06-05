@@ -16,6 +16,7 @@ import {
   OutObject,
   Output,
   OutSpinner,
+  Angle,
 } from "../../schema/schema.js";
 
 export function generate(
@@ -92,25 +93,25 @@ function generateObject(shape: Shape): OutObject {
     return polygon;
   }
 }
-function generateInt(int: Count): number {
-  if (typeof int === "number") {
-    return int;
+function generateInt(value: Count): number {
+  if (typeof value === "number") {
+    return value;
   } else {
-    return randomInt(int.min, int.max);
+    return randomInt(value.min, value.max);
   }
 }
-function generateFloat(length: Length | Byte | Degree | Percent): OutFloat {
-  if (typeof length === "number") {
-    return length;
-  } else if ("frequency" in length) {
+function generateFloat(value: Length | Byte | Degree | Percent): OutFloat {
+  if (typeof value === "number") {
+    return value;
+  } else if ("frequency" in value) {
     return {
-      frequency: generateFrequency(length.frequency),
-      angle: randomFloat(0, Math.PI * 2),
-      offset: generateFloat(length.offset),
-      amplitude: generateFloat(length.amplitude),
+      frequency: generateFrequency(value.frequency),
+      angle: generateAngle(value.angle),
+      offset: generateFloat(value.offset),
+      amplitude: generateFloat(value.amplitude),
     };
   } else {
-    return randomFloat(length.min, length.max);
+    return randomFloat(value.min, value.max);
   }
 }
 function generateFrequency(frequency: Frequency): number {
@@ -118,6 +119,15 @@ function generateFrequency(frequency: Frequency): number {
     return frequency;
   } else {
     return randomFloat(frequency.min, frequency.max);
+  }
+}
+function generateAngle(angle: Angle | undefined): number {
+  if (angle == null) {
+    return randomFloat(0, Math.PI * 2);
+  } else if (typeof angle === "number") {
+    return angle * ((2 * Math.PI) / 360);
+  } else {
+    return randomFloat(angle.min, angle.max) * ((2 * Math.PI) / 360);
   }
 }
 export function generateColor(color: Color): OutColor {

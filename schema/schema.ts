@@ -49,9 +49,10 @@ export type RandomValue<T> = {
 export type CanBeRandom<T> = T | RandomValue<T>;
 
 export type Frequency = CanBeRandom<FixedFrequency>;
+export type Angle = CanBeRandom<FixedDegree>;
 export type PeriodicValue<T> = {
   frequency: Frequency;
-  // TODO: angle 指定したいかも
+  angle?: Angle;
   offset: T;
   amplitude: T;
 };

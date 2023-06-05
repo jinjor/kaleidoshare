@@ -103,12 +103,52 @@ export const example2: Example = {
     ],
   },
 };
+export const example3: Example = {
+  name: "Maple",
+  settings: {
+    background: "#adf",
+    objects: [
+      {
+        count: 50,
+        shape: {
+          type: "polygon",
+          sides: 3,
+          radius: {
+            min: 0.03,
+            max: 0.07,
+          },
+          fill: {
+            type: "hsl",
+            h: {
+              frequency: 0.1,
+              angle: {
+                min: 0,
+                max: 150,
+              },
+              offset: 55,
+              amplitude: 60,
+            },
+            s: 80,
+            l: 40,
+          },
+          stroke: {
+            type: "hsl",
+            h: 55,
+            s: 30,
+            l: 20,
+          },
+          strokeWidth: 0.008,
+        },
+      },
+    ],
+  },
+};
 
 export const empty: Example = {
-  name: "empty",
+  name: "Empty",
   settings: {
     objects: [],
   },
 };
 
-export default [example1, example2, empty];
+export default [example1, example2, example3, empty];
