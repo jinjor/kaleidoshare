@@ -77,7 +77,7 @@ export default function Editor(props: {
     }
     setPreview(false);
   };
-  const handleRegenerate =
+  const handleGenerate =
     settings == null
       ? () => {
           const example = examples[selectedExampleIndex];
@@ -200,7 +200,7 @@ export default function Editor(props: {
           height={upperHeight}
           user={user}
           onPreview={handlePreview}
-          onRegenerate={handleRegenerate}
+          onGenerate={handleGenerate}
           onPublish={handlePublish}
           content={content}
         />

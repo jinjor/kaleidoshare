@@ -9,13 +9,13 @@ export default function Operation(props: {
   width: number;
   height: number;
   onPreview: (() => void) | null;
-  onRegenerate: (() => void) | null;
+  onGenerate: (() => void) | null;
   onPublish: ((userName: string) => void) | null;
   content: Content | null;
 }) {
-  const { user, width, height, onPreview, onRegenerate, onPublish, content } =
+  const { user, width, height, onPreview, onGenerate, onPublish, content } =
     props;
-  const [formKey, setFormKey] = React.useState(0);
+  const [signupFormId, setSignupFormId] = React.useState<number | null>(null);
 
   const messageContext = React.useContext(MessageContext)!;
   const handlePublish = (userName: string) => {
@@ -30,18 +30,18 @@ export default function Operation(props: {
       await handlePublish(user.name);
       return;
     }
-    setFormKey(Date.now());
+    setSignupFormId(Date.now());
   };
   const handleSignupSuccess = async (userName: string) => {
-    setFormKey(0);
+    setSignupFormId(null);
     await handlePublish(userName);
   };
   const handleSignupFailure = async (error: any) => {
-    setFormKey(0);
+    setSignupFormId(null);
     messageContext.setError(error);
   };
   const handleSignupCancel = async () => {
-    setFormKey(0);
+    setSignupFormId(null);
   };
   const handlePreview = async (event: React.FormEvent<HTMLButtonElement>) => {
     event.preventDefault();
@@ -56,8 +56,8 @@ export default function Operation(props: {
         <div className="form-item">
           <button
             className="button wide"
-            disabled={onRegenerate == null}
-            onClick={() => onRegenerate?.()}
+            disabled={onGenerate == null}
+            onClick={() => onGenerate?.()}
           >
             Generate
             {!env.mobile && (
@@ -70,7 +70,7 @@ export default function Operation(props: {
             )}
           </button>
           <div className="help">
-            {onRegenerate == null ? "Setting is not valid" : null}
+            {onGenerate == null ? "Setting is not valid" : null}
           </div>
         </div>
         <div className="form-item">
@@ -107,14 +107,12 @@ export default function Operation(props: {
           </div>
         )}
       </div>
-      {formKey > 0 && (
-        <SignupForm
-          key={formKey}
-          onSuccess={handleSignupSuccess}
-          onError={handleSignupFailure}
-          onCancel={handleSignupCancel}
-        />
-      )}
+      <SignupForm
+        id={signupFormId}
+        onSuccess={handleSignupSuccess}
+        onError={handleSignupFailure}
+        onCancel={handleSignupCancel}
+      />
     </>
   );
 }

@@ -3,11 +3,12 @@ import { login, register } from "../domain/io";
 import schema from "../../schema/schema.json";
 
 export default function SignupForm(props: {
+  id: number | string | null;
   onSuccess: (userName: string, isLogin: boolean) => void;
   onError: (error: Error) => void;
   onCancel: () => void;
 }) {
-  const { onSuccess, onError, onCancel } = props;
+  const { id, onSuccess, onError, onCancel } = props;
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -32,8 +33,12 @@ export default function SignupForm(props: {
       onError(e);
     }
   };
+  if (id == null) {
+    return null;
+  }
   return (
     <div
+      key={id}
       style={{
         position: "fixed",
         top: 0,

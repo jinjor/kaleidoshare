@@ -11,23 +11,23 @@ export default function Nav(props: { user: User | null }) {
 
   const routingContext = React.useContext(RoutingContext)!;
   const messageContext = React.useContext(MessageContext)!;
-  const [formKey, setFormKey] = React.useState(0);
+  const [signupFormId, setSignupFormId] = React.useState<number | null>(null);
 
   const handleSignup = async (event: React.FormEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    setFormKey(Date.now());
+    setSignupFormId(Date.now());
   };
   const handleSignupSuccess = async (_userName: string, isLogin: boolean) => {
-    setFormKey(0);
+    setSignupFormId(null);
     messageContext.setMessage(isLogin ? "Hello" : "Welcome");
     routingContext.refreshSession();
   };
   const handleSignupFailure = async (error: any) => {
-    setFormKey(0);
+    setSignupFormId(null);
     messageContext.setError(error);
   };
   const handleSignupCancel = async () => {
-    setFormKey(0);
+    setSignupFormId(null);
   };
 
   const handleLogin = async (event: React.FormEvent<HTMLButtonElement>) => {
@@ -95,14 +95,12 @@ export default function Nav(props: { user: User | null }) {
         </div>
       </nav>
       <ErrorBar />
-      {formKey > 0 && (
-        <SignupForm
-          key={formKey}
-          onSuccess={handleSignupSuccess}
-          onError={handleSignupFailure}
-          onCancel={handleSignupCancel}
-        />
-      )}
+      <SignupForm
+        id={signupFormId}
+        onSuccess={handleSignupSuccess}
+        onError={handleSignupFailure}
+        onCancel={handleSignupCancel}
+      />
     </>
   );
 }
