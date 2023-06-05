@@ -19,6 +19,7 @@ export default function Nav(props: { user: User | null }) {
   };
   const handleSignupSuccess = async (userName: string) => {
     setFormKey(0);
+    messageContext.setMessage(`Signed up`);
     routingContext.refreshSession();
   };
   const handleSignupFailure = async (error: any) => {
@@ -34,6 +35,7 @@ export default function Nav(props: { user: User | null }) {
     try {
       const done = await login();
       if (done) {
+        messageContext.setMessage(`Logged in`);
         routingContext.refreshSession();
       }
     } catch (e) {
