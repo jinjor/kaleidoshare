@@ -66,7 +66,7 @@ const View = React.memo(function View(props: {
         left: 0,
         top: 0,
         borderRadius: "50%",
-        ...({ "-webkit-print-color-adjust": "exact" } as any),
+        WebkitPrintColorAdjust: "exact",
       }}
     ></canvas>
   );
