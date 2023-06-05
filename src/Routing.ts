@@ -3,6 +3,7 @@ import { createContext, useEffect } from "react";
 type RoutingContext = {
   goTo: (href: string, refreshSession: boolean) => void;
   changeUrl: (href: string) => void;
+  refreshSession: () => void;
 };
 
 export const RoutingContext = createContext<RoutingContext | null>(null);
@@ -16,6 +17,9 @@ export function useSPARouting(
   };
   const changeUrl = (href: string) => {
     window.history.replaceState(null, "", href);
+  };
+  const refreshSession = () => {
+    callback(true);
   };
   useEffect(() => {
     const handlePopState = () => {
@@ -49,5 +53,5 @@ export function useSPARouting(
       document.removeEventListener("click", handleAnchorClick, true);
     };
   }, []);
-  return { goTo, changeUrl };
+  return { goTo, changeUrl, refreshSession };
 }
