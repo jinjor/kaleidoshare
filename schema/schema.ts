@@ -16,6 +16,11 @@ export type User = {
  */
 export type FixedCount = number;
 /**
+ * @minimum -10
+ * @maximum 10
+ */
+export type FixedWeight = number;
+/**
  * @exclusiveMinimum 0
  * @maximum 30
  */
@@ -59,6 +64,7 @@ export type PeriodicValue<T> = {
 export type CanBePeriodic<T> = T | PeriodicValue<T>;
 
 export type Count = CanBeRandom<FixedCount>;
+export type Weight = CanBePeriodic<CanBeRandom<FixedWeight>>;
 export type Length = CanBePeriodic<CanBeRandom<FixedLength>>;
 export type Byte = CanBePeriodic<CanBeRandom<FixedByte>>;
 export type RGB = {
@@ -106,6 +112,7 @@ export type Shape = Circle | Rectangle | Polygon;
 export type Object = {
   count: Count;
   shape: Shape;
+  weight?: Weight;
 };
 export type Settings = {
   background?: string; // TODO: Color にしたい
@@ -132,7 +139,11 @@ export type OutVector = {
   x: number;
   y: number;
 };
-export type OutObject = OutRectangle | OutCircle | OutPolygon;
+export type OutObject = {
+  shape: OutShape;
+  weight: OutFloat;
+};
+export type OutShape = OutRectangle | OutCircle | OutPolygon;
 export type OutRectangle = {
   type: "rectangle";
   width: OutFloat;

@@ -17,6 +17,7 @@ import {
   Output,
   OutSpinner,
   Angle,
+  OutShape,
 } from "../../schema/schema.js";
 
 export function generate(
@@ -49,13 +50,15 @@ function generateObjects(settings: Settings): OutObject[] {
   const objects: OutObject[] = [];
   for (const object of settings.objects) {
     for (let i = 0; i < generateInt(object.count); i++) {
-      objects.push(generateObject(object.shape));
+      const shape = generateShape(object.shape);
+      const weight = object.weight != null ? generateFloat(object.weight) : 1;
+      objects.push({ shape, weight });
     }
   }
   objects.sort(() => Math.random() - 0.5);
   return objects;
 }
-function generateObject(shape: Shape): OutObject {
+function generateShape(shape: Shape): OutShape {
   if (shape.type === "circle") {
     const circle: OutCircle = {
       type: "circle",

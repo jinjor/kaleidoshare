@@ -10,6 +10,7 @@ import {
   Bodies,
   Vertices,
   Vector,
+  Gravity,
 } from "matter-js";
 import decomp from "poly-decomp";
 import {
@@ -147,9 +148,8 @@ function setupWorld(
       for (let i = 0; i < objectsMatter.length; i++) {
         const objectMatter = objectsMatter[i];
         const object = objects[i];
-        updateBody(object, objectMatter, size, time);
+        updateBody(object, objectMatter, size, time, engine.gravity);
       }
-
       Body.rotate(spinnerMatter, 0.01);
     },
   };
@@ -170,48 +170,56 @@ function createSpinner(spinner: OutSpinner, size: number) {
   );
 }
 function createBody(object: OutObject, size: number): Body {
+  const shape = object.shape;
   const options: Matter.IBodyDefinition = {
     render: {
-      fillStyle: getCurrentColor(object.fill, 0),
-      strokeStyle: getCurrentColor(object.stroke, 0),
-      lineWidth: getCurrentFloat(object.strokeWidth, 0) * size,
+      fillStyle: getCurrentColor(shape.fill, 0),
+      strokeStyle: getCurrentColor(shape.stroke, 0),
+      lineWidth: getCurrentFloat(shape.strokeWidth, 0) * size,
     },
   };
-  switch (object.type) {
+  switch (shape.type) {
     case "circle":
       return Bodies.circle(
         0,
         0,
-        getCurrentFloat(object.radius, 0) * size,
+        getCurrentFloat(shape.radius, 0) * size,
         options
       );
     case "rectangle":
       return Bodies.rectangle(
         0,
         0,
-        getCurrentFloat(object.width, 0) * size,
-        getCurrentFloat(object.height, 0) * size,
+        getCurrentFloat(shape.width, 0) * size,
+        getCurrentFloat(shape.height, 0) * size,
         options
       );
     case "polygon":
       return Bodies.polygon(
         0,
         0,
-        object.sides,
-        getCurrentFloat(object.radius, 0) * size,
+        shape.sides,
+        getCurrentFloat(shape.radius, 0) * size,
         options
       );
   }
 }
-function updateBody(object: OutObject, body: Body, size: number, time: number) {
-  body.render.fillStyle = getCurrentColor(object.fill, time);
-  body.render.strokeStyle = getCurrentColor(object.stroke, time);
-  body.render.lineWidth = getCurrentFloat(object.strokeWidth, time) * size;
-  switch (object.type) {
+function updateBody(
+  object: OutObject,
+  body: Body,
+  size: number,
+  time: number,
+  gravity: Gravity
+) {
+  const shape = object.shape;
+  body.render.fillStyle = getCurrentColor(shape.fill, time);
+  body.render.strokeStyle = getCurrentColor(shape.stroke, time);
+  body.render.lineWidth = getCurrentFloat(shape.strokeWidth, time) * size;
+  switch (shape.type) {
     case "circle": {
       const c = body.position;
       const currentRadius = Vector.magnitude(Vector.sub(body.vertices[0], c));
-      const nextRadius = getCurrentFloat(object.radius, time) * size;
+      const nextRadius = getCurrentFloat(shape.radius, time) * size;
       const scale = nextRadius / currentRadius;
       const vertices = body.vertices.map((v) => {
         return Vector.add(Vector.mult(Vector.sub(v, c), scale), c);
@@ -226,8 +234,8 @@ function updateBody(object: OutObject, body: Body, size: number, time: number) {
       const v03 = Vector.sub(v3, v0);
       const currentWidth = Vector.magnitude(v01);
       const currentHeight = Vector.magnitude(v03);
-      const nextWidth = getCurrentFloat(object.width, time) * size;
-      const nextHeight = getCurrentFloat(object.height, time) * size;
+      const nextWidth = getCurrentFloat(shape.width, time) * size;
+      const nextHeight = getCurrentFloat(shape.height, time) * size;
       const scaleW = nextWidth / currentWidth;
       const scaleH = nextHeight / currentHeight;
       const v4 = Vector.add(v0, Vector.mult(v01, scaleW));
@@ -239,7 +247,7 @@ function updateBody(object: OutObject, body: Body, size: number, time: number) {
     case "polygon": {
       const c = body.position;
       const currentRadius = Vector.magnitude(Vector.sub(body.vertices[0], c));
-      const nextRadius = getCurrentFloat(object.radius, time) * size;
+      const nextRadius = getCurrentFloat(shape.radius, time) * size;
       const scale = nextRadius / currentRadius;
       const vertices = body.vertices.map((v) => {
         return Vector.add(Vector.mult(Vector.sub(v, c), scale), c);
@@ -248,6 +256,11 @@ function updateBody(object: OutObject, body: Body, size: number, time: number) {
       break;
     }
   }
+  const weight = getCurrentFloat(object.weight, time);
+  Body.applyForce(body, body.position, {
+    x: 0,
+    y: (weight - 1) * body.mass * gravity.y * gravity.scale,
+  });
 }
 function getCurrentFloat(float: OutFloat, time: number): number {
   if (typeof float === "number") {
