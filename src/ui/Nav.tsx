@@ -4,12 +4,30 @@ import { env } from "../domain/env";
 import ErrorBar, { MessageContext } from "./MessageBar";
 import { User } from "../../schema/schema.js";
 import { RoutingContext } from "../Routing";
+import SignupForm from "./SignupForm";
 
 export default function Nav(props: { user: User | null }) {
   const { user } = props;
 
   const routingContext = React.useContext(RoutingContext)!;
   const messageContext = React.useContext(MessageContext)!;
+  const [formKey, setFormKey] = React.useState(0);
+
+  const handleSignup = async (event: React.FormEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    setFormKey(Date.now());
+  };
+  const handleSignupSuccess = async (userName: string) => {
+    setFormKey(0);
+    routingContext.goTo(location.pathname, true);
+  };
+  const handleSignupFailure = async (error: any) => {
+    setFormKey(0);
+    messageContext.setError(error);
+  };
+  const handleSignupCancel = async () => {
+    setFormKey(0);
+  };
 
   const handleLogin = async (event: React.FormEvent<HTMLButtonElement>) => {
     event.preventDefault();
@@ -64,9 +82,9 @@ export default function Nav(props: { user: User | null }) {
                   </button>
                 </li>
                 <li>
-                  <a className="button primary" href="/signup">
+                  <button className="button primary" onClick={handleSignup}>
                     Signup
-                  </a>
+                  </button>
                 </li>
               </>
             )}
@@ -74,6 +92,14 @@ export default function Nav(props: { user: User | null }) {
         </div>
       </nav>
       <ErrorBar />
+      {formKey > 0 && (
+        <SignupForm
+          key={formKey}
+          onSuccess={handleSignupSuccess}
+          onError={handleSignupFailure}
+          onCancel={handleSignupCancel}
+        />
+      )}
     </>
   );
 }

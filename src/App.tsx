@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
 import Content from "./page/Content";
 import { getSession } from "./domain/io";
-import Signup from "./page/Signup";
 import NotFound from "./page/NotFound";
 import Home from "./page/Home";
 import Account from "./page/Account";
@@ -13,9 +12,6 @@ import { RoutingContext, useSPARouting } from "./Routing";
 type Route =
   | {
       type: "home";
-    }
-  | {
-      type: "signup";
     }
   | {
       type: "account";
@@ -30,9 +26,6 @@ type Route =
 function getRoute(pathname: string): Route | null {
   if (pathname === "/") {
     return { type: "home" };
-  }
-  if (pathname === "/signup") {
-    return { type: "signup" };
   }
   if (pathname === "/account") {
     return { type: "account" };
@@ -86,8 +79,6 @@ export default function App() {
       <MessageContext.Provider value={messageContext}>
         {route?.type === "home" ? (
           <Home user={user} />
-        ) : route?.type === "signup" ? (
-          <Signup user={user} />
         ) : route?.type === "account" ? (
           <Account user={user} />
         ) : route?.type === "content" ? (
