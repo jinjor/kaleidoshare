@@ -4,12 +4,14 @@ import { addCredential, deleteAccount } from "../domain/io";
 import { MessageContext } from "../ui/MessageBar";
 import { User } from "../../schema/schema.js";
 import { RoutingContext } from "../Routing";
+import ConfirmDeleteAccount from "../ui/ConfirmDeleteAccount";
 
 export default function Account(props: { user: User | null }) {
   const { user } = props;
 
   const routingContext = React.useContext(RoutingContext)!;
   const messageContext = React.useContext(MessageContext)!;
+  const [popupId, setPopupId] = React.useState<number | null>(null);
 
   const handleAddCredential = async (
     event: React.FormEvent<HTMLButtonElement>
@@ -20,17 +22,20 @@ export default function Account(props: { user: User | null }) {
       messageContext.setMessage("Credential added");
     }
   };
-
-  const handleDeleteAccount = async (
-    event: React.FormEvent<HTMLButtonElement>
-  ) => {
-    // TODO: confirm
-    event.preventDefault();
+  const handleDeleteAccount = async () => {
     await deleteAccount();
     messageContext.setMessage("Account deleted");
     routingContext.goTo("/", true);
   };
-
+  const handleBeginDeleteAccount = (
+    event: React.FormEvent<HTMLButtonElement>
+  ) => {
+    event.preventDefault();
+    setPopupId(Date.now());
+  };
+  const handleCancelDeleteAccount = () => {
+    setPopupId(null);
+  };
   if (user == null) {
     routingContext.goTo("/", false);
     return null;
@@ -49,13 +54,18 @@ export default function Account(props: { user: User | null }) {
             <h1 className="form-title">Danger Zone</h1>
             <button
               className="button wide danger"
-              onClick={handleDeleteAccount}
+              onClick={handleBeginDeleteAccount}
             >
               Delete account
             </button>
           </div>
         </div>
       </main>
+      <ConfirmDeleteAccount
+        id={popupId}
+        onConfirm={handleDeleteAccount}
+        onCancel={handleCancelDeleteAccount}
+      />
     </>
   );
 }
