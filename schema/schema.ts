@@ -191,12 +191,16 @@ export type OutHSL = {
   s: OutFloat;
   l: OutFloat;
 };
-
+/**
+ * @maxLength 1000000
+ */
+export type Image = string;
 export type Content = {
   id: string;
   author: string;
   settings: Settings;
   output: Output;
+  image: Image;
   createdAt: string;
   updatedAt: string;
 };

@@ -8,6 +8,7 @@ import { MessageContext, useMessage } from "./ui/MessageBar";
 import { env } from "./domain/env";
 import { User } from "../schema/schema.js";
 import { RoutingContext, useSPARouting } from "./Routing";
+import Gallery from "./page/Gallery";
 
 type Route =
   | {
@@ -15,6 +16,10 @@ type Route =
     }
   | {
       type: "account";
+    }
+  | {
+      type: "gallery";
+      authorName: string;
     }
   | {
       type: "content";
@@ -29,6 +34,13 @@ function getRoute(pathname: string): Route | null {
   }
   if (pathname === "/account") {
     return { type: "account" };
+  }
+  {
+    const match = pathname.match(/^\/contents\/([^\/]+)$/);
+    if (match) {
+      const [, authorName] = match;
+      return { type: "gallery", authorName };
+    }
   }
   {
     const match = pathname.match(/^\/contents\/([^\/]+)\/([^\/]+)$/);
@@ -90,6 +102,8 @@ export default function App() {
           <Home user={user} />
         ) : route?.type === "account" ? (
           <Account user={user} />
+        ) : route?.type === "gallery" ? (
+          <Gallery user={user} authorName={route.authorName} />
         ) : route?.type === "content" ? (
           <Content
             user={user}

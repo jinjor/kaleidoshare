@@ -19,13 +19,16 @@ type TrignaleNode = {
   y: number;
   rotateMatrix: [number, number, number, number];
 };
-
+export type ViewApi = {
+  getImage: () => string;
+};
 const View = React.memo(function View(props: {
   size: number;
   world: World;
   settings: Settings;
+  onReady: (api: ViewApi) => void;
 }) {
-  const { size, world, settings } = props;
+  const { size, world, settings, onReady } = props;
 
   const viewRef = useRef<HTMLCanvasElement>(null);
 
@@ -45,12 +48,16 @@ const View = React.memo(function View(props: {
         });
       };
     }, 1000 / 30);
-
+    onReady({
+      getImage: () => {
+        return viewElement.toDataURL();
+      },
+    });
     return () => {
       viewElement.innerHTML = "";
       clearInterval(interval);
     };
-  }, [world, settings]);
+  }, [world, settings, onReady]);
   const backgroundColor = settings.background ?? "#000";
   return (
     <canvas
