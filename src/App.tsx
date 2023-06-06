@@ -66,11 +66,20 @@ export default function App() {
     if (env.prod) {
       setUser(null);
     } else {
-      getSession()
-        .then((user) => setUser(user))
-        .catch(messageContext.setError);
+      getSession().then((user) => setUser(user));
     }
   }, [sessionKey]);
+  useEffect(() => {
+    const handler = (event) => {
+      messageContext.setError(event.error);
+    };
+    window.addEventListener("error", handler);
+    window.addEventListener("unhandledrejection", handler);
+    return () => {
+      window.removeEventListener("error", handler);
+      window.removeEventListener("unhandledrejection", handler);
+    };
+  });
   if (user === undefined) {
     return null;
   }

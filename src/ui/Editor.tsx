@@ -91,20 +91,16 @@ export default function Editor(props: {
   const handlePublish =
     settings && saved
       ? async (userName: string) => {
-          try {
-            if (content == null) {
-              const contentId = await createContent(userName, settings, output);
-              messageContext.setMessage("Published!");
-              routingContext.goTo(
-                `/contents/${userName}/${contentId}/edit`,
-                true
-              );
-            } else {
-              await updateContent(content.author, content.id, settings, output);
-              messageContext.setMessage("Saved!");
-            }
-          } catch (e) {
-            messageContext.setError(e);
+          if (content == null) {
+            const contentId = await createContent(userName, settings, output);
+            messageContext.setMessage("Published!");
+            routingContext.goTo(
+              `/contents/${userName}/${contentId}/edit`,
+              true
+            );
+          } else {
+            await updateContent(content.author, content.id, settings, output);
+            messageContext.setMessage("Saved!");
           }
         }
       : null;

@@ -29,28 +29,19 @@ export default function Nav(props: { user: User | null }) {
   const handleSignupCancel = async () => {
     setSignupFormId(null);
   };
-
   const handleLogin = async (event: React.FormEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    try {
-      const done = await login();
-      if (done) {
-        messageContext.setMessage("Hello");
-        routingContext.refreshSession();
-      }
-    } catch (e) {
-      messageContext.setError(e);
+    const done = await login();
+    if (done) {
+      messageContext.setMessage("Hello");
+      routingContext.refreshSession();
     }
   };
   const handleLogout = async (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    try {
-      await logout();
-      messageContext.setMessage("Bye");
-      routingContext.refreshSession();
-    } catch (e) {
-      messageContext.setError(e);
-    }
+    await logout();
+    messageContext.setMessage("Bye");
+    routingContext.refreshSession();
   };
   return (
     <>

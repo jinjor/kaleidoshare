@@ -15,13 +15,9 @@ export default function Account(props: { user: User | null }) {
     event: React.FormEvent<HTMLButtonElement>
   ) => {
     event.preventDefault();
-    try {
-      const done = await addCredential();
-      if (done) {
-        messageContext.setMessage("Credential added");
-      }
-    } catch (e) {
-      messageContext.setError(e);
+    const done = await addCredential();
+    if (done) {
+      messageContext.setMessage("Credential added");
     }
   };
 
@@ -30,13 +26,9 @@ export default function Account(props: { user: User | null }) {
   ) => {
     // TODO: confirm
     event.preventDefault();
-    try {
-      await deleteAccount();
-      messageContext.setMessage("Account deleted");
-      routingContext.goTo("/", true);
-    } catch (e) {
-      messageContext.setError(e);
-    }
+    await deleteAccount();
+    messageContext.setMessage("Account deleted");
+    routingContext.goTo("/", true);
   };
 
   if (user == null) {

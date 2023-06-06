@@ -4,7 +4,6 @@ import { User, Content } from "../../schema/schema.js";
 import Nav from "../ui/Nav";
 import Editor from "../ui/Editor";
 import NotFound from "./NotFound";
-import { MessageContext } from "../ui/MessageBar";
 
 export default function ContentPage(props: {
   user: User | null;
@@ -14,14 +13,11 @@ export default function ContentPage(props: {
 }) {
   const { user, authorName, contentId, edit } = props;
   const [content, setContent] = React.useState<Content | null | undefined>();
-  const messageContext = React.useContext(MessageContext)!;
 
   React.useEffect(() => {
-    getContent(authorName, contentId)
-      .then((content) => {
-        setContent(content);
-      })
-      .catch(messageContext.setError);
+    getContent(authorName, contentId).then((content) => {
+      setContent(content);
+    });
   }, [authorName, contentId]);
 
   if (content === undefined) {
