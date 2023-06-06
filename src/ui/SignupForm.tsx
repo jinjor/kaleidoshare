@@ -1,6 +1,7 @@
 import React from "react";
 import { login, register } from "../domain/io";
 import schema from "../../schema/schema.json";
+import Modal from "./Modal";
 
 export default function SignupForm(props: {
   id: number | string | null;
@@ -37,61 +38,36 @@ export default function SignupForm(props: {
     return null;
   }
   return (
-    <div
-      key={id}
-      style={{
-        position: "fixed",
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        zIndex: 1,
-      }}
-    >
-      <div
-        style={{
-          position: "absolute",
-          width: "100%",
-          height: "100%",
-          background: "black",
-          opacity: 0.5,
-        }}
-        onClick={onCancel}
-      ></div>
-      <div style={{ zIndex: 1 }}>
-        <form className="form" onSubmit={handleSubmit}>
-          <h1 className="form-title">Signup</h1>
-          <div className="form-item">
-            <label style={{ display: "block" }}>Name</label>
-            <input
-              autoFocus
-              required
-              className="input"
-              type="text"
-              name="name"
-              minLength={schema.definitions.UserName.minLength}
-              maxLength={schema.definitions.UserName.maxLength}
-              pattern={schema.definitions.UserName.pattern}
-              style={{ width: "100%", boxSizing: "border-box" }}
-            />
-            <div className="help">lowercase letters, numbers, and hyphens</div>
-          </div>
+    <Modal key={id} onCancel={onCancel}>
+      <form className="form" onSubmit={handleSubmit}>
+        <h1 className="form-title">Signup</h1>
+        <div className="form-item">
+          <label style={{ display: "block" }}>Name</label>
           <input
-            className="button wide primary form-item"
-            type="submit"
-            value="Signup"
+            autoFocus
+            required
+            className="input"
+            type="text"
+            name="name"
+            minLength={schema.definitions.UserName.minLength}
+            maxLength={schema.definitions.UserName.maxLength}
+            pattern={schema.definitions.UserName.pattern}
+            style={{ width: "100%", boxSizing: "border-box" }}
           />
-          <div className="help">
-            Already have an account? -{" "}
-            <button className="link" onClick={handleLogin}>
-              Login
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
+          <div className="help">lowercase letters, numbers, and hyphens</div>
+        </div>
+        <input
+          className="button wide primary form-item"
+          type="submit"
+          value="Signup"
+        />
+        <div className="help">
+          Already have an account? -{" "}
+          <button className="link" onClick={handleLogin}>
+            Login
+          </button>
+        </div>
+      </form>
+    </Modal>
   );
 }
