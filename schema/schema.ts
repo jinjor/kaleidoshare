@@ -87,31 +87,24 @@ export type Color = SingleColor | EnumValue<SingleColor>;
 export type Circle = {
   type: "circle";
   radius: Length;
-  fill?: Color;
-  stroke?: Color;
-  strokeWidth?: Length;
 };
 export type Rectangle = {
   type: "rectangle";
   width: Length;
   height: Length;
-  fill?: Color;
-  stroke?: Color;
-  strokeWidth?: Length;
 };
 export type Polygon = {
   type: "polygon";
   radius: Length;
   sides: Count;
-  fill?: Color;
-  stroke?: Color;
-  strokeWidth?: Length;
 };
 export type Shape = Circle | Rectangle | Polygon;
-
 export type Object = {
   count: Count;
   shape: Shape;
+  fill?: Color;
+  stroke?: Color;
+  strokeWidth?: Length;
   weight?: Weight;
 };
 export type Settings = {
@@ -141,6 +134,9 @@ export type OutVector = {
 };
 export type OutObject = {
   shape: OutShape;
+  fill: OutColor;
+  stroke: OutColor;
+  strokeWidth: OutFloat;
   weight: OutFloat;
 };
 export type OutShape = OutRectangle | OutCircle | OutPolygon;
@@ -148,24 +144,15 @@ export type OutRectangle = {
   type: "rectangle";
   width: OutFloat;
   height: OutFloat;
-  fill: OutColor;
-  stroke: OutColor;
-  strokeWidth: OutFloat;
 };
 export type OutCircle = {
   type: "circle";
   radius: OutFloat;
-  fill: OutColor;
-  stroke: OutColor;
-  strokeWidth: OutFloat;
 };
 export type OutPolygon = {
   type: "polygon";
   sides: OutInt;
   radius: OutFloat;
-  fill: OutColor;
-  stroke: OutColor;
-  strokeWidth: OutFloat;
 };
 export type OutInt = number;
 export type OutFloat = number | PeriodicNumber;

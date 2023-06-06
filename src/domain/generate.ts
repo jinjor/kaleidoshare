@@ -18,6 +18,7 @@ import {
   OutSpinner,
   Angle,
   OutShape,
+  Object,
 } from "../../schema/schema.js";
 
 export function generate(
@@ -50,24 +51,27 @@ function generateObjects(settings: Settings): OutObject[] {
   const objects: OutObject[] = [];
   for (const object of settings.objects) {
     for (let i = 0; i < generateInt(object.count); i++) {
-      const shape = generateShape(object.shape);
-      const weight = object.weight != null ? generateFloat(object.weight) : 1;
-      objects.push({ shape, weight });
+      objects.push(generateObject(object));
     }
   }
   objects.sort(() => Math.random() - 0.5);
   return objects;
+}
+function generateObject(object: Object): OutObject {
+  const shape = generateShape(object.shape);
+  const fill = object.fill != null ? generateColor(object.fill) : "transparent";
+  const stroke =
+    object.stroke != null ? generateColor(object.stroke) : "transparent";
+  const strokeWidth =
+    object.strokeWidth != null ? generateFloat(object.strokeWidth) : 0;
+  const weight = object.weight != null ? generateFloat(object.weight) : 1;
+  return { shape, fill, stroke, strokeWidth, weight };
 }
 function generateShape(shape: Shape): OutShape {
   if (shape.type === "circle") {
     const circle: OutCircle = {
       type: "circle",
       radius: generateFloat(shape.radius),
-      fill: shape.fill != null ? generateColor(shape.fill) : "transparent",
-      stroke:
-        shape.stroke != null ? generateColor(shape.stroke) : "transparent",
-      strokeWidth:
-        shape.strokeWidth != null ? generateFloat(shape.strokeWidth) : 0,
     };
     return circle;
   } else if (shape.type === "rectangle") {
@@ -75,11 +79,6 @@ function generateShape(shape: Shape): OutShape {
       type: "rectangle",
       width: generateFloat(shape.width),
       height: generateFloat(shape.height),
-      fill: shape.fill != null ? generateColor(shape.fill) : "transparent",
-      stroke:
-        shape.stroke != null ? generateColor(shape.stroke) : "transparent",
-      strokeWidth:
-        shape.strokeWidth != null ? generateFloat(shape.strokeWidth) : 0,
     };
     return rectangle;
   } else {
@@ -87,11 +86,6 @@ function generateShape(shape: Shape): OutShape {
       type: "polygon",
       sides: generateInt(shape.sides),
       radius: generateFloat(shape.radius),
-      fill: shape.fill != null ? generateColor(shape.fill) : "transparent",
-      stroke:
-        shape.stroke != null ? generateColor(shape.stroke) : "transparent",
-      strokeWidth:
-        shape.strokeWidth != null ? generateFloat(shape.strokeWidth) : 0,
     };
     return polygon;
   }

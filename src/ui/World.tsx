@@ -170,14 +170,14 @@ function createSpinner(spinner: OutSpinner, size: number) {
   );
 }
 function createBody(object: OutObject, size: number): Body {
-  const shape = object.shape;
   const options: Matter.IBodyDefinition = {
     render: {
-      fillStyle: getCurrentColor(shape.fill, 0),
-      strokeStyle: getCurrentColor(shape.stroke, 0),
-      lineWidth: getCurrentFloat(shape.strokeWidth, 0) * size,
+      fillStyle: getCurrentColor(object.fill, 0),
+      strokeStyle: getCurrentColor(object.stroke, 0),
+      lineWidth: getCurrentFloat(object.strokeWidth, 0) * size,
     },
   };
+  const shape = object.shape;
   switch (shape.type) {
     case "circle":
       return Bodies.circle(
@@ -211,10 +211,10 @@ function updateBody(
   time: number,
   gravity: Gravity
 ) {
+  body.render.fillStyle = getCurrentColor(object.fill, time);
+  body.render.strokeStyle = getCurrentColor(object.stroke, time);
+  body.render.lineWidth = getCurrentFloat(object.strokeWidth, time) * size;
   const shape = object.shape;
-  body.render.fillStyle = getCurrentColor(shape.fill, time);
-  body.render.strokeStyle = getCurrentColor(shape.stroke, time);
-  body.render.lineWidth = getCurrentFloat(shape.strokeWidth, time) * size;
   switch (shape.type) {
     case "circle": {
       const c = body.position;

@@ -19,17 +19,17 @@ export const example1: Example = {
             offset: 0.1,
             amplitude: 0.05,
           },
-          stroke: {
-            type: "hsl",
-            h: {
-              min: 300,
-              max: 360,
-            },
-            s: 40,
-            l: 90,
-          },
-          strokeWidth: 0.005,
         },
+        stroke: {
+          type: "hsl",
+          h: {
+            min: 300,
+            max: 360,
+          },
+          s: 40,
+          l: 90,
+        },
+        strokeWidth: 0.005,
       },
       {
         count: 2,
@@ -41,17 +41,17 @@ export const example1: Example = {
             offset: 0.12,
             amplitude: 0.05,
           },
-          fill: {
-            type: "hsl",
-            h: {
-              min: 200,
-              max: 400,
-            },
-            s: 60,
-            l: {
-              min: 50,
-              max: 80,
-            },
+        },
+        fill: {
+          type: "hsl",
+          h: {
+            min: 200,
+            max: 400,
+          },
+          s: 60,
+          l: {
+            min: 50,
+            max: 80,
           },
         },
       },
@@ -64,18 +64,18 @@ export const example1: Example = {
             offset: 0.08,
             amplitude: 0.02,
           },
-          fill: {
-            type: "hsl",
-            h: {
-              min: 200,
-              max: 400,
-            },
-            s: 60,
-            l: {
-              frequency: 0.2,
-              offset: 50,
-              amplitude: 20,
-            },
+        },
+        fill: {
+          type: "hsl",
+          h: {
+            min: 200,
+            max: 400,
+          },
+          s: 60,
+          l: {
+            frequency: 0.2,
+            offset: 50,
+            amplitude: 20,
           },
         },
       },
@@ -95,10 +95,10 @@ export const example2: Example = {
             min: 0.01,
             max: 0.04,
           },
-          stroke: "#28e",
-          strokeWidth: 0.01,
-          fill: ["transparent", "#ddd", "#8be"],
         },
+        stroke: "#28e",
+        strokeWidth: 0.01,
+        fill: ["transparent", "#ddd", "#8be"],
       },
     ],
   },
@@ -117,28 +117,28 @@ export const example3: Example = {
             min: 0.03,
             max: 0.07,
           },
-          fill: {
-            type: "hsl",
-            h: {
-              frequency: 0.1,
-              angle: {
-                min: 0,
-                max: 150,
-              },
-              offset: 55,
-              amplitude: 60,
-            },
-            s: 80,
-            l: 40,
-          },
-          stroke: {
-            type: "hsl",
-            h: 55,
-            s: 30,
-            l: 20,
-          },
-          strokeWidth: 0.008,
         },
+        fill: {
+          type: "hsl",
+          h: {
+            frequency: 0.1,
+            angle: {
+              min: 0,
+              max: 150,
+            },
+            offset: 55,
+            amplitude: 60,
+          },
+          s: 80,
+          l: 40,
+        },
+        stroke: {
+          type: "hsl",
+          h: 55,
+          s: 30,
+          l: 20,
+        },
+        strokeWidth: 0.008,
       },
     ],
   },
