@@ -5,6 +5,7 @@ import { MessageContext } from "../ui/MessageBar";
 import { User } from "../../schema/schema.js";
 import { RoutingContext } from "../Routing";
 import ConfirmDeleteAccount from "../ui/ConfirmDeleteAccount";
+import Gallery from "../ui/Gallery";
 
 export default function Account(props: { user: User | null }) {
   const { user } = props;
@@ -44,20 +45,23 @@ export default function Account(props: { user: User | null }) {
     <>
       <Nav user={user}></Nav>
       <main className="horizontal-center">
-        <div className="container horizontal-center">
-          <div className="form">
-            <h1 className="form-title">Account</h1>
-            <button className="button wide" onClick={handleAddCredential}>
-              Add credential
-            </button>
-            <hr></hr>
-            <h1 className="form-title">Danger Zone</h1>
-            <button
-              className="button wide danger"
-              onClick={handleBeginDeleteAccount}
-            >
-              Delete account
-            </button>
+        <div className="container">
+          <Gallery authorName={user.name} />
+          <div className="horizontal-center" style={{ marginTop: 10 }}>
+            <div className="form">
+              <h1 className="form-title">Account</h1>
+              <button className="button wide" onClick={handleAddCredential}>
+                Add credential
+              </button>
+              <hr></hr>
+              <h1 className="form-title">Danger Zone</h1>
+              <button
+                className="button wide danger"
+                onClick={handleBeginDeleteAccount}
+              >
+                Delete account
+              </button>
+            </div>
           </div>
         </div>
       </main>

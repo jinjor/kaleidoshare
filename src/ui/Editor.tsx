@@ -95,7 +95,8 @@ export default function Editor(props: {
   const handlePublish =
     settings && saved && viewApi != null
       ? async (userName: string) => {
-          const image = viewApi.getImage();
+          const image = await viewApi.getImage();
+          console.log(image);
           if (content == null) {
             const contentId = await createContent(
               userName,

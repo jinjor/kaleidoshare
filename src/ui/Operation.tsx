@@ -103,7 +103,10 @@ export default function Operation(props: {
         )}
         {content != null && (
           <div className="help" style={{ marginTop: "auto" }}>
-            Created by {content.author}
+            Created by{" "}
+            <a className="link" href={`/contents/${content.author}`}>
+              {content.author}
+            </a>
           </div>
         )}
       </div>
