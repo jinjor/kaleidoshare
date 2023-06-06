@@ -1,6 +1,6 @@
 import { ulid } from "ulid";
 import { openKv } from "./kv.ts";
-import { Content } from "../schema/schema.ts";
+import { Content, Output, Settings } from "../schema/schema.ts";
 
 // Schema:
 // - contents: contentId => Content
@@ -61,8 +61,9 @@ export async function listUserContents(author: string): Promise<Content[]> {
 export async function createContent(
   userName: string,
   author: string,
-  settings: unknown,
-  output: unknown
+  settings: Settings,
+  output: Output,
+  image: string
 ): Promise<Content> {
   if (userName !== author) {
     throw new AuthorDoesNotMatchError();
@@ -74,6 +75,7 @@ export async function createContent(
     author,
     settings,
     output,
+    image,
     createdAt,
     updatedAt: createdAt,
   };
@@ -84,8 +86,9 @@ export async function updateContent(
   userName: string,
   author: string,
   contentId: string,
-  settings: unknown,
-  output: unknown
+  settings: Settings,
+  output: Output,
+  image: string
 ): Promise<Content> {
   if (userName !== author) {
     throw new AuthorDoesNotMatchError();
@@ -98,6 +101,7 @@ export async function updateContent(
   content.updatedAt = updatedAt;
   content.settings = settings;
   content.output = output;
+  content.image = image;
   await setContent(author, contentId, content);
   return content;
 }

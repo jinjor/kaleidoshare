@@ -141,6 +141,7 @@ export async function getSession(): Promise<User | null> {
 }
 
 export async function getContents(userName: string): Promise<Content[]> {
+  // TODO: encode
   const res = await request(`/api/contents/${userName}`, {
     method: "GET",
     headers: {
@@ -154,6 +155,7 @@ export async function getContent(
   userName: string,
   contentId: string
 ): Promise<Content | null> {
+  // TODO: encode
   const res = await request(`/api/contents/${userName}/${contentId}`, {
     method: "GET",
     headers: {
@@ -166,7 +168,8 @@ export async function getContent(
 export async function createContent(
   userName: string,
   settings: Settings,
-  output: Output
+  output: Output,
+  image: string
 ): Promise<string> {
   // TODO: encode
   const res = await request(`/api/contents/${userName}`, {
@@ -177,6 +180,7 @@ export async function createContent(
     body: JSON.stringify({
       settings,
       output,
+      image,
     }),
   });
   const { id } = await res.json();
@@ -187,7 +191,8 @@ export async function updateContent(
   userName: string,
   contentId: string,
   settings: Settings,
-  output: Output
+  output: Output,
+  image: string
 ): Promise<void> {
   // TODO: encode
   await request(`/api/contents/${userName}/${contentId}`, {
@@ -198,6 +203,7 @@ export async function updateContent(
     body: JSON.stringify({
       settings,
       output,
+      image,
     }),
   });
 }

@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from "react";
-import View from "./View";
+import View, { ViewApi } from "./View";
 import World, { WorldOptions } from "./World";
 import SettingEditor, { SettingsEditorController } from "./SettingEditor";
 import { Settings, Output, User, Content } from "../../schema/schema.js";
@@ -48,9 +48,13 @@ export default function Editor(props: {
     useState<SettingsEditorController | null>(null);
   const [saved, setSaved] = useState<boolean>(true);
   const [warningShown, setWarningShown] = useState<boolean>(false);
+  const [viewApi, setViewApi] = useState<ViewApi | null>(null);
 
   const handleWorldReady = useCallback((world: World) => {
     setWorld(world);
+  }, []);
+  const handleViewReady = useCallback((viewApi: ViewApi) => {
+    setViewApi(viewApi);
   }, []);
   const handleSettingsEditorReady = useCallback(
     (controller: SettingsEditorController) => {
@@ -89,17 +93,29 @@ export default function Editor(props: {
         }
       : null;
   const handlePublish =
-    settings && saved
+    settings && saved && viewApi != null
       ? async (userName: string) => {
+          const image = viewApi.getImage();
           if (content == null) {
-            const contentId = await createContent(userName, settings, output);
+            const contentId = await createContent(
+              userName,
+              settings,
+              output,
+              image
+            );
             messageContext.setMessage("Published!");
             routingContext.goTo(
               `/contents/${userName}/${contentId}/edit`,
               true
             );
           } else {
-            await updateContent(content.author, content.id, settings, output);
+            await updateContent(
+              content.author,
+              content.id,
+              settings,
+              output,
+              image
+            );
             messageContext.setMessage("Saved!");
           }
         }
@@ -157,7 +173,12 @@ export default function Editor(props: {
               height: "90vw",
             }}
           >
-            <View size={viewSize * 2} world={world} settings={usedSettings} />
+            <View
+              size={viewSize * 2}
+              world={world}
+              settings={usedSettings}
+              onReady={handleViewReady}
+            />
           </div>
         </div>
       </>
@@ -188,7 +209,12 @@ export default function Editor(props: {
           }}
         >
           {world && (
-            <View size={viewSize} world={world} settings={usedSettings} />
+            <View
+              size={viewSize}
+              world={world}
+              settings={usedSettings}
+              onReady={handleViewReady}
+            />
           )}
         </div>
         <Operation

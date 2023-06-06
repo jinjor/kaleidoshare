@@ -22,7 +22,7 @@ import {
 
 import Ajv, { ValidateFunction } from "ajv";
 import schema from "../schema/schema.json" assert { type: "json" };
-import { Settings, Output } from "../schema/schema.ts";
+import { Settings, Output, Image } from "../schema/schema.ts";
 
 const ajv = new Ajv.default();
 function validate<T>(validate: ValidateFunction<T>, data: unknown): T {
@@ -58,8 +58,11 @@ const validatePublishRequest = ajv.compile({
     output: {
       $ref: "#/definitions/Output",
     },
+    image: {
+      $ref: "#/definitions/Image",
+    },
   },
-}) as ValidateFunction<{ settings: Settings; output: Output }>;
+}) as ValidateFunction<{ settings: Settings; output: Output; image: Image }>;
 
 export function createRouters(
   rpID: string,
@@ -153,8 +156,14 @@ export function createRouters(
     const author = context.params.author;
     const userName = await context.state.session.get("login");
     const body = await context.request.body({ type: "json" }).value;
-    const { settings, output } = validate(validatePublishRequest, body);
-    const content = await createContent(userName, author, settings, output);
+    const { settings, output, image } = validate(validatePublishRequest, body);
+    const content = await createContent(
+      userName,
+      author,
+      settings,
+      output,
+      image
+    );
     context.response.status = 200;
     context.response.body = JSON.stringify(content);
   });
@@ -163,13 +172,14 @@ export function createRouters(
     const userName = await context.state.session.get("login");
     const contentId = context.params.contentId;
     const body = await context.request.body({ type: "json" }).value;
-    const { settings, output } = validate(validatePublishRequest, body);
+    const { settings, output, image } = validate(validatePublishRequest, body);
     const content = await updateContent(
       userName,
       author,
       contentId,
       settings,
-      output
+      output,
+      image
     );
     context.response.status = 200;
     context.response.body = JSON.stringify(content);
