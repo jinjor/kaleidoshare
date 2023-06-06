@@ -70,8 +70,8 @@ export default function App() {
     }
   }, [sessionKey]);
   useEffect(() => {
-    const handler = (event) => {
-      messageContext.setError(event.error);
+    const handler = (e) => {
+      messageContext.setError(e.error ?? e.reason);
     };
     window.addEventListener("error", handler);
     window.addEventListener("unhandledrejection", handler);

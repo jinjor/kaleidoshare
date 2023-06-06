@@ -23,7 +23,7 @@ async function request(
     if (controller.signal.aborted) {
       throw new AppError("Timeout");
     }
-    throw e;
+    throw new AppError("Network error");
   } finally {
     clearTimeout(timeout);
   }
