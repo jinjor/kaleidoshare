@@ -4,6 +4,7 @@ on: [push]
 jobs:
   deploy:
     name: Deploy
+    timeout-minutes: 60
     runs-on: ubuntu-latest
     permissions:
       id-token: write
@@ -20,6 +21,9 @@ jobs:
 
       - name: Install Deno
         uses: denoland/setup-deno@v1
+
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
 
       - name: Build
         run: |

@@ -4,3 +4,7 @@ schema/schema.json
 .vite
 *.log
 tmp
+work
+/test-results/
+/playwright-report/
+/playwright/.cache/

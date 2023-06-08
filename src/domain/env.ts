@@ -4,7 +4,9 @@ export type Env = {
   mobile: boolean;
 };
 export const env: Env = {
-  prod: location.origin !== "http://localhost:5173",
+  prod: !["http://localhost:5173", "http://localhost:4173"].includes(
+    location.origin
+  ),
   os: navigator.userAgent.toLowerCase().includes("mac") ? "mac" : "other",
   mobile: "ontouchstart" in document.documentElement,
 };

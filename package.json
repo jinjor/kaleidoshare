@@ -2,6 +2,7 @@
   "name": "kaleidoshare",
   "devDependencies": {
     "@monaco-editor/react": "^4.5.1",
+    "@playwright/test": "^1.34.3",
     "@simplewebauthn/browser": "^7.2.0",
     "@types/matter-js": "^0.18.3",
     "@types/node": "^20.2.1",
@@ -29,6 +30,8 @@
     "preview:frontend": "vite preview",
     "preview:backend": "deno run -A --unstable ./server.ts",
     "stub": "cd dist && deno run -A https://deno.land/std@0.157.0/http/file_server.ts",
-    "test": "node --loader tsx --test ./test/*.test.mts"
+    "test": "run-s test:*",
+    "test:backend": "node --loader tsx --test ./test/backend/*.test.mts",
+    "test:frontend": "playwright test"
   }
 }
