@@ -10,7 +10,7 @@ export type User = {
 };
 
 /**
- * @minimum 0
+ * @minimum 3
  * @maximum 25
  * @asType integer
  */
