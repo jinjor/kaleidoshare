@@ -11,10 +11,19 @@ export default function Operation(props: {
   onPreview: (() => void) | null;
   onGenerate: (() => void) | null;
   onPublish: ((userName: string) => void) | null;
+  coding: boolean;
   content: Content | null;
 }) {
-  const { user, width, height, onPreview, onGenerate, onPublish, content } =
-    props;
+  const {
+    user,
+    width,
+    height,
+    onPreview,
+    onGenerate,
+    onPublish,
+    coding,
+    content,
+  } = props;
   const [signupFormId, setSignupFormId] = React.useState<number | null>(null);
 
   const messageContext = React.useContext(MessageContext)!;
@@ -49,7 +58,7 @@ export default function Operation(props: {
   };
   const commandToRegenerate = env.os === "mac" ? "⌘ + S" : "Ctrl + S";
   const allowedToPublish =
-    !env.prod && (content == null || content.author === user?.name);
+    !env.prod && (content == null || content.author === user?.name) && coding;
   return (
     <>
       <div className="form" style={{ width, height, boxSizing: "border-box" }}>
@@ -60,7 +69,7 @@ export default function Operation(props: {
             onClick={() => onGenerate?.()}
           >
             Generate
-            {!env.mobile && (
+            {!env.mobile && coding && (
               <>
                 {" "}
                 <ForceBaseline>(</ForceBaseline>

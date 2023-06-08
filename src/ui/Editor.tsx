@@ -225,6 +225,7 @@ export default function Editor(props: {
           onPreview={handlePreview}
           onGenerate={handleGenerate}
           onPublish={handlePublish}
+          coding={settings != null}
           content={content}
         />
       </div>
