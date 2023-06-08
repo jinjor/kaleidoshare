@@ -35,7 +35,7 @@ export function generate(settings: Settings): Output {
 
 function generateSpinner(spinner: Spinner | undefined): OutSpinner {
   const vertices: OutVector[] = [];
-  const sides = generateInt(spinner?.sides ?? 6);
+  const sides = generateInt(spinner?.sides ?? 3);
   const angle = (Math.PI * 2) / sides;
   const radius = 0.5 / Math.cos(angle / 2);
   const outerRadius = radius * 1.3;
