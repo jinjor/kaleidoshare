@@ -18,11 +18,8 @@ const operationSize = 340;
 const upperHeight = 300;
 const gap = (960 - (worldSize + viewSize + operationSize)) / 2;
 
-const spinnerRadiusRatio = 0.5;
 const worldOptions: WorldOptions = {
   size: worldSize,
-  spinnerRadiusRatio,
-  clipRadiusRatio: 0.25,
 };
 export default function Editor(props: {
   user: User | null;
@@ -41,7 +38,7 @@ export default function Editor(props: {
   const [selectedExampleIndex, setSelectedExampleIndex] = useState<number>(0);
   const usedSettings = settings ?? examples[selectedExampleIndex].settings;
   const [output, setOutput] = useState<Output>(
-    content?.output ?? generate(spinnerRadiusRatio, usedSettings)
+    content?.output ?? generate(usedSettings)
   );
   const [world, setWorld] = useState<World | null>(null);
   const [settingsController, setSettingsController] =
@@ -85,7 +82,7 @@ export default function Editor(props: {
     settings == null
       ? () => {
           const example = examples[selectedExampleIndex];
-          setOutput(generate(spinnerRadiusRatio, example.settings));
+          setOutput(generate(example.settings));
         }
       : settingsController != null && !warningShown
       ? () => {
@@ -126,7 +123,7 @@ export default function Editor(props: {
   }, []);
   const handleApply = useCallback((json: any) => {
     const settings = json as Settings;
-    const output: Output = generate(spinnerRadiusRatio, settings);
+    const output = generate(settings);
     setSettings(settings);
     setOutput(output);
     // 保存操作の直後にフォーマットされ handleChange が呼ばれてしまうため、
@@ -247,9 +244,7 @@ export default function Editor(props: {
                 onChange={(e) => {
                   const index = Number(e.target.value);
                   setSelectedExampleIndex(index);
-                  setOutput(
-                    generate(spinnerRadiusRatio, examples[index].settings)
-                  );
+                  setOutput(generate(examples[index].settings));
                 }}
               >
                 {examples.map((example, index) => (

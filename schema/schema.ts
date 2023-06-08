@@ -107,8 +107,12 @@ export type Object = {
   strokeWidth?: Length;
   weight?: Weight;
 };
+export type Spinner = {
+  speed?: Frequency;
+};
 export type Settings = {
   background?: string; // TODO: Color にしたい
+  spinner?: Spinner;
   /**
    * @maxItems 10
    */
@@ -123,6 +127,7 @@ export type Output = {
   objects: OutObject[];
 };
 export type OutSpinner = {
+  speed: number;
   /**
    * @maxItems 25
    */

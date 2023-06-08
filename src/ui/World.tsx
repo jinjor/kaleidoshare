@@ -28,9 +28,10 @@ type World = {
 };
 export type WorldOptions = {
   size: number;
-  spinnerRadiusRatio: number;
-  clipRadiusRatio: number;
 };
+
+const spinnerRadiusRatio = 0.5;
+const clipRadiusRatio = 0.25;
 
 const World = React.memo(function World(props: {
   options: WorldOptions;
@@ -68,7 +69,7 @@ const World = React.memo(function World(props: {
       const now = Date.now();
       const delta = now - lastTime;
       lastTime = now;
-      update(Date.now() - startTime);
+      update(Date.now() - startTime, delta);
       Runner.tick(runner, engine, delta);
       Render.world(render);
       requestAnimationFrame(step);
@@ -98,7 +99,7 @@ function setupWorld(
   options: WorldOptions,
   output: Output
 ) {
-  const { size, spinnerRadiusRatio, clipRadiusRatio } = options;
+  const { size } = options;
 
   const spinnerRadius = size * spinnerRadiusRatio;
   const clipRadius = size * clipRadiusRatio; // TODO: 切り抜き範囲を表示
@@ -118,7 +119,11 @@ function setupWorld(
     canvas.getContext("2d", { willReadFrequently: true });
     return canvas;
   };
-  const spinnerMatter = createSpinner(output.spinner, size);
+  const spinner = output.spinner;
+  const spinnerMatter = createSpinner(
+    output.spinner,
+    size * spinnerRadiusRatio
+  );
   const objects = output.objects;
   const objectsMatter = objects.map((object) => createBody(object, size));
 
@@ -144,28 +149,28 @@ function setupWorld(
     render,
     runner,
     engine,
-    update: (time: number) => {
+    update: (time: number, delta: number) => {
       for (let i = 0; i < objectsMatter.length; i++) {
         const objectMatter = objectsMatter[i];
         const object = objects[i];
         updateBody(object, objectMatter, size, time, engine.gravity);
       }
-      Body.rotate(spinnerMatter, 0.01);
+      Body.rotate(spinnerMatter, Math.PI * 2 * spinner.speed * (delta / 1000));
     },
   };
 }
-function createSpinner(spinner: OutSpinner, size: number) {
+function createSpinner(spinner: OutSpinner, radius: number) {
   return Bodies.fromVertices(
     0,
     0,
     [
       spinner.vertices.map(({ x, y }) => {
-        return Vector.create(x * size, y * size);
+        return Vector.create(x * radius, y * radius);
       }),
     ],
     {
       isStatic: true,
-      render: { fillStyle: "#eea" },
+      render: { fillStyle: "#ddd" },
     }
   );
 }

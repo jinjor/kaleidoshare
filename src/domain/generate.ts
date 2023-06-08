@@ -19,43 +19,42 @@ import {
   Angle,
   OutShape,
   Object,
+  Spinner,
 } from "../../schema/schema.js";
 
-export function generate(
-  spinnerRadiusRatio: number,
-  settings: Settings
-): Output {
-  const spinner = generateSpinner(spinnerRadiusRatio);
-  const objects = generateObjects(settings);
+export function generate(settings: Settings): Output {
+  const spinner = generateSpinner(settings.spinner);
+  const objects = generateObjects(settings.objects);
   return {
     spinner,
     objects,
   };
 }
 
-function generateSpinner(spinnerRadiusRatio: number): OutSpinner {
+function generateSpinner(spinner: Spinner | undefined): OutSpinner {
   return {
+    speed: spinner?.speed != null ? generateFrequency(spinner.speed) : 0.1,
     vertices: [
-      posFromAngle((Math.PI / 6) * 1, spinnerRadiusRatio * 1.3),
-      posFromAngle((Math.PI / 6) * 5, spinnerRadiusRatio * 1.3),
-      posFromAngle((Math.PI / 6) * 9, spinnerRadiusRatio * 1.3),
-      posFromAngle((Math.PI / 6) * 0.999, spinnerRadiusRatio * 1.3),
-      posFromAngle((Math.PI / 6) * 0.999, spinnerRadiusRatio),
-      posFromAngle((Math.PI / 6) * 9, spinnerRadiusRatio),
-      posFromAngle((Math.PI / 6) * 5, spinnerRadiusRatio),
-      posFromAngle((Math.PI / 6) * 1, spinnerRadiusRatio),
+      posFromAngle((Math.PI / 6) * 1, 1 * 1.3),
+      posFromAngle((Math.PI / 6) * 5, 1 * 1.3),
+      posFromAngle((Math.PI / 6) * 9, 1 * 1.3),
+      posFromAngle((Math.PI / 6) * 0.999, 1 * 1.3),
+      posFromAngle((Math.PI / 6) * 0.999, 1),
+      posFromAngle((Math.PI / 6) * 9, 1),
+      posFromAngle((Math.PI / 6) * 5, 1),
+      posFromAngle((Math.PI / 6) * 1, 1),
     ],
   };
 }
-function generateObjects(settings: Settings): OutObject[] {
-  const objects: OutObject[] = [];
-  for (const object of settings.objects) {
+function generateObjects(objects: Object[]): OutObject[] {
+  const out: OutObject[] = [];
+  for (const object of objects) {
     for (let i = 0; i < generateInt(object.count); i++) {
-      objects.push(generateObject(object));
+      out.push(generateObject(object));
     }
   }
-  objects.sort(() => Math.random() - 0.5);
-  return objects;
+  out.sort(() => Math.random() - 0.5);
+  return out;
 }
 function generateObject(object: Object): OutObject {
   const shape = generateShape(object.shape);
