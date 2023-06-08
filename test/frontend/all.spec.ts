@@ -280,3 +280,17 @@ test("log out", async ({ page }) => {
   await page.getByText(/log ?out/i).click();
   await assertGuest(page);
 });
+test("delete account", async ({ page }) => {
+  const userName = "test";
+  await mockApi(page, "GET", "/api/session", 200, { name: userName });
+  const reqs = await mockApi(page, "DELETE", "/api/user", 200, null);
+  await page.goto(`/account`);
+  await page.getByText(/^delete account/i).click();
+  await expect(page.getByText(/^ok/i)).toBeDisabled();
+  await page.$("input").then((el) => el!.type("delete"));
+  await page.getByText(/^ok/i).click();
+  await page.waitForURL("/");
+  await mockApi(page, "GET", "/api/session", 200, null);
+  await assertGuest(page);
+  assert.strictEqual(reqs.length, 1);
+});
