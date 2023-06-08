@@ -86,7 +86,9 @@ export function createRouters(
     await next();
   });
   router.post("/session/new", async (context) => {
-    const options = await createAuthentication(rpID);
+    const body = await context.request.body({ type: "json" }).value;
+    const optionalUserName = body.name;
+    const options = await createAuthentication(rpID, optionalUserName);
     context.response.status = 200;
     await context.state.session.flash("challenge", options.challenge);
     context.response.body = JSON.stringify(options);

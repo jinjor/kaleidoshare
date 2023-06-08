@@ -98,11 +98,13 @@ export async function deleteAccount(): Promise<void> {
 }
 
 export async function login(): Promise<User | null> {
+  const name = localStorage.getItem("test_user") ?? undefined;
   const res = await request("/api/session/new", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
+    body: JSON.stringify({ name }),
   });
   const authenticateOps = await res.json();
   try {

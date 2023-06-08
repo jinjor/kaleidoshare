@@ -24,10 +24,12 @@ type AppState = {
 
 // 以下では認証できない
 // - https://kaleidoshare-${DENO_DEPLOYMENT_ID}.deno.dev
-// - http://localhost:4173
 const rpID = DENO_DEPLOYMENT_ID != null ? `kaleidoshare.deno.dev` : "localhost";
+const originPort = Deno.env.get("ORIGIN_PORT") ?? "5173";
 const expectedOrigin =
-  DENO_DEPLOYMENT_ID != null ? `https://${rpID}` : `http://${rpID}:5173`;
+  DENO_DEPLOYMENT_ID != null
+    ? `https://${rpID}`
+    : `http://${rpID}:${originPort}`;
 
 const { router, routerWithAuth } = createRouters(rpID, expectedOrigin);
 

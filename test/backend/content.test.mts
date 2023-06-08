@@ -248,6 +248,7 @@ test("content", async (t) => {
     await t.test("request authentication", async (t) => {
       const res = await fetch(origin + "/api/session/new", {
         method: "POST",
+        body: JSON.stringify({}),
       });
       assert.strictEqual(res.status, 200);
       await res.json();

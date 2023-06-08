@@ -145,11 +145,6 @@ export async function register(
   expectedChallenge: string,
   userName: string
 ): Promise<void> {
-  // console.log(
-  //   "clientDataJSON",
-  //   decodeClientDataJSON(response.response.clientDataJSON)
-  // );
-
   const opts: VerifyRegistrationResponseOpts = {
     response,
     expectedChallenge: `${expectedChallenge}`,
@@ -158,8 +153,6 @@ export async function register(
     requireUserVerification: true,
   };
   const verification = await verifyRegistrationResponse(opts);
-  // console.log("verification", verification);
-
   if (!verification.verified || verification.registrationInfo == null) {
     throw new RegistrationNotVerifiedError();
   }
@@ -177,17 +170,37 @@ export async function register(
   const existingCredentials = existingUser?.credentials ?? [];
   // TODO: transaction
   await setCredential(credentialID, { device, userName });
-  await setUser(userName, {
+  const user = {
     credentials: [...existingCredentials, credentialID],
-  });
+  };
+  await setUser(userName, user);
 }
-// deno-lint-ignore require-await
 export async function createAuthentication(
-  rpID: string
+  rpID: string,
+  userName: string | null
 ): Promise<PublicKeyCredentialRequestOptionsJSON> {
+  // - undefined の場合はユーザにアカウントを選ばせる
+  // - devtools の virtual authenticator を使う時は userName を指定する必要がある
+  let allowCredentials: GenerateAuthenticationOptionsOpts["allowCredentials"];
+  if (userName != null) {
+    const user = await getUser(userName);
+    const credentials = [];
+    for (const credential of user?.credentials ?? []) {
+      const cred = await getCredential(credential);
+      if (cred != null) {
+        credentials.push(cred);
+      }
+    }
+    allowCredentials = credentials.map((cred) => ({
+      id: cred.device.credentialID,
+      type: "public-key",
+      transports: cred.device.transports,
+    }));
+  }
   const opts: GenerateAuthenticationOptionsOpts = {
     challenge: Deno.env.get("CHALLENGE"), // テスト時は固定、その他はランダム
     timeout: 60000,
+    allowCredentials,
     userVerification: "required",
     rpID,
   };

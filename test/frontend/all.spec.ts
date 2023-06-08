@@ -20,7 +20,8 @@ async function trackApi(page: Page): Promise<Req[]> {
   // trackApi() では page.route(), mockApi() では context.route() を使うことにより、
   // mockApi() の設定に上書きされないようにする。
   await page.route("/api/**", async (route) => {
-    requests.push(getReq(route));
+    const req = getReq(route);
+    requests.push(req);
     await route.fallback();
   });
   return requests;
@@ -60,11 +61,49 @@ async function assertLoggedIn(page: Page) {
 
 test.beforeEach(async ({ page }) => {
   page.on("console", (msg) => console.log(msg.text()));
+  // TODO: Chrome でしか動かない
+  const cdpSession = await page.context().newCDPSession(page);
+  await cdpSession.send("WebAuthn.enable");
+  await cdpSession.send("WebAuthn.addVirtualAuthenticator", {
+    options: {
+      transport: "usb",
+      protocol: "ctap2",
+      ctap2Version: "ctap2_1",
+      hasUserVerification: true,
+      automaticPresenceSimulation: true,
+      isUserVerified: true,
+    },
+  });
 });
 test("guest", async ({ page }) => {
   await mockApi(page, "GET", "/api/session", 200, null);
   await page.goto("/");
   await assertGuest(page);
+});
+test("signup / login", async ({ page }) => {
+  // このテストは副作用があるので他のテストと被らないようにする
+  const userName = "signup-login-test-user";
+  {
+    await mockApi(page, "GET", "/api/session", 200, null);
+    await page.goto("/");
+    await page.getByText(/^sign ?up/i).click();
+    await page.$(`input[type="text"]`).then((el) => el!.type(userName));
+    await page.$(`input[type="submit"]`).then((el) => el!.click());
+    await page.waitForResponse("/api/session");
+  }
+  {
+    await page.evaluate(
+      ([userName]) => {
+        localStorage.setItem("test_user", userName);
+      },
+      [userName]
+    );
+    await mockApi(page, "GET", "/api/session", 200, { user: userName });
+    await mockApi(page, "POST", "/api/session", 200, { user: userName });
+    await page.screenshot({ path: "work/screenshot.png" });
+    await page.getByText(/^log ?in/i).click();
+    await assertLoggedIn(page);
+  }
 });
 test("logged in", async ({ page }) => {
   await mockApi(page, "GET", "/api/session", 200, { name: "test" });
@@ -271,7 +310,7 @@ test("account (guest)", async ({ page }) => {
   await page.waitForURL("/");
   assert.strictEqual(reqs.length, 0);
 });
-test("log out", async ({ page }) => {
+test("logout", async ({ page }) => {
   await mockApi(page, "GET", "/api/session", 200, { name: "test" });
   await mockApi(page, "DELETE", "/api/session", 200, undefined);
   await page.goto("/");

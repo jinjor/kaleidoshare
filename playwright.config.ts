@@ -1,5 +1,7 @@
 import { defineConfig, devices } from "@playwright/test";
 
+process.env.ORIGIN_PORT = "4173";
+
 export default defineConfig({
   testDir: "./test/frontend",
   fullyParallel: false,
@@ -9,6 +11,7 @@ export default defineConfig({
   use: {
     baseURL: "http://localhost:4173",
     trace: "on-first-retry",
+    headless: true,
   },
   projects: [
     {
@@ -27,5 +30,6 @@ export default defineConfig({
   webServer: {
     command: "npm run preview",
     url: "http://localhost:4173",
+    stdout: "ignore",
   },
 });
