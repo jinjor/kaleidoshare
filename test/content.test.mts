@@ -78,7 +78,7 @@ test("content", async (t) => {
       method: "POST",
       body: JSON.stringify({
         settings: { objects: [] },
-        output: { spinner: { vertices: [] }, objects: [] },
+        output: { spinner: { speed: 1, vertices: [] }, objects: [] },
       }),
     });
     assert.strictEqual(res.status, 403);
@@ -89,7 +89,7 @@ test("content", async (t) => {
       method: "PUT",
       body: JSON.stringify({
         settings: { objects: [] },
-        output: { spinner: { vertices: [] }, objects: [] },
+        output: { spinner: { speed: 1, vertices: [] }, objects: [] },
       }),
     });
     assert.strictEqual(res.status, 403);
@@ -106,11 +106,17 @@ test("content", async (t) => {
   let content2Id = "y";
   const createBody = {
     settings: { background: "#123", objects: [] },
-    output: { spinner: { vertices: [{ x: 1, y: 1 }] }, objects: [] },
+    output: {
+      spinner: { speed: 1, vertices: [{ x: 1, y: 1 }] },
+      objects: [],
+    },
   };
   const updateBody = {
     settings: { background: "#456", objects: [] },
-    output: { spinner: { vertices: [{ x: 2, y: 2 }] }, objects: [] },
+    output: {
+      spinner: { speed: 1, vertices: [{ x: 2, y: 2 }] },
+      objects: [],
+    },
   };
   await t.test("create content", async (t) => {
     {
@@ -145,6 +151,7 @@ test("content", async (t) => {
         settings: { objects: [] },
         output: {
           spinner: {
+            speed: 1,
             vertices: new Array(100).fill({ x: 0, y: 0 }),
           },
           objects: [],
@@ -179,6 +186,7 @@ test("content", async (t) => {
           settings: { objects: [] },
           output: {
             spinner: {
+              speed: 1,
               vertices: new Array(100).fill({ x: 0, y: 0 }),
             },
             objects: [],
