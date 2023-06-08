@@ -20,6 +20,8 @@ import {
   OutShape,
   Object,
   Spinner,
+  OutVector,
+  Sides,
 } from "../../schema/schema.js";
 
 export function generate(settings: Settings): Output {
@@ -32,18 +34,22 @@ export function generate(settings: Settings): Output {
 }
 
 function generateSpinner(spinner: Spinner | undefined): OutSpinner {
+  const vertices: OutVector[] = [];
+  const sides = generateInt(spinner?.sides ?? 6);
+  const angle = (Math.PI * 2) / sides;
+  const radius = 0.5 / Math.cos(angle / 2);
+  const outerRadius = radius * 1.3;
+  for (let i = 0; i < sides; i++) {
+    vertices.push(posFromAngle(angle * i, outerRadius));
+  }
+  vertices.push(posFromAngle(-0.001, outerRadius));
+  vertices.push(posFromAngle(-0.001, radius));
+  for (let i = sides - 1; i >= 0; i--) {
+    vertices.push(posFromAngle(angle * i, radius));
+  }
   return {
     speed: spinner?.speed != null ? generateFrequency(spinner.speed) : 0.1,
-    vertices: [
-      posFromAngle((Math.PI / 6) * 1, 1 * 1.3),
-      posFromAngle((Math.PI / 6) * 5, 1 * 1.3),
-      posFromAngle((Math.PI / 6) * 9, 1 * 1.3),
-      posFromAngle((Math.PI / 6) * 0.999, 1 * 1.3),
-      posFromAngle((Math.PI / 6) * 0.999, 1),
-      posFromAngle((Math.PI / 6) * 9, 1),
-      posFromAngle((Math.PI / 6) * 5, 1),
-      posFromAngle((Math.PI / 6) * 1, 1),
-    ],
+    vertices,
   };
 }
 function generateObjects(objects: Object[]): OutObject[] {
@@ -89,7 +95,7 @@ function generateShape(shape: Shape): OutShape {
     return polygon;
   }
 }
-function generateInt(value: Count): number {
+function generateInt(value: Count | Sides): number {
   if (typeof value === "number") {
     return value;
   } else {

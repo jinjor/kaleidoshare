@@ -11,6 +11,12 @@ export type User = {
 
 /**
  * @minimum 0
+ * @maximum 25
+ * @asType integer
+ */
+export type FixedSides = number;
+/**
+ * @minimum 0
  * @maximum 100
  * @asType integer
  */
@@ -63,6 +69,7 @@ export type PeriodicValue<T> = {
 };
 export type CanBePeriodic<T> = T | PeriodicValue<T>;
 
+export type Sides = CanBeRandom<FixedSides>;
 export type Count = CanBeRandom<FixedCount>;
 export type Weight = CanBePeriodic<CanBeRandom<FixedWeight>>;
 export type Length = CanBePeriodic<CanBeRandom<FixedLength>>;
@@ -96,7 +103,7 @@ export type Rectangle = {
 export type Polygon = {
   type: "polygon";
   radius: Length;
-  sides: Count;
+  sides: Sides;
 };
 export type Shape = Circle | Rectangle | Polygon;
 export type Object = {
@@ -108,6 +115,7 @@ export type Object = {
   weight?: Weight;
 };
 export type Spinner = {
+  sides?: Sides;
   speed?: Frequency;
 };
 export type Settings = {
