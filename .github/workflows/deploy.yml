@@ -22,12 +22,13 @@ jobs:
       - name: Install Deno
         uses: denoland/setup-deno@v1
 
-      - name: Install Playwright Browsers
-        run: npx playwright install --with-deps
+      - name: Install npm dependencies
+        run: |
+          npm ci
+          npx playwright install --with-deps
 
       - name: Build
         run: |
-          npm ci
           npm run build
 
       - name: Test
