@@ -1,8 +1,8 @@
-import { Application } from "oak";
+import { Application, Router } from "oak";
 import { CookieStore, Session } from "oak_sessions";
 import { randomHex } from "./server/util.ts";
 import { openKv } from "./server/kv.ts";
-import { createRouters, handleError } from "./server/api.ts";
+// import { createRouters, handleError } from "./server/api.ts";
 
 const apiServerPort: number = parseInt(Deno.env.get("PORT") ?? "8000");
 
@@ -31,7 +31,7 @@ const expectedOrigin =
     ? `https://${rpID}`
     : `http://${rpID}:${originPort}`;
 
-const { router, routerWithAuth } = createRouters(rpID, expectedOrigin);
+// const { router, routerWithAuth } = createRouters(rpID, expectedOrigin);
 
 const app = new Application<AppState>();
 app.addEventListener("error", (e) => {
@@ -47,17 +47,58 @@ app.use(async (context, next) => {
   console.log(context.request.method, context.request.url.pathname);
   await next();
 });
-app.use(async (context, next) => {
-  try {
+// app.use(async (context, next) => {
+//   try {
+//     await next();
+//   } catch (e) {
+//     handleError(context, e);
+//   }
+// });
+// app.use(router.routes());
+// app.use(router.allowedMethods());
+// app.use(routerWithAuth.routes());
+// app.use(routerWithAuth.allowedMethods());
+const routerForBot = new Router();
+routerForBot.get("/contents/:author/:contentId", async (context, next) => {
+  const isTwitterBot =
+    context.request.headers.get("user-agent")?.includes("Twitterbot") ?? false;
+  if (!isTwitterBot) {
     await next();
-  } catch (e) {
-    handleError(context, e);
+    return;
   }
+  const author = context.params.author;
+  const contentId = context.params.contentId;
+  context.response.status = 200;
+  context.response.body = `<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="Cache-Control" content="no-store" />
+    <link rel="icon" type="image/svg+xml" href="/icon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="This is ${author}'s ${contentId}"
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Kaleidoshare" />
+    <meta property="og:title" content="Kaleidoshare" />
+    <meta property="og:url" content="https://kaleidoshare.deno.dev/" />
+    <meta property="og:image" content="https://kaleidoshare.deno.dev/ogp.png" />
+    <meta
+      property="og:description"
+      content="This is ${contentId} by ${author}"
+    />
+    <meta name="twitter:card" content="summary" />
+    <title>${contentId}</title>
+  </head>
+  <body>
+  </body>
+</html>
+`;
 });
-app.use(router.routes());
-app.use(router.allowedMethods());
-app.use(routerWithAuth.routes());
-app.use(routerWithAuth.allowedMethods());
+app.use(routerForBot.routes());
+app.use(routerForBot.allowedMethods());
 app.use(async (context, next) => {
   try {
     await context.send({
