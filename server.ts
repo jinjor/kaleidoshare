@@ -80,16 +80,13 @@ routerForBot.get("/contents/:author/:contentId", async (context, next) => {
       name="description"
       content="This is ${author}'s ${contentId}"
     />
-    <meta property="og:type" content="website" />
-    <meta property="og:site_name" content="Kaleidoshare" />
-    <meta property="og:title" content="Kaleidoshare" />
-    <meta property="og:url" content="https://kaleidoshare.deno.dev/" />
-    <meta property="og:image" content="https://kaleidoshare.deno.dev/ogp.png" />
-    <meta
-      property="og:description"
-      content="This is ${contentId} by ${author}"
-    />
-    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:card" content="player" />
+    <meta property="twitter:title" content="Kaleidoshare" />
+    <meta property="twitter:site" content="jinjor" />
+    <meta property="twitter:player" content="https://kaleidoshare.deno.dev/player.html#/${author}/${contentId}" />
+    <meta property="twitter:player:width" content="300" />
+    <meta property="twitter:player:height" content="300" />
+    <meta property="twitter:image" content="https://kaleidoshare.deno.dev/ogp.png" />
     <title>${contentId}</title>
   </head>
   <body>
