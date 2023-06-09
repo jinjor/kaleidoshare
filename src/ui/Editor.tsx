@@ -64,7 +64,7 @@ export default function Editor(props: {
       ? () => {
           if (content != null) {
             routingContext.changeUrl(
-              `/contents/${content.author}/${content.id}`
+              `/contents/${content.author}/${content.id}/show`
             );
           }
           setPreview(true);
@@ -72,9 +72,7 @@ export default function Editor(props: {
       : null;
   const quitPreview = () => {
     if (content != null) {
-      routingContext.changeUrl(
-        `/contents/${content.author}/${content.id}/edit`
-      );
+      routingContext.changeUrl(`/contents/${content.author}/${content.id}`);
     }
     setPreview(false);
   };
@@ -101,10 +99,7 @@ export default function Editor(props: {
               image
             );
             messageContext.setMessage("Published!");
-            routingContext.goTo(
-              `/contents/${userName}/${contentId}/edit`,
-              true
-            );
+            routingContext.goTo(`/contents/${userName}/${contentId}`, true);
           } else {
             await updateContent(
               content.author,

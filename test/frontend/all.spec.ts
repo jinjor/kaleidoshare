@@ -165,7 +165,7 @@ test("content (self)", async ({ page }) => {
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   });
-  await page.goto(`/contents/${authorName}/${contentId}/edit`);
+  await page.goto(`/contents/${authorName}/${contentId}`);
   await page.waitForResponse("/api/session");
   await assertLoggedIn(page);
 
@@ -191,7 +191,7 @@ test("content (self)", async ({ page }) => {
   });
   await page.getByText(/^publish/i).click();
   await expect(page).toHaveURL(
-    new RegExp(`\\/contents\\/${authorName}\\/${contentId}/edit`)
+    new RegExp(`\\/contents\\/${authorName}\\/${contentId}`)
   );
   await assertLoggedIn(page);
   assert.strictEqual(gets.length, 1);
@@ -225,7 +225,7 @@ test("content (someone)", async ({ page }) => {
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   });
-  await page.goto(`/contents/${authorName}/${contentId}/edit`);
+  await page.goto(`/contents/${authorName}/${contentId}`);
   await page.waitForResponse("/api/session");
   await assertLoggedIn(page);
   await expect(page.getByText(/^publish/i)).not.toBeVisible();
@@ -254,7 +254,7 @@ test("content (guest)", async ({ page }) => {
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   });
-  await page.goto(`/contents/${authorName}/${contentId}/edit`);
+  await page.goto(`/contents/${authorName}/${contentId}`);
   await page.waitForResponse("/api/session");
   await assertGuest(page);
   await expect(page.getByText(/^publish/i)).not.toBeVisible();
@@ -266,7 +266,7 @@ test("content (not found)", async ({ page }) => {
   const contentId = "id";
   await mockApi(page, "GET", "/api/session", 200, null);
   const gets = await mockApi(page, "GET", "/api/contents/*/*", 200, null);
-  await page.goto(`/contents/${authorName}/${contentId}/edit`);
+  await page.goto(`/contents/${authorName}/${contentId}`);
   await page.waitForResponse("/api/session");
   await assertGuest(page);
   await expect(page.getByText(/^not found/i)).toBeVisible();

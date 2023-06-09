@@ -31,7 +31,7 @@ export default function Gallery(props: { authorName: string }) {
         ) : (
           contents.map((content) => (
             <a
-              href={`/contents/${authorName}/${content.id}/edit`}
+              href={`/contents/${authorName}/${content.id}`}
               key={content.id}
               style={{ textAlign: "center" }}
             >

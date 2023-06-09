@@ -46,14 +46,14 @@ function getRoute(pathname: string): Route | null {
     const match = pathname.match(/^\/contents\/([^\/]+)\/([^\/]+)$/);
     if (match) {
       const [, authorName, contentId] = match;
-      return { type: "content", authorName, contentId, edit: false };
+      return { type: "content", authorName, contentId, edit: true };
     }
   }
   {
-    const match = pathname.match(/^\/contents\/([^\/]+)\/([^\/]+)\/edit$/);
+    const match = pathname.match(/^\/contents\/([^\/]+)\/([^\/]+)\/show$/);
     if (match) {
       const [, authorName, contentId] = match;
-      return { type: "content", authorName, contentId, edit: true };
+      return { type: "content", authorName, contentId, edit: false };
     }
   }
   return null;
