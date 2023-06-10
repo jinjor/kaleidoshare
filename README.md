@@ -1,19 +1,35 @@
 # Kaleidoshare
 
-## Running
+Let's create and share kaleidoscopes on the web.
 
-You need to have Deno v1.28.0 or later installed to run this repo.
+## Develop
 
-Start a dev server:
+### prerequisites
 
-```
-$ npm run dev
-```
+- Node >= v20
+- Deno >= v1.32 (for KV)
 
-## Deploy
-
-Build production assets:
+### Install deps
 
 ```
-$ npm run build
+npm ci
+npx playwright install --with-deps
+```
+
+### Develop
+
+```
+npm run dev
+```
+
+### Build
+
+```
+npm run build
+```
+
+### Test
+
+```
+npm test
 ```
