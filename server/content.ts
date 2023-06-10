@@ -46,6 +46,11 @@ export class AuthorDoesNotMatchError extends Error {
     super("Author does not match");
   }
 }
+export class TooManyContentsError extends Error {
+  constructor() {
+    super("Too many content");
+  }
+}
 
 export async function getUserContent(
   author: string,
@@ -67,6 +72,10 @@ export async function createContent(
 ): Promise<Content> {
   if (userName !== author) {
     throw new AuthorDoesNotMatchError();
+  }
+  const contents = await listContent(author);
+  if (contents.length >= 100) {
+    throw new TooManyContentsError();
   }
   const createdAt = new Date().toISOString();
   const contentId = ulid();

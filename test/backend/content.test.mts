@@ -261,6 +261,25 @@ test("content", async (t) => {
       assert.strictEqual(res.status, 200);
     });
   });
+  await t.test("too many contents", async (t) => {
+    {
+      const currentNumberOfContents = 1;
+      const maxNumberOfContents = 100;
+      for (let i = 0; i < maxNumberOfContents - currentNumberOfContents; i++) {
+        const res = await fetch(origin + `/api/contents/${userName}`, {
+          method: "POST",
+          body: JSON.stringify(createBody),
+        });
+        assert.strictEqual(res.status, 200);
+      }
+      const res = await fetch(origin + `/api/contents/${userName}`, {
+        method: "POST",
+        body: JSON.stringify(createBody),
+      });
+      assert.strictEqual(res.status, 400);
+      await res.json();
+    }
+  });
   await t.test("delete account", async (t) => {
     {
       const res = await fetch(origin + "/api/user", {

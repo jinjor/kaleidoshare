@@ -13,6 +13,7 @@ import {
 } from "./auth.ts";
 import {
   AuthorDoesNotMatchError,
+  TooManyContentsError,
   createContent,
   getUserContent,
   listUserContents,
@@ -249,6 +250,13 @@ export function handleError(context: Context, e: unknown) {
     context.response.status = 403;
     context.response.body = JSON.stringify({
       message: "Author does not match",
+    });
+    return;
+  }
+  if (e instanceof TooManyContentsError) {
+    context.response.status = 400;
+    context.response.body = JSON.stringify({
+      message: "Too many contents",
     });
     return;
   }
