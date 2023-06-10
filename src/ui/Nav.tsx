@@ -1,7 +1,7 @@
 import React from "react";
 import { login, logout } from "../domain/io";
 import { env } from "../domain/env";
-import ErrorBar, { MessageContext } from "./MessageBar";
+import MessageBar, { MessageContext } from "./MessageBar";
 import { User } from "../../schema/schema.js";
 import { RoutingContext } from "../Routing";
 import SignupForm from "./SignupForm";
@@ -85,7 +85,7 @@ export default function Nav(props: { user: User | null }) {
           </ul>
         </div>
       </nav>
-      <ErrorBar />
+      <MessageBar />
       <SignupForm
         id={signupFormId}
         onSuccess={handleSignupSuccess}

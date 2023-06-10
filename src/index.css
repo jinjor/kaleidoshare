@@ -222,7 +222,7 @@ main {
   text-align: center;
   width: 100%;
   overflow: hidden;
-  transition: max-height 0.5s ease-in-out;
+  transition: max-height 0.5s ease-out 0.1s, opacity 0.1s linear;
   display: flex;
   align-items: center;
   padding: 0 10px;
@@ -231,6 +231,7 @@ main {
 }
 .message-bar:not(.show) {
   max-height: 0;
+  opacity: 0;
 }
 .message-bar.show {
   max-height: 100px;

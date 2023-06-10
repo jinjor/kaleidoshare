@@ -93,7 +93,7 @@ export default function App() {
       window.removeEventListener("error", handler);
       window.removeEventListener("unhandledrejection", handler);
     };
-  });
+  }, [messageContext]);
   if (user === undefined) {
     return null;
   }
