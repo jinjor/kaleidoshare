@@ -289,7 +289,7 @@ test("content", async (t) => {
       const res = await fetch(origin + `/api/contents/${userName}`);
       assert.strictEqual(res.status, 200);
       const contents = await res.json();
-      assert.strictEqual(contents.length, 0);
+      assert.strictEqual(contents, null);
     }
   });
 });

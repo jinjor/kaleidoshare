@@ -9,6 +9,7 @@ import {
   createCredential,
   deleteUser,
   register,
+  userExists,
 } from "./auth.ts";
 import {
   AuthorDoesNotMatchError,
@@ -196,7 +197,8 @@ export function createRouters(
   });
   router.get("/contents/:author", async (context) => {
     const author = context.params.author;
-    const contents = await listUserContents(author);
+    const authorExists = await userExists(author);
+    const contents = authorExists ? await listUserContents(author) : null;
     context.response.status = 200;
     context.response.body = JSON.stringify(contents);
   });

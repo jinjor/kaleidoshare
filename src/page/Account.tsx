@@ -1,8 +1,8 @@
 import React from "react";
 import Nav from "../ui/Nav";
-import { addCredential, deleteAccount } from "../domain/io";
+import { addCredential, deleteAccount, getContents } from "../domain/io";
 import { MessageContext } from "../ui/MessageBar";
-import { User } from "../../schema/schema.js";
+import { Content, User } from "../../schema/schema.js";
 import { RoutingContext } from "../Routing";
 import ConfirmDeleteAccount from "../ui/ConfirmDeleteAccount";
 import Gallery from "../ui/Gallery";
@@ -13,6 +13,17 @@ export default function Account(props: { user: User | null }) {
   const routingContext = React.useContext(RoutingContext)!;
   const messageContext = React.useContext(MessageContext)!;
   const [popupId, setPopupId] = React.useState<number | null>(null);
+  const [contents, setContents] = React.useState<
+    Content[] | undefined | null
+  >();
+  React.useEffect(() => {
+    if (user == null) {
+      return;
+    }
+    getContents(user.name).then((contents) => {
+      setContents(contents);
+    });
+  }, [user]);
 
   const handleAddCredential = async (
     event: React.FormEvent<HTMLButtonElement>
@@ -41,12 +52,15 @@ export default function Account(props: { user: User | null }) {
     routingContext.goTo("/", false);
     return null;
   }
+  if (contents == null) {
+    return null;
+  }
   return (
     <>
       <Nav user={user}></Nav>
       <main className="horizontal-center">
         <div className="container">
-          <Gallery authorName={user.name} />
+          <Gallery authorName={user.name} contents={contents} />
           <div className="horizontal-center" style={{ marginTop: 10 }}>
             <div className="form">
               <h1 className="form-title">Account</h1>

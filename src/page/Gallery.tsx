@@ -1,19 +1,38 @@
 import React from "react";
-import { User } from "../../schema/schema.js";
+import { Content, User } from "../../schema/schema.js";
 import Nav from "../ui/Nav";
 import Gallery from "../ui/Gallery";
+import { getContents } from "../domain/io.js";
+import NotFound from "./NotFound";
 
 export default function GalleryPage(props: {
   user: User | null;
   authorName: string;
 }) {
   const { user, authorName } = props;
+
+  const [contents, setContents] = React.useState<
+    Content[] | undefined | null
+  >();
+
+  React.useEffect(() => {
+    getContents(authorName).then((contents) => {
+      setContents(contents);
+    });
+  }, [authorName]);
+
+  if (contents === undefined) {
+    return null;
+  }
+  if (contents === null) {
+    return <NotFound user={user} />;
+  }
   return (
     <>
       <Nav user={user}></Nav>
       <main className="horizontal-center" style={{ flexGrow: 1 }}>
         <div className="container">
-          <Gallery authorName={authorName} />
+          <Gallery authorName={authorName} contents={contents} />
         </div>
       </main>
     </>

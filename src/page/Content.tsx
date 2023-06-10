@@ -24,7 +24,6 @@ export default function ContentPage(props: {
     return null;
   }
   if (content === null) {
-    // TODO
     return <NotFound user={user} />;
   }
   return (

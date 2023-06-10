@@ -244,3 +244,7 @@ export async function authenticate(
   // TODO: transaction
   return cred.userName;
 }
+export async function userExists(userName: string): Promise<boolean> {
+  const user = await getUser(userName);
+  return user != null;
+}

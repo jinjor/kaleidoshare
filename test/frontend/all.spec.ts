@@ -293,6 +293,15 @@ test("gallery (guest)", async ({ page }) => {
   assert.strictEqual(reqs.length, 1);
   assert(reqs[0].pathname === `/api/contents/${userName}`);
 });
+test("gallery (not found)", async ({ page }) => {
+  const userName = "test";
+  await mockApi(page, "GET", "/api/session", 200, null);
+  const reqs = await mockApi(page, "GET", "/api/contents/*", 200, null);
+  await page.goto(`/contents/${userName}`);
+  await expect(page.getByText(/not found/i)).toBeVisible();
+  assert.strictEqual(reqs.length, 1);
+  assert(reqs[0].pathname === `/api/contents/${userName}`);
+});
 test("account", async ({ page }) => {
   const userName = "test";
   await mockApi(page, "GET", "/api/session", 200, { name: userName });
@@ -305,7 +314,7 @@ test("account", async ({ page }) => {
 });
 test("account (guest)", async ({ page }) => {
   await mockApi(page, "GET", "/api/session", 200, null);
-  const reqs = await mockApi(page, "GET", "/api/contents/*", 200, []);
+  const reqs = await mockApi(page, "GET", "/api/contents/*", 200, null);
   await page.goto(`/account`);
   await page.waitForURL("/");
   assert.strictEqual(reqs.length, 0);
@@ -322,6 +331,7 @@ test("logout", async ({ page }) => {
 test("delete account", async ({ page }) => {
   const userName = "test";
   await mockApi(page, "GET", "/api/session", 200, { name: userName });
+  await mockApi(page, "GET", "/api/contents/*", 200, []);
   const reqs = await mockApi(page, "DELETE", "/api/user", 200, null);
   await page.goto(`/account`);
   await page.getByText(/^delete account/i).click();

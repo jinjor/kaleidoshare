@@ -1,20 +1,12 @@
 import React from "react";
-import { getContents } from "../domain/io";
 import { Content } from "../../schema/schema.js";
 
-export default function Gallery(props: { authorName: string }) {
-  const { authorName } = props;
-  const [contents, setContents] = React.useState<Content[] | undefined>();
+export default function Gallery(props: {
+  authorName: string;
+  contents: Content[];
+}) {
+  const { authorName, contents } = props;
 
-  React.useEffect(() => {
-    getContents(authorName).then((contents) => {
-      setContents(contents);
-    });
-  }, [authorName]);
-
-  if (contents === undefined) {
-    return null;
-  }
   const size = 120;
   return (
     <div className="form" style={{ width: "100%" }}>
