@@ -7,8 +7,6 @@ import { createRouters, handleError } from "./server/api.ts";
 const apiServerPort: number = parseInt(Deno.env.get("PORT") ?? "8000");
 
 const DENO_DEPLOYMENT_ID = Deno.env.get("DENO_DEPLOYMENT_ID");
-
-console.log("DENO_DEPLOYMENT_ID:", DENO_DEPLOYMENT_ID);
 const isDeploy = DENO_DEPLOYMENT_ID != null;
 
 // const clearData = !isDeploy;
@@ -27,12 +25,9 @@ type AppState = {
   session: Session;
 };
 
+// `kaleidoshare-${branch}.deno.dev` では認証できない
 const expectedRPIDs = isDeploy
-  ? [
-      `kaleidoshare.deno.dev`,
-      `kaleidoshare-${DENO_DEPLOYMENT_ID}.deno.dev`,
-      `kaleidoshare--esm-sh.deno.dev`,
-    ]
+  ? [`kaleidoshare.deno.dev`, `kaleidoshare-${DENO_DEPLOYMENT_ID}.deno.dev`]
   : ["localhost"];
 const expectedOrigins = isDeploy
   ? expectedRPIDs.map((rpID) => `https://${rpID}`)
