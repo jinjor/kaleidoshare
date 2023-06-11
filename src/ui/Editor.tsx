@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from "react";
 import View, { ViewApi } from "./View";
-import World, { WorldOptions } from "./World";
+import World, { WorldApi, WorldOptions } from "./World";
 import SettingEditor, { SettingsEditorController } from "./SettingEditor";
 import { Settings, Output, User, Content } from "../../schema/schema.js";
 import Operation from "./Operation";
@@ -9,7 +9,6 @@ import { generate } from "../domain/generate";
 import { MessageContext } from "./MessageBar";
 import { RoutingContext } from "../Routing";
 import examples from "../domain/example";
-import { env } from "../domain/env";
 
 // |--- worldSize --|-|--- viewSize ---|-|-- opetaionSize --|
 //                  gap                gap
@@ -41,14 +40,14 @@ export default function Editor(props: {
   const [output, setOutput] = useState<Output>(
     content?.output ?? generate(usedSettings)
   );
-  const [world, setWorld] = useState<World | null>(null);
+  const [world, setWorld] = useState<WorldApi | null>(null);
   const [settingsController, setSettingsController] =
     useState<SettingsEditorController | null>(null);
   const [saved, setSaved] = useState<boolean>(true);
   const [warningShown, setWarningShown] = useState<boolean>(false);
   const [viewApi, setViewApi] = useState<ViewApi | null>(null);
 
-  const handleWorldReady = useCallback((world: World) => {
+  const handleWorldReady = useCallback((world: WorldApi) => {
     setWorld(world);
   }, []);
   const handleViewReady = useCallback((viewApi: ViewApi) => {
@@ -171,12 +170,7 @@ export default function Editor(props: {
               height: "90vw",
             }}
           >
-            <View
-              size={viewSize * 2}
-              world={world}
-              output={output}
-              onReady={handleViewReady}
-            />
+            <View size={viewSize * 2} world={world} onReady={handleViewReady} />
           </div>
         </div>
       </>
@@ -207,12 +201,7 @@ export default function Editor(props: {
           }}
         >
           {world && (
-            <View
-              size={viewSize}
-              world={world}
-              output={output}
-              onReady={handleViewReady}
-            />
+            <View size={viewSize} world={world} onReady={handleViewReady} />
           )}
         </div>
         <Operation

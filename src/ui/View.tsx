@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from "react";
-import World from "./World";
+import World, { WorldApi } from "./World";
 import { Output } from "../../schema/schema.js";
 
 const generation = 5;
@@ -24,25 +24,24 @@ export type ViewApi = {
 };
 const View = React.memo(function View(props: {
   size: number;
-  world: World;
-  output: Output;
+  world: WorldApi;
   onReady: (api: ViewApi) => void;
 }) {
-  const { size, world, output, onReady } = props;
+  const { size, world, onReady } = props;
 
   const viewRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
-    const { getImage } = world;
-
     const triangleNodes = createTriangleNodes(generation);
-
     const viewElement = viewRef.current!;
     const interval = setInterval(() => {
-      const image = getImage();
+      const image = world.getImage();
       image.onload = () => {
         const canvas = viewElement;
-        drawTriangles(canvas, image, output.backgroundColor, triangleNodes, {
+        const ctx = canvas.getContext("2d")!;
+        ctx.fillStyle = world.getBackgroundColor();
+        ctx.fillRect(0, 0, 100, 100);
+        drawTriangles(canvas, image, triangleNodes, {
           clipRadiusRatio: 0.25,
           viewRadiusRatio,
         });
@@ -67,7 +66,7 @@ const View = React.memo(function View(props: {
       viewElement.innerHTML = "";
       clearInterval(interval);
     };
-  }, [world, output, onReady]);
+  }, [world, onReady]);
   return (
     <canvas
       ref={viewRef}
@@ -150,7 +149,6 @@ function stepMatrix(
 function drawTriangles(
   canvas: HTMLCanvasElement,
   image: HTMLImageElement,
-  backgroundColor: string,
   triangleNodes: TrignaleNode[],
   options: {
     clipRadiusRatio: number;
@@ -160,7 +158,6 @@ function drawTriangles(
   const { clipRadiusRatio, viewRadiusRatio } = options;
 
   const ctx = canvas.getContext("2d")!;
-  ctx.fillStyle = backgroundColor;
   ctx.fillRect(0, 0, canvas.width, canvas.height);
   const scaleX =
     (canvas.width * viewRadiusRatio) / (image.width * clipRadiusRatio);

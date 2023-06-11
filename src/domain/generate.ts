@@ -28,7 +28,8 @@ export function generate(settings: Settings): Output {
   const spinner = generateSpinner(settings.spinner);
   const objects = generateObjects(settings.objects);
   return {
-    backgroundColor: settings.background ?? "#000",
+    backgroundColor:
+      settings.background != null ? generateColor(settings.background) : "#000",
     spinner,
     objects,
   };

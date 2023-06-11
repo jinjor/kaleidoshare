@@ -119,7 +119,7 @@ export type Spinner = {
   speed?: Frequency;
 };
 export type Settings = {
-  background?: string; // TODO: Color にしたい
+  background?: Color;
   spinner?: Spinner;
   /**
    * @maxItems 10
@@ -128,7 +128,7 @@ export type Settings = {
 };
 
 export type Output = {
-  backgroundColor: string;
+  backgroundColor: OutColor;
   spinner: OutSpinner;
   /**
    * @maxItems 1000

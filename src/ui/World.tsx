@@ -23,8 +23,9 @@ import {
 
 Common.setDecomp(decomp);
 
-type World = {
+export type WorldApi = {
   getImage: () => HTMLImageElement;
+  getBackgroundColor: () => string;
 };
 export type WorldOptions = {
   size: number;
@@ -36,7 +37,7 @@ const clipRadiusRatio = 0.25;
 const World = React.memo(function World(props: {
   options: WorldOptions;
   output: Output;
-  onReady: (world: World) => void;
+  onReady: (world: WorldApi) => void;
 }) {
   const { options, output, onReady } = props;
 
@@ -58,6 +59,9 @@ const World = React.memo(function World(props: {
         image.height = src.height;
         image.src = src.toDataURL();
         return image;
+      },
+      getBackgroundColor: () => {
+        return render.canvas.style.backgroundColor;
       },
     });
 
@@ -119,12 +123,11 @@ function setupWorld(
     canvas.getContext("2d", { willReadFrequently: true });
     return canvas;
   };
-  const spinner = output.spinner;
+  const { backgroundColor, spinner, objects } = output;
   const spinnerMatter = createSpinner(
     output.spinner,
     size * spinnerRadiusRatio
   );
-  const objects = output.objects;
   const objectsMatter = objects.map((object) => createBody(object, size));
 
   Composite.add(engine.world, [spinnerMatter]);
@@ -155,6 +158,13 @@ function setupWorld(
         const object = objects[i];
         updateBody(object, objectMatter, size, time, engine.gravity);
       }
+      // render.options.background や render.canvas.style.background だと
+      // url(...) が許可されてしまう。安心安全のため backgroundColor に一度代入することで
+      // url(...) を禁止する。
+      render.canvas.style.backgroundColor = getCurrentColor(
+        backgroundColor,
+        time
+      );
       Body.rotate(spinnerMatter, Math.PI * 2 * spinner.speed * (delta / 1000));
     },
   };
