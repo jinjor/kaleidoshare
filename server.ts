@@ -80,4 +80,4 @@ app.use(async (context, next) => {
     await next();
   }
 });
-await app.listen({ port: apiServerPort });
+await app.listen({ port: apiServerPort, secure: isDeploy });
