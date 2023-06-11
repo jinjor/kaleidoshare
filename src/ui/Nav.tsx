@@ -57,7 +57,7 @@ export default function Nav(props: { user: User | null }) {
             <img src="/logo.png" width={160} />
           </a>
           <ul>
-            {env.prod ? null : user ? (
+            {user ? (
               <>
                 <li>
                   <a href="/account">{user.name}</a>

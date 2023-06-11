@@ -7,8 +7,11 @@ import { createRouters, handleError } from "./server/api.ts";
 const apiServerPort: number = parseInt(Deno.env.get("PORT") ?? "8000");
 
 const DENO_DEPLOYMENT_ID = Deno.env.get("DENO_DEPLOYMENT_ID");
+const isDeploy = DENO_DEPLOYMENT_ID != null;
 
-if (DENO_DEPLOYMENT_ID == null) {
+// const clearData = !isDeploy;
+const clearData = true;
+if (clearData) {
   // デバッグのためにデータを全部消す
   const kv = await openKv();
   const iter = await kv.list({ prefix: [] });
@@ -22,16 +25,17 @@ type AppState = {
   session: Session;
 };
 
-// 以下では認証できない
-// - https://kaleidoshare-${DENO_DEPLOYMENT_ID}.deno.dev
-const rpID = DENO_DEPLOYMENT_ID != null ? `kaleidoshare.deno.dev` : "localhost";
-const originPort = Deno.env.get("ORIGIN_PORT") ?? "5173";
-const expectedOrigin =
-  DENO_DEPLOYMENT_ID != null
-    ? `https://${rpID}`
-    : `http://${rpID}:${originPort}`;
-
-const { router, routerWithAuth } = createRouters(rpID, expectedOrigin);
+// `kaleidoshare-${branch}.deno.dev` では認証できない
+const expectedRPIDs = isDeploy
+  ? [`kaleidoshare.deno.dev`, `kaleidoshare-${DENO_DEPLOYMENT_ID}.deno.dev`]
+  : ["localhost"];
+const expectedOrigins = isDeploy
+  ? expectedRPIDs.map((rpID) => `https://${rpID}`)
+  : [4173, 5173].map((port) => `http://localhost:${port}`);
+const { router, routerWithAuth } = createRouters(
+  expectedRPIDs,
+  expectedOrigins
+);
 
 const app = new Application<AppState>();
 app.addEventListener("error", (e) => {
@@ -41,6 +45,11 @@ const store = new CookieStore(randomHex(32));
 app.use(
   Session.initMiddleware(store, {
     expireAfterSeconds: 24 * 60 * 60, // 1 day
+    cookieSetOptions: {
+      httpOnly: true,
+      sameSite: "lax",
+      secure: isDeploy,
+    },
   })
 );
 app.use(async (context, next) => {
@@ -68,4 +77,4 @@ app.use(async (context, next) => {
     await next();
   }
 });
-await app.listen({ port: apiServerPort });
+await app.listen({ port: apiServerPort, secure: isDeploy });

@@ -76,12 +76,7 @@ export default function App() {
     setNavigationKey((key) => key + 1);
   });
   useEffect(() => {
-    // TODO: 直す
-    if (env.prod) {
-      setUser(null);
-    } else {
-      getSession().then((user) => setUser(user));
-    }
+    getSession().then((user) => setUser(user));
   }, [sessionKey]);
   useEffect(() => {
     const handler = (e) => {

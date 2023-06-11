@@ -58,7 +58,7 @@ export default function Operation(props: {
   };
   const commandToRegenerate = env.os === "mac" ? "⌘ + S" : "Ctrl + S";
   const allowedToPublish =
-    !env.prod && (content == null || content.author === user?.name) && coding;
+    (content == null || content.author === user?.name) && coding;
   return (
     <>
       <div className="form" style={{ width, height, boxSizing: "border-box" }}>

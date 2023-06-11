@@ -67,8 +67,8 @@ const validatePublishRequest = ajv.compile({
 }) as ValidateFunction<{ settings: Settings; output: Output; image: Image }>;
 
 export function createRouters(
-  rpID: string,
-  expectedOrigin: string
+  expectedRPIDs: string[],
+  expectedOrigins: string[]
 ): { router: Router; routerWithAuth: Router } {
   const router = new Router({
     prefix: "/api",
@@ -90,6 +90,11 @@ export function createRouters(
   router.post("/session/new", async (context) => {
     const body = await context.request.body({ type: "json" }).value;
     const optionalUserName = body.name;
+    const origin = context.request.headers.get("origin");
+    const rpID =
+      expectedRPIDs.find(
+        (rpID) => origin != null && new URL(origin).hostname === rpID
+      ) ?? expectedRPIDs[0];
     const options = await createAuthentication(rpID, optionalUserName);
     context.response.status = 200;
     await context.state.session.flash("challenge", options.challenge);
@@ -102,8 +107,8 @@ export function createRouters(
       throw new AuthenticationNotVerifiedError();
     }
     const userName = await authenticate(
-      rpID,
-      expectedOrigin,
+      expectedRPIDs,
+      expectedOrigins,
       response,
       challenge
     );
@@ -124,6 +129,11 @@ export function createRouters(
   router.post("/credential/new", async (context) => {
     const json = await context.request.body({ type: "json" }).value;
     const { name: userName } = validate(validateSignupUser, json);
+    const origin = context.request.headers.get("origin");
+    const rpID =
+      expectedRPIDs.find(
+        (rpID) => origin != null && new URL(origin).hostname === rpID
+      ) ?? expectedRPIDs[0];
     const options = await createCredential(rpID, userName, true);
     await context.state.session.flash("challenge", options.challenge);
     await context.state.session.flash("userName", userName);
@@ -132,6 +142,12 @@ export function createRouters(
   });
   routerWithAuth.post("/credential/add", async (context) => {
     const userName = await context.state.session.get("login");
+    const origin = context.request.headers.get("origin");
+    const rpID =
+      origin != null
+        ? expectedRPIDs.find((rpID) => new URL(origin).hostname === rpID) ??
+          expectedRPIDs[0]
+        : expectedRPIDs[0];
     const options = await createCredential(rpID, userName, false);
     await context.state.session.flash("challenge", options.challenge);
     await context.state.session.flash("userName", userName);
@@ -145,7 +161,13 @@ export function createRouters(
     if (challenge == null || userName == null) {
       throw new RegistrationNotVerifiedError();
     }
-    await register(rpID, expectedOrigin, response, challenge, userName);
+    await register(
+      expectedRPIDs,
+      expectedOrigins,
+      response,
+      challenge,
+      userName
+    );
     await context.state.session.set("login", userName);
     context.response.status = 200;
   });
