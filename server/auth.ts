@@ -139,8 +139,8 @@ export async function createCredential(
   return options;
 }
 export async function register(
-  rpID: string,
-  expectedOrigin: string,
+  expectedRPID: string[],
+  expectedOrigin: string[],
   response: RegistrationResponseJSON,
   expectedChallenge: string,
   userName: string
@@ -149,7 +149,7 @@ export async function register(
     response,
     expectedChallenge: `${expectedChallenge}`,
     expectedOrigin,
-    expectedRPID: rpID,
+    expectedRPID,
     requireUserVerification: true,
   };
   const verification = await verifyRegistrationResponse(opts);
@@ -208,8 +208,8 @@ export async function createAuthentication(
   return options;
 }
 export async function authenticate(
-  rpID: string,
-  expectedOrigin: string,
+  expectedRPID: string[],
+  expectedOrigin: string[],
   response: AuthenticationResponseJSON,
   expectedChallenge: string
 ): Promise<string> {
@@ -228,7 +228,7 @@ export async function authenticate(
     response,
     expectedChallenge: `${expectedChallenge}`,
     expectedOrigin,
-    expectedRPID: rpID,
+    expectedRPID,
     authenticator: cred.device,
     requireUserVerification: true,
   };

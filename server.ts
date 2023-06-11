@@ -27,18 +27,20 @@ type AppState = {
   session: Session;
 };
 
-// 以下では認証できない
-// - https://kaleidoshare-${DENO_DEPLOYMENT_ID}.deno.dev
-const rpID = isDeploy
-  ? //  `kaleidoshare.deno.dev`
-    `kaleidoshare--esm-sh.deno.dev`
-  : "localhost";
-const originPort = Deno.env.get("ORIGIN_PORT") ?? "5173";
-const expectedOrigin = isDeploy
-  ? `https://${rpID}`
-  : `http://${rpID}:${originPort}`;
-
-const { router, routerWithAuth } = createRouters(rpID, expectedOrigin);
+const expectedRPIDs = isDeploy
+  ? [
+      `kaleidoshare.deno.dev`,
+      `kaleidoshare-${DENO_DEPLOYMENT_ID}.deno.dev`,
+      `kaleidoshare--esm-sh.deno.dev`,
+    ]
+  : ["localhost"];
+const expectedOrigins = isDeploy
+  ? expectedRPIDs.map((rpID) => `https://${rpID}`)
+  : [4173, 5173].map((port) => `http://localhost:${port}`);
+const { router, routerWithAuth } = createRouters(
+  expectedRPIDs,
+  expectedOrigins
+);
 
 const app = new Application<AppState>();
 app.addEventListener("error", (e) => {

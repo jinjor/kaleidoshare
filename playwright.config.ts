@@ -1,7 +1,5 @@
 import { defineConfig, devices } from "@playwright/test";
 
-process.env.ORIGIN_PORT = "4173";
-
 export default defineConfig({
   testDir: "./test/frontend",
   fullyParallel: false,
