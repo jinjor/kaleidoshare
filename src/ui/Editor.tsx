@@ -9,6 +9,7 @@ import { generate } from "../domain/generate";
 import { MessageContext } from "./MessageBar";
 import { RoutingContext } from "../Routing";
 import examples from "../domain/example";
+import { env } from "../domain/env";
 
 // |--- worldSize --|-|--- viewSize ---|-|-- opetaionSize --|
 //                  gap                gap
@@ -90,7 +91,12 @@ export default function Editor(props: {
   const handlePublish =
     settings && saved && viewApi != null
       ? async (userName: string) => {
-          const image = await viewApi.getImage();
+          const image = await viewApi.getImageString();
+          // TODO: env を使う
+          if (location.port === "5173") {
+            // Example に転記するため
+            console.log(JSON.stringify({ settings, image }));
+          }
           if (content == null) {
             const contentId = await createContent(
               userName,
@@ -230,23 +236,31 @@ export default function Editor(props: {
         />
       ) : (
         <div className="horizontal-center">
-          <div className="form" style={{ width: 450 }}>
+          <div className="form" style={{ width: "100%" }}>
             <div className="form-title">Getting started</div>
-            <div className="select">
-              <select
-                defaultValue={selectedExampleIndex}
-                onChange={(e) => {
-                  const index = Number(e.target.value);
-                  setSelectedExampleIndex(index);
-                  setOutput(generate(examples[index].settings));
-                }}
-              >
-                {examples.map((example, index) => (
-                  <option key={index} value={index}>
-                    {example.name}
-                  </option>
-                ))}
-              </select>
+            <div className="content-selector">
+              {examples.map((example, index) => (
+                <div
+                  className={[
+                    "content-selector-item",
+                    selectedExampleIndex === index ? "selected" : "",
+                  ].join(" ")}
+                  key={example.name}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setSelectedExampleIndex(index);
+                    setOutput(generate(examples[index].settings));
+                  }}
+                >
+                  <img
+                    src={example.image}
+                    width={100}
+                    height={100}
+                    className="content-selector-item-image"
+                  />
+                  <div>{example.name}</div>
+                </div>
+              ))}
             </div>
             <button
               className="button primary wide"

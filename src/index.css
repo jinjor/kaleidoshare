@@ -9,8 +9,10 @@
   --text-color-danger-active: #f55;
   --accent-color: hsl(252, 50%, 45%);
   --accent-color-active: hsl(252, 50%, 50%);
-  --border: solid 1px #aaa;
-  --border-color-active: #ccc;
+  --border: solid 1px #888;
+  --border-color-active: #aaa;
+  --border-color-accent: hsl(252, 50%, 70%);
+  --border-color-accent-active: hsl(252, 50%, 75%);
   --border-color-invalid: #e44;
   --border-color-danger: #e44;
   --border-color-danger-active: #f55;
@@ -167,10 +169,12 @@ main {
 }
 .button.primary {
   background-color: var(--accent-color);
+  border-color: var(--border-color-accent);
 }
 .button.primary:hover,
 .button.primary:active {
   background-color: var(--accent-color-active);
+  border-color: var(--border-color-accent-active);
 }
 .button.danger {
   border-color: var(--border-color-danger);
@@ -289,4 +293,26 @@ button.link {
 .modal-front {
   z-index: 1;
   border: var(--border);
+}
+.content-selector {
+  display: grid;
+  gap: 0 20px;
+  grid-template-columns: repeat(auto-fill, 120px);
+}
+.content-selector-item {
+  text-align: center;
+  padding: 10px;
+  cursor: pointer;
+  border-radius: var(--border-radius);
+  border: solid 1px transparent;
+}
+.content-selector-item:hover {
+  border-color: #666;
+}
+.content-selector-item.selected {
+  border-color: var(--border-color);
+}
+.content-selector-item-image {
+  background-color: #000; /* TODO */
+  border-radius: 50%;
 }
