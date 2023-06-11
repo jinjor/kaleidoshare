@@ -41,13 +41,15 @@ jobs:
       id-token: write
       contents: read
     steps:
+      - name: Clone repository
+        uses: actions/checkout@v3
       - uses: actions/download-artifact@v3
         with:
           name: artifact
       - name: Deploy to Deno Deploy
         uses: denoland/deployctl@v1
         with:
-          project: "kaleidoshare"
-          # entrypoint: server.ts
-          entrypoint: https://deno.land/std@0.157.0/http/file_server.ts
-          root: dist
+          project: kaleidoshare
+          entrypoint: server.ts
+          # entrypoint: https://deno.land/std@0.157.0/http/file_server.ts
+          # root: dist
