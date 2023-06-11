@@ -128,6 +128,7 @@ export type Settings = {
 };
 
 export type Output = {
+  backgroundColor: string;
   spinner: OutSpinner;
   /**
    * @maxItems 1000

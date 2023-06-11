@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import World from "./World";
-import { Settings } from "../../schema/schema.js";
+import { Output } from "../../schema/schema.js";
 
 const generation = 5;
 const f = [
@@ -25,10 +25,10 @@ export type ViewApi = {
 const View = React.memo(function View(props: {
   size: number;
   world: World;
-  settings: Settings;
+  output: Output;
   onReady: (api: ViewApi) => void;
 }) {
-  const { size, world, settings, onReady } = props;
+  const { size, world, output, onReady } = props;
 
   const viewRef = useRef<HTMLCanvasElement>(null);
 
@@ -42,7 +42,7 @@ const View = React.memo(function View(props: {
       const image = getImage();
       image.onload = () => {
         const canvas = viewElement;
-        drawTriangles(canvas, image, triangleNodes, {
+        drawTriangles(canvas, image, output.backgroundColor, triangleNodes, {
           clipRadiusRatio: 0.25,
           viewRadiusRatio,
         });
@@ -67,15 +67,13 @@ const View = React.memo(function View(props: {
       viewElement.innerHTML = "";
       clearInterval(interval);
     };
-  }, [world, settings, onReady]);
-  const backgroundColor = settings.background ?? "#000";
+  }, [world, output, onReady]);
   return (
     <canvas
       ref={viewRef}
       width={size}
       height={size}
       style={{
-        backgroundColor,
         width: "100%",
         height: "100%",
         overflow: "hidden",
@@ -152,6 +150,7 @@ function stepMatrix(
 function drawTriangles(
   canvas: HTMLCanvasElement,
   image: HTMLImageElement,
+  backgroundColor: string,
   triangleNodes: TrignaleNode[],
   options: {
     clipRadiusRatio: number;
@@ -161,7 +160,8 @@ function drawTriangles(
   const { clipRadiusRatio, viewRadiusRatio } = options;
 
   const ctx = canvas.getContext("2d")!;
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.fillStyle = backgroundColor;
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
   const scaleX =
     (canvas.width * viewRadiusRatio) / (image.width * clipRadiusRatio);
   const scaleY =

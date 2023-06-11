@@ -174,7 +174,7 @@ export default function Editor(props: {
             <View
               size={viewSize * 2}
               world={world}
-              settings={usedSettings}
+              output={output}
               onReady={handleViewReady}
             />
           </div>
@@ -210,7 +210,7 @@ export default function Editor(props: {
             <View
               size={viewSize}
               world={world}
-              settings={usedSettings}
+              output={output}
               onReady={handleViewReady}
             />
           )}
