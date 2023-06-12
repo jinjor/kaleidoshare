@@ -9,8 +9,8 @@ const apiServerPort: number = parseInt(Deno.env.get("PORT") ?? "8000");
 const DENO_DEPLOYMENT_ID = Deno.env.get("DENO_DEPLOYMENT_ID");
 const isDeploy = DENO_DEPLOYMENT_ID != null;
 
-// const clearData = !isDeploy;
-const clearData = true;
+const clearData = !isDeploy;
+// const clearData = true;
 if (clearData) {
   // デバッグのためにデータを全部消す
   const kv = await openKv();
