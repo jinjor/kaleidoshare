@@ -20,7 +20,7 @@ type TrignaleNode = {
   rotateMatrix: [number, number, number, number];
 };
 export type ViewApi = {
-  getImageString: () => Promise<string>;
+  getImageString: (size: number) => Promise<string>;
 };
 const View = React.memo(function View(props: {
   size: number;
@@ -51,15 +51,26 @@ const View = React.memo(function View(props: {
       };
     }, 1000 / 30);
     onReady({
-      getImageString: () => {
+      getImageString: (size: number) => {
         return new Promise((resolve) => {
           const image = new Image();
           image.src = viewElement.toDataURL();
           image.onload = () => {
             const canvas = document.createElement("canvas");
-            canvas.width = 100;
-            canvas.height = 100;
-            canvas.getContext("2d")!.drawImage(image, 0, 0, 100, 100);
+            canvas.width = size;
+            canvas.height = size;
+            const ctx = canvas.getContext("2d")!;
+            ctx.ellipse(
+              size / 2,
+              size / 2,
+              size / 2,
+              size / 2,
+              0,
+              0,
+              Math.PI * 2
+            );
+            ctx.clip();
+            ctx.drawImage(image, 0, 0, size, size);
             resolve(canvas.toDataURL());
           };
         });

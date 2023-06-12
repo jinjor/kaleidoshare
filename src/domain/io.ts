@@ -171,6 +171,7 @@ export async function createContent(
   userName: string,
   settings: Settings,
   output: Output,
+  thumbnail: string,
   image: string
 ): Promise<string> {
   // TODO: encode
@@ -182,6 +183,7 @@ export async function createContent(
     body: JSON.stringify({
       settings,
       output,
+      thumbnail,
       image,
     }),
   });
@@ -194,6 +196,7 @@ export async function updateContent(
   contentId: string,
   settings: Settings,
   output: Output,
+  thumbnail: string,
   image: string
 ): Promise<void> {
   // TODO: encode
@@ -205,6 +208,7 @@ export async function updateContent(
     body: JSON.stringify({
       settings,
       output,
+      thumbnail,
       image,
     }),
   });

@@ -39,7 +39,7 @@ const { router, routerWithAuth, routerForBot } = createRouters(
 
 const app = new Application<AppState>();
 app.addEventListener("error", (e) => {
-  console.log(e.error);
+  console.error(e.error);
 });
 const store = new CookieStore(randomHex(32));
 app.use(

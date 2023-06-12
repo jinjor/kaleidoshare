@@ -13,9 +13,11 @@ import {
 } from "./auth.ts";
 import {
   AuthorDoesNotMatchError,
+  ContentNotFoundError,
   TooManyContentsError,
   createContent,
   getUserContent,
+  getUserContentImage,
   listUserContents,
   removeAllUserContents,
   removeContent,
@@ -53,13 +55,16 @@ const validateSignupUser = ajv.compile({
 const validatePublishRequest = ajv.compile({
   ...schema,
   type: "object",
-  required: ["settings", "output"],
+  required: ["settings", "output", "thumbnail", "image"],
   properties: {
     settings: {
       $ref: "#/definitions/Settings",
     },
     output: {
       $ref: "#/definitions/Output",
+    },
+    thumbnail: {
+      $ref: "#/definitions/Image",
     },
     image: {
       $ref: "#/definitions/Image",
@@ -183,12 +188,16 @@ export function createRouters(
     const author = context.params.author;
     const userName = await context.state.session.get("login");
     const body = await context.request.body({ type: "json" }).value;
-    const { settings, output, image } = validate(validatePublishRequest, body);
+    const { settings, output, thumbnail, image } = validate(
+      validatePublishRequest,
+      body
+    );
     const content = await createContent(
       userName,
       author,
       settings,
       output,
+      thumbnail,
       image
     );
     context.response.status = 200;
@@ -199,13 +208,17 @@ export function createRouters(
     const userName = await context.state.session.get("login");
     const contentId = context.params.contentId;
     const body = await context.request.body({ type: "json" }).value;
-    const { settings, output, image } = validate(validatePublishRequest, body);
+    const { settings, output, thumbnail, image } = validate(
+      validatePublishRequest,
+      body
+    );
     const content = await updateContent(
       userName,
       author,
       contentId,
       settings,
       output,
+      thumbnail,
       image
     );
     context.response.status = 200;
@@ -233,7 +246,17 @@ export function createRouters(
     context.response.status = 200;
     context.response.body = JSON.stringify(content);
   });
-
+  router.get("/contents/:author/:contentId/image", async (context) => {
+    const author = context.params.author;
+    const contentId = context.params.contentId;
+    const image = await getUserContentImage(author, contentId);
+    if (image == null) {
+      throw new ContentNotFoundError();
+    }
+    context.response.status = 200;
+    context.response.headers.set("content-type", "image/png");
+    context.response.body = dataUrlToUint8Array(image);
+  });
   const routerForBot = new Router();
   routerForBot.get("/contents/:author/:contentId", async (context, next) => {
     const isTwitterBot =
@@ -249,6 +272,14 @@ export function createRouters(
     context.response.body = makeContentPageForTwitterBot(author, contentId);
   });
   return { router, routerWithAuth, routerForBot };
+}
+function dataUrlToUint8Array(base64Str: string): Uint8Array {
+  const raw = atob(base64Str.split(",")[1]);
+  return Uint8Array.from(
+    Array.prototype.map.call(raw, (x) => {
+      return x.charCodeAt(0);
+    }) as number[]
+  );
 }
 
 export function handleError(context: Context, e: unknown) {

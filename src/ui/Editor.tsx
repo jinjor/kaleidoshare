@@ -98,7 +98,8 @@ export default function Editor(props: {
   const handlePublish =
     settings && output && saved && viewApi != null
       ? async (userName: string) => {
-          const image = await viewApi.getImageString();
+          const thumbnail = await viewApi.getImageString(100);
+          const image = await viewApi.getImageString(300);
           // TODO: env を使う
           if (location.port === "5173") {
             // Example に転記するため
@@ -109,6 +110,7 @@ export default function Editor(props: {
               userName,
               settings,
               output,
+              thumbnail,
               image
             );
             messageContext.setMessage("Published!");
@@ -119,6 +121,7 @@ export default function Editor(props: {
               content.id,
               settings,
               output,
+              thumbnail,
               image
             );
             messageContext.setMessage("Saved!");
@@ -248,7 +251,7 @@ export default function Editor(props: {
                   }}
                 >
                   <img
-                    src={example.image}
+                    src={example.thumbnail}
                     width={100}
                     height={100}
                     className="content-selector-item-image"

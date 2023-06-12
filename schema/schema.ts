@@ -201,7 +201,7 @@ export type Content = {
   author: string;
   settings: Settings;
   output: Output;
-  image: Image;
+  thumbnail: Image;
   createdAt: string;
   updatedAt: string;
 };
