@@ -3,7 +3,7 @@ import { getContent } from "../domain/io";
 import { User, Content } from "../../schema/schema.js";
 import Nav from "../ui/Nav";
 import Editor from "../ui/Editor";
-import NotFound from "./NotFound";
+import NotFound from "../ui/NotFound";
 
 export default function ContentPage(props: {
   user: User | null;
@@ -19,21 +19,18 @@ export default function ContentPage(props: {
       setContent(content);
     });
   }, [authorName, contentId]);
-
-  if (content === undefined) {
-    return null;
-  }
-  if (content === null) {
-    return <NotFound user={user} />;
-  }
   return (
     <>
       <Nav user={user}></Nav>
-      <main className="horizontal-center" style={{ flexGrow: 1 }}>
-        <div className="container editor-wrapper">
-          <Editor user={user} initiallyPreview={!edit} content={content} />
-        </div>
-      </main>
+      {content === undefined ? null : content === null ? (
+        <NotFound />
+      ) : (
+        <main className="horizontal-center" style={{ flexGrow: 1 }}>
+          <div className="container editor-wrapper">
+            <Editor user={user} initiallyPreview={!edit} content={content} />
+          </div>
+        </main>
+      )}
     </>
   );
 }

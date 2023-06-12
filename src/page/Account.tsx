@@ -52,33 +52,32 @@ export default function Account(props: { user: User | null }) {
     routingContext.goTo("/", false);
     return null;
   }
-  if (contents == null) {
-    return null;
-  }
   return (
     <>
       <Nav user={user}></Nav>
-      <main className="horizontal-center">
-        <div className="container">
-          <Gallery authorName={user.name} contents={contents} />
-          <div className="horizontal-center" style={{ marginTop: 10 }}>
-            <div className="form">
-              <h1 className="form-title">Account</h1>
-              <button className="button wide" onClick={handleAddCredential}>
-                Add credential
-              </button>
-              <hr></hr>
-              <h1 className="form-title">Danger Zone</h1>
-              <button
-                className="button wide danger"
-                onClick={handleBeginDeleteAccount}
-              >
-                Delete account
-              </button>
+      {contents && (
+        <main className="horizontal-center">
+          <div className="container">
+            <Gallery authorName={user.name} contents={contents} />
+            <div className="horizontal-center" style={{ marginTop: 10 }}>
+              <div className="form">
+                <h1 className="form-title">Account</h1>
+                <button className="button wide" onClick={handleAddCredential}>
+                  Add credential
+                </button>
+                <hr></hr>
+                <h1 className="form-title">Danger Zone</h1>
+                <button
+                  className="button wide danger"
+                  onClick={handleBeginDeleteAccount}
+                >
+                  Delete account
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      </main>
+        </main>
+      )}
       <ConfirmDeleteAccount
         id={popupId}
         onConfirm={handleDeleteAccount}

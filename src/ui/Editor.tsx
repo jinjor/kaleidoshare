@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import View, { ViewApi } from "./View";
 import World, { WorldApi, WorldOptions } from "./World";
 import SettingEditor, { SettingsEditorController } from "./SettingEditor";
@@ -8,7 +8,7 @@ import { createContent, updateContent } from "../domain/io";
 import { generate } from "../domain/generate";
 import { MessageContext } from "./MessageBar";
 import { RoutingContext } from "../Routing";
-import examples from "../domain/example";
+import { Example } from "../domain/example";
 
 // |--- worldSize --|-|--- viewSize ---|-|-- opetaionSize --|
 //                  gap                gap
@@ -28,25 +28,31 @@ export default function Editor(props: {
 }) {
   const { user, initiallyPreview, content } = props;
 
-  const routingContext = React.useContext(RoutingContext)!;
-  const messageContext = React.useContext(MessageContext)!;
-
-  const [preview, setPreview] = React.useState(initiallyPreview);
-  const [settings, setSettings] = useState<Settings | null>(
-    content?.settings ?? null
+  const routingContext = useContext(RoutingContext)!;
+  const messageContext = useContext(MessageContext)!;
+  const [examples, setExamples] = useState<Example[] | undefined>();
+  const [preview, setPreview] = useState(initiallyPreview);
+  const [settings, setSettings] = useState<Settings | undefined>(
+    content?.settings
   );
   const [selectedExampleIndex, setSelectedExampleIndex] = useState<number>(0);
-  const usedSettings = settings ?? examples[selectedExampleIndex].settings;
-  const [output, setOutput] = useState<Output>(
-    content?.output ?? generate(usedSettings)
-  );
-  const [world, setWorld] = useState<WorldApi | null>(null);
+  const [output, setOutput] = useState<Output | undefined>(content?.output);
+  const [world, setWorld] = useState<WorldApi | undefined>();
   const [settingsController, setSettingsController] =
     useState<SettingsEditorController | null>(null);
   const [saved, setSaved] = useState<boolean>(true);
   const [warningShown, setWarningShown] = useState<boolean>(false);
   const [viewApi, setViewApi] = useState<ViewApi | null>(null);
 
+  useEffect(() => {
+    import("../domain/example.js").then((module) => {
+      const examples = module.default;
+      setExamples(examples);
+      if (output == null) {
+        setOutput(generate(examples[selectedExampleIndex].settings));
+      }
+    });
+  }, []);
   const handleWorldReady = useCallback((world: WorldApi) => {
     setWorld(world);
   }, []);
@@ -78,17 +84,19 @@ export default function Editor(props: {
   };
   const handleGenerate =
     settings == null
-      ? () => {
-          const example = examples[selectedExampleIndex];
-          setOutput(generate(example.settings));
-        }
+      ? examples != null
+        ? () => {
+            const example = examples[selectedExampleIndex];
+            setOutput(generate(example.settings));
+          }
+        : null
       : settingsController != null && !warningShown
       ? () => {
           settingsController.save();
         }
       : null;
   const handlePublish =
-    settings && saved && viewApi != null
+    settings && output && saved && viewApi != null
       ? async (userName: string) => {
           const image = await viewApi.getImageString();
           // TODO: env を使う
@@ -104,7 +112,7 @@ export default function Editor(props: {
               image
             );
             messageContext.setMessage("Published!");
-            routingContext.goTo(`/contents/${userName}/${contentId}`, true);
+            routingContext.goTo(`/contents/${userName}/${contentId}`, false);
           } else {
             await updateContent(
               content.author,
@@ -135,7 +143,7 @@ export default function Editor(props: {
     setWarningShown(warningShown);
   }, []);
 
-  if (world && preview) {
+  if (world && output && preview) {
     return (
       <>
         {/** World の状態をリセットされないように HTML 構造を下と合わせておく */}
@@ -191,19 +199,7 @@ export default function Editor(props: {
           output={output}
           onReady={handleWorldReady}
         />
-        <div
-          style={{
-            backgroundColor: "#111",
-            width: viewSize,
-            height: viewSize,
-            position: "relative",
-            minWidth: viewSize,
-          }}
-        >
-          {world && (
-            <View size={viewSize} world={world} onReady={handleViewReady} />
-          )}
-        </div>
+        <View size={viewSize} world={world} onReady={handleViewReady} />
         <Operation
           width={operationSize}
           height={upperHeight}
@@ -223,7 +219,7 @@ export default function Editor(props: {
           onReady={handleSettingsEditorReady}
           onWarningShownChange={handleWarningShownChange}
         />
-      ) : (
+      ) : examples != null ? (
         <div className="horizontal-center">
           <div className="form" style={{ width: "100%" }}>
             <div className="form-title">Getting started</div>
@@ -251,18 +247,21 @@ export default function Editor(props: {
                 </div>
               ))}
             </div>
-            <button
-              className="button primary wide"
-              onClick={(e) => {
-                e.preventDefault();
-                setSettings(examples[selectedExampleIndex].settings);
-              }}
-            >
-              Start editing
-            </button>
+            <div style={{ textAlign: "center" }}>
+              <button
+                className="button primary"
+                style={{ width: "200px" }}
+                onClick={(e) => {
+                  e.preventDefault();
+                  setSettings(examples[selectedExampleIndex].settings);
+                }}
+              >
+                Start editing
+              </button>
+            </div>
           </div>
         </div>
-      )}
+      ) : null}
     </>
   );
 }

@@ -7,7 +7,7 @@ export default defineConfig({
   retries: process.env.CI ? 2 : 0,
   workers: 1,
   use: {
-    baseURL: "http://localhost:4173",
+    baseURL: "http://localhost:8000",
     trace: "on-first-retry",
     headless: true,
   },
@@ -27,7 +27,7 @@ export default defineConfig({
   ],
   webServer: {
     command: "npm run preview",
-    url: "http://localhost:4173",
+    url: "http://localhost:8000",
     stdout: "ignore",
   },
 });

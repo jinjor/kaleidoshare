@@ -31,7 +31,7 @@ const expectedRPIDs = isDeploy
   : ["localhost"];
 const expectedOrigins = isDeploy
   ? expectedRPIDs.map((rpID) => `https://${rpID}`)
-  : [4173, 5173].map((port) => `http://localhost:${port}`);
+  : [5173, 8000].map((port) => `http://localhost:${port}`);
 const { router, routerWithAuth } = createRouters(
   expectedRPIDs,
   expectedOrigins
@@ -69,9 +69,13 @@ app.use(routerWithAuth.routes());
 app.use(routerWithAuth.allowedMethods());
 app.use(async (context, next) => {
   try {
+    const hasExtension = context.request.url.pathname
+      .split("/")
+      .at(-1)
+      ?.includes(".");
     await context.send({
       root: `${Deno.cwd()}/dist`,
-      index: "index.html",
+      path: hasExtension ? undefined : "index.html",
     });
   } catch {
     await next();

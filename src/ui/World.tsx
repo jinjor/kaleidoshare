@@ -36,7 +36,7 @@ const clipRadiusRatio = 0.25;
 
 const World = React.memo(function World(props: {
   options: WorldOptions;
-  output: Output;
+  output: Output | undefined;
   onReady: (world: WorldApi) => void;
 }) {
   const { options, output, onReady } = props;
@@ -44,6 +44,9 @@ const World = React.memo(function World(props: {
   const worldRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    if (output == null) {
+      return;
+    }
     const worldElement = worldRef.current!;
     const { render, runner, engine, update } = setupWorld(
       worldElement,
@@ -85,12 +88,12 @@ const World = React.memo(function World(props: {
       worldElement.innerHTML = "";
     };
   }, [options, output]);
-
   return (
     <div
       style={{
         width: options.size,
         height: options.size,
+        backgroundColor: "#222",
       }}
       ref={worldRef}
     ></div>
