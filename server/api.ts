@@ -25,6 +25,7 @@ import {
 import Ajv, { ValidateFunction } from "ajv";
 import schema from "../schema/schema.json" assert { type: "json" };
 import { Settings, Output, Image } from "../schema/schema.ts";
+import { makeContentPageForTwitterBot } from "./twitter.tsx";
 
 const ajv = new Ajv.default();
 function validate<T>(validate: ValidateFunction<T>, data: unknown): T {
@@ -69,7 +70,7 @@ const validatePublishRequest = ajv.compile({
 export function createRouters(
   expectedRPIDs: string[],
   expectedOrigins: string[]
-): { router: Router; routerWithAuth: Router } {
+): { router: Router; routerWithAuth: Router; routerForBot: Router } {
   const router = new Router({
     prefix: "/api",
   });
@@ -233,7 +234,21 @@ export function createRouters(
     context.response.body = JSON.stringify(content);
   });
 
-  return { router, routerWithAuth };
+  const routerForBot = new Router();
+  routerForBot.get("/contents/:author/:contentId", async (context, next) => {
+    const isTwitterBot =
+      context.request.headers.get("user-agent")?.includes("Twitterbot") ??
+      false;
+    if (!isTwitterBot) {
+      await next();
+      return;
+    }
+    const author = context.params.author;
+    const contentId = context.params.contentId;
+    context.response.status = 200;
+    context.response.body = makeContentPageForTwitterBot(author, contentId);
+  });
+  return { router, routerWithAuth, routerForBot };
 }
 
 export function handleError(context: Context, e: unknown) {
