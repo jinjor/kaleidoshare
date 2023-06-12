@@ -199,7 +199,17 @@ export default function Editor(props: {
           output={output}
           onReady={handleWorldReady}
         />
-        <View size={viewSize} world={world} onReady={handleViewReady} />
+        <div
+          style={{
+            backgroundColor: "#222",
+            width: viewSize,
+            height: viewSize,
+            position: "relative",
+            minWidth: viewSize,
+          }}
+        >
+          <View size={viewSize} world={world} onReady={handleViewReady} />
+        </div>
         <Operation
           width={operationSize}
           height={upperHeight}
