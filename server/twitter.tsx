@@ -9,6 +9,7 @@ export function makeContentPageForTwitterBot(
   const encContentId = encodeURIComponent(contentId);
   const playerUrl = `https://kaleidoshare.deno.dev/contents/${encAuthorName}/${encContentId}/show`;
   const description = `This is ${authorName}'s ${contentId}`;
+  const imageUrl = `https://kaleidoshare.deno.dev/api/contents/${encAuthorName}/${encContentId}/image`;
   return ReactDOMServer.renderToString(
     <html lang="en">
       <head>
@@ -23,10 +24,7 @@ export function makeContentPageForTwitterBot(
         <meta property="twitter:player" content={playerUrl} />
         <meta property="twitter:player:width" content="300" />
         <meta property="twitter:player:height" content="300" />
-        <meta
-          property="twitter:image"
-          content="https://kaleidoshare.deno.dev/ogp.png"
-        />
+        <meta property="twitter:image" content={imageUrl} />
         <title>{contentId}</title>
       </head>
       <body></body>
