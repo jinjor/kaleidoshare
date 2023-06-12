@@ -112,7 +112,7 @@ export default function Editor(props: {
               image
             );
             messageContext.setMessage("Published!");
-            routingContext.goTo(`/contents/${userName}/${contentId}`, true);
+            routingContext.goTo(`/contents/${userName}/${contentId}`, false);
           } else {
             await updateContent(
               content.author,

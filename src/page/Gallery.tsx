@@ -3,7 +3,7 @@ import { Content, User } from "../../schema/schema.js";
 import Nav from "../ui/Nav";
 import Gallery from "../ui/Gallery";
 import { getContents } from "../domain/io.js";
-import NotFound from "./NotFound";
+import NotFound from "../ui/NotFound";
 
 export default function GalleryPage(props: {
   user: User | null;
@@ -20,21 +20,18 @@ export default function GalleryPage(props: {
       setContents(contents);
     });
   }, [authorName]);
-
-  if (contents === undefined) {
-    return null;
-  }
-  if (contents === null) {
-    return <NotFound user={user} />;
-  }
   return (
     <>
       <Nav user={user}></Nav>
-      <main className="horizontal-center" style={{ flexGrow: 1 }}>
-        <div className="container">
-          <Gallery authorName={authorName} contents={contents} />
-        </div>
-      </main>
+      {contents === undefined ? null : contents === null ? (
+        <NotFound />
+      ) : (
+        <main className="horizontal-center" style={{ flexGrow: 1 }}>
+          <div className="container">
+            <Gallery authorName={authorName} contents={contents} />
+          </div>
+        </main>
+      )}
     </>
   );
 }
