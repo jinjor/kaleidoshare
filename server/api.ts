@@ -246,16 +246,18 @@ export function createRouters(
     context.response.status = 200;
     context.response.body = JSON.stringify(content);
   });
-  router.get("/contents/:author/:contentId/image", async (context) => {
+  router.get("/contents/:author/:contentId/image.png", async (context) => {
     const author = context.params.author;
     const contentId = context.params.contentId;
     const image = await getUserContentImage(author, contentId);
     if (image == null) {
       throw new ContentNotFoundError();
     }
+    const array = dataUrlToUint8Array(image);
     context.response.status = 200;
     context.response.headers.set("content-type", "image/png");
-    context.response.body = dataUrlToUint8Array(image);
+    context.response.headers.set("content-length", array.length.toString());
+    context.response.body = array;
   });
   const routerForBot = new Router();
   routerForBot.get("/contents/:author/:contentId", async (context, next) => {
