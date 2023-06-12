@@ -17,5 +17,10 @@
     "react": "https://esm.sh/react@18.2.0",
     "react-dom/server": "https://esm.sh/react-dom@18.2.0/server"
   },
-  "scopes": {}
+  "scopes": {},
+  "compilerOptions": {
+    "jsx": "react",
+    "jsxFactory": "React.createElement",
+    "jsxFragmentFactory": "React.Fragment"
+  }
 }
