@@ -24,7 +24,7 @@ export type ViewApi = {
 };
 const View = React.memo(function View(props: {
   size: number;
-  world: WorldApi;
+  world: WorldApi | undefined;
   onReady: (api: ViewApi) => void;
 }) {
   const { size, world, onReady } = props;
@@ -32,6 +32,9 @@ const View = React.memo(function View(props: {
   const viewRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
+    if (world == null) {
+      return;
+    }
     const triangleNodes = createTriangleNodes(generation);
     const viewElement = viewRef.current!;
     const interval = setInterval(() => {
@@ -68,21 +71,31 @@ const View = React.memo(function View(props: {
     };
   }, [world, onReady]);
   return (
-    <canvas
-      ref={viewRef}
-      width={size}
-      height={size}
+    <div
       style={{
-        width: "100%",
-        height: "100%",
-        overflow: "hidden",
-        position: "absolute",
-        left: 0,
-        top: 0,
-        borderRadius: "50%",
-        WebkitPrintColorAdjust: "exact",
+        backgroundColor: "#222",
+        width: size,
+        height: size,
+        position: "relative",
+        minWidth: size,
       }}
-    ></canvas>
+    >
+      <canvas
+        ref={viewRef}
+        width={size}
+        height={size}
+        style={{
+          width: "100%",
+          height: "100%",
+          overflow: "hidden",
+          position: "absolute",
+          left: 0,
+          top: 0,
+          borderRadius: "50%",
+          WebkitPrintColorAdjust: "exact",
+        }}
+      ></canvas>
+    </div>
   );
 });
 export default View;
