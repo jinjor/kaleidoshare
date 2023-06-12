@@ -3,8 +3,43 @@ import { openKv } from "./kv.ts";
 import { Content, Output, Settings } from "../schema/schema.ts";
 
 // Schema:
-// - contents: contentId => Content
+// - contents: (author, contentId) => Content
+// - images: (author, contentId, index) => PartialImage
 
+async function getImage(
+  author: string,
+  contentId: string
+): Promise<string | null> {
+  const kv = await openKv();
+  const partials: string[] = [];
+  for await (const entry of kv.list<string>({
+    prefix: ["images", author, contentId],
+  })) {
+    partials.push(entry.value);
+  }
+  if (partials.length === 0) {
+    return null;
+  }
+  return partials.join("");
+}
+async function setImage(author: string, contentId: string, image: string) {
+  await deleteImage(author, contentId);
+  const kv = await openKv();
+  const partialLength = 64_000;
+  const len = Math.ceil(image.length / partialLength);
+  for (let i = 0; i < len; i++) {
+    const partial = image.slice(i * partialLength, (i + 1) * partialLength);
+    await kv.set(["images", author, contentId, i], partial);
+  }
+}
+async function deleteImage(author: string, contentId: string) {
+  const kv = await openKv();
+  for await (const entry of kv.list<string>({
+    prefix: ["images", author, contentId],
+  })) {
+    await kv.delete(entry.key);
+  }
+}
 async function getContent(
   author: string,
   contentId: string
@@ -59,6 +94,12 @@ export async function getUserContent(
   const content = await getContent(author, contentId);
   return content;
 }
+export async function getUserContentImage(
+  author: string,
+  contentId: string
+): Promise<string | null> {
+  return await getImage(author, contentId);
+}
 export async function listUserContents(author: string): Promise<Content[]> {
   const contents = await listContent(author);
   return contents;
@@ -68,6 +109,7 @@ export async function createContent(
   author: string,
   settings: Settings,
   output: Output,
+  thumbnail: string,
   image: string
 ): Promise<Content> {
   if (userName !== author) {
@@ -84,11 +126,12 @@ export async function createContent(
     author,
     settings,
     output,
-    image,
+    thumbnail,
     createdAt,
     updatedAt: createdAt,
   };
   await setContent(author, contentId, content);
+  await setImage(author, contentId, image);
   return content;
 }
 export async function updateContent(
@@ -97,21 +140,26 @@ export async function updateContent(
   contentId: string,
   settings: Settings,
   output: Output,
+  thumbnail: string,
   image: string
 ): Promise<Content> {
   if (userName !== author) {
     throw new AuthorDoesNotMatchError();
   }
   const updatedAt = new Date().toISOString();
-  const content = await getContent(author, contentId);
-  if (content == null) {
+  const contentWithoutImage = await getContent(author, contentId);
+  if (contentWithoutImage == null) {
     throw new ContentNotFoundError();
   }
-  content.updatedAt = updatedAt;
-  content.settings = settings;
-  content.output = output;
-  content.image = image;
+  const content = {
+    ...contentWithoutImage,
+    updatedAt,
+    settings,
+    output,
+    thumbnail,
+  };
   await setContent(author, contentId, content);
+  await setImage(author, contentId, image);
   return content;
 }
 export async function removeContent(
@@ -122,11 +170,8 @@ export async function removeContent(
   if (userName !== author) {
     throw new AuthorDoesNotMatchError();
   }
-  const content = await getContent(author, contentId);
-  if (content == null) {
-    return;
-  }
   await deleteContent(author, contentId);
+  await deleteImage(author, contentId);
 }
 export async function removeAllUserContents(
   author: string
@@ -134,6 +179,7 @@ export async function removeAllUserContents(
   const contents = await listContent(author);
   for (const content of contents) {
     await deleteContent(author, content.id);
+    await deleteImage(author, content.id);
   }
   return contents;
 }

@@ -28,7 +28,7 @@ export default function Gallery(props: {
               style={{ textAlign: "center" }}
             >
               <img
-                src={content.image}
+                src={content.thumbnail}
                 width={size}
                 height={size}
                 style={{ borderRadius: "50%" }}

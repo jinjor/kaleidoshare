@@ -83,6 +83,8 @@ test("content", async (t) => {
           spinner: { speed: 1, vertices: [] },
           objects: [],
         },
+        thumbnail: "",
+        image: "",
       }),
     });
     assert.strictEqual(res.status, 403);
@@ -98,6 +100,8 @@ test("content", async (t) => {
           spinner: { speed: 1, vertices: [] },
           objects: [],
         },
+        thumbnail: "",
+        image: "",
       }),
     });
     assert.strictEqual(res.status, 403);
@@ -119,6 +123,8 @@ test("content", async (t) => {
       spinner: { speed: 1, vertices: [{ x: 1, y: 1 }] },
       objects: [],
     },
+    thumbnail: "x",
+    image: "xx",
   };
   const updateBody = {
     settings: { background: "#456", objects: [] },
@@ -127,6 +133,8 @@ test("content", async (t) => {
       spinner: { speed: 1, vertices: [{ x: 2, y: 2 }] },
       objects: [],
     },
+    thumbnail: "y",
+    image: "yy",
   };
   await t.test("create content", async (t) => {
     {
@@ -135,7 +143,7 @@ test("content", async (t) => {
         body: JSON.stringify(createBody),
       });
       assert.strictEqual(res.status, 200);
-      const { id, author, createdAt, updatedAt, settings, output } =
+      const { id, author, createdAt, updatedAt, settings, output, thumbnail } =
         await res.json();
       content1Id = id;
       assert.strictEqual(typeof id, "string");
@@ -143,6 +151,7 @@ test("content", async (t) => {
       assert.strictEqual(createdAt, updatedAt);
       assert.deepStrictEqual(settings, createBody.settings);
       assert.deepStrictEqual(output, createBody.output);
+      assert.deepStrictEqual(thumbnail, createBody.thumbnail);
     }
     {
       const res = await fetch(origin + `/api/contents/${userName}`, {
@@ -166,6 +175,8 @@ test("content", async (t) => {
           },
           objects: [],
         },
+        thumbnail: "y",
+        image: "yy",
       }),
     });
     assert.strictEqual(res.status, 400);
@@ -179,13 +190,14 @@ test("content", async (t) => {
       }
     );
     assert.strictEqual(res.status, 200);
-    const { id, author, createdAt, updatedAt, settings, output } =
+    const { id, author, createdAt, updatedAt, settings, output, thumbnail } =
       await res.json();
     assert.strictEqual(id, content1Id);
     assert.strictEqual(author, userName);
     assert.notStrictEqual(createdAt, updatedAt);
     assert.deepStrictEqual(settings, updateBody.settings);
     assert.deepStrictEqual(output, updateBody.output);
+    assert.deepStrictEqual(thumbnail, updateBody.thumbnail);
   });
   await t.test("cannot update invalid content", async (t) => {
     const res = await fetch(
@@ -201,6 +213,8 @@ test("content", async (t) => {
             },
             objects: [],
           },
+          thumbnail: "",
+          image: "",
         }),
       }
     );
