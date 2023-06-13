@@ -3,7 +3,7 @@ import Nav from "../ui/Nav";
 import { User } from "../../schema/schema.js";
 import NotFoundBody from "../ui/NotFound";
 
-export default function NotFound(props: { user: User | null }) {
+export default function NotFound(props: { user: User | null | undefined }) {
   const { user } = props;
   return (
     <>

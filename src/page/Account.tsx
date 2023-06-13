@@ -7,7 +7,7 @@ import { RoutingContext } from "../Routing";
 import ConfirmDeleteAccount from "../ui/ConfirmDeleteAccount";
 import Gallery from "../ui/Gallery";
 
-export default function Account(props: { user: User | null }) {
+export default function Account(props: { user: User | null | undefined }) {
   const { user } = props;
 
   const routingContext = React.useContext(RoutingContext)!;
@@ -24,7 +24,6 @@ export default function Account(props: { user: User | null }) {
       setContents(contents);
     });
   }, [user]);
-
   const handleAddCredential = async (
     event: React.FormEvent<HTMLButtonElement>
   ) => {
@@ -48,6 +47,9 @@ export default function Account(props: { user: User | null }) {
   const handleCancelDeleteAccount = () => {
     setPopupId(null);
   };
+  if (user === undefined) {
+    return null;
+  }
   if (user == null) {
     routingContext.goTo("/", false);
     return null;

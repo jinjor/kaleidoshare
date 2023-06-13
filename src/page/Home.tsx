@@ -3,8 +3,11 @@ import Nav from "../ui/Nav";
 import Editor from "../ui/Editor";
 import { User } from "../../schema/schema.js";
 
-export default function Home(props: { user: User | null }) {
+export default function Home(props: { user: User | null | undefined }) {
   const { user } = props;
+  if (user === undefined) {
+    return null;
+  }
   return (
     <>
       <Nav user={user}></Nav>

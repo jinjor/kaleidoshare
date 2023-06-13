@@ -1,6 +1,5 @@
 import React, { useEffect, useRef } from "react";
-import World, { WorldApi } from "./World";
-import { Output } from "../../schema/schema.js";
+import { WorldApi } from "./World";
 
 const generation = 5;
 const f = [
@@ -25,9 +24,11 @@ export type ViewApi = {
 const View = React.memo(function View(props: {
   size: number;
   world: WorldApi | undefined;
+  fullscreen: boolean;
+  onQuitFullscreen: () => void;
   onReady: (api: ViewApi) => void;
 }) {
-  const { size, world, onReady } = props;
+  const { size, world, fullscreen, onQuitFullscreen, onReady } = props;
 
   const viewRef = useRef<HTMLCanvasElement>(null);
 
@@ -81,7 +82,7 @@ const View = React.memo(function View(props: {
       clearInterval(interval);
     };
   }, [world, onReady]);
-  return (
+  const canvas = (
     <canvas
       ref={viewRef}
       width={size}
@@ -97,6 +98,47 @@ const View = React.memo(function View(props: {
         WebkitPrintColorAdjust: "exact",
       }}
     ></canvas>
+  );
+  return fullscreen ? (
+    <div
+      style={{
+        position: "fixed",
+        top: 0,
+        bottom: 0,
+        left: 0,
+        right: 0,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        backgroundColor: "#111",
+      }}
+      onClick={onQuitFullscreen}
+    >
+      <div
+        style={{
+          backgroundColor: "#111",
+          maxWidth: "90vh",
+          maxHeight: "90vh",
+          position: "relative",
+          width: "90vw",
+          height: "90vw",
+        }}
+      >
+        {canvas}
+      </div>
+    </div>
+  ) : (
+    <div
+      style={{
+        backgroundColor: "#222",
+        width: size,
+        height: size,
+        position: "relative",
+        minWidth: size,
+      }}
+    >
+      {canvas}
+    </div>
   );
 });
 export default View;

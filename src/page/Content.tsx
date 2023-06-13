@@ -6,7 +6,7 @@ import Editor from "../ui/Editor";
 import NotFound from "../ui/NotFound";
 
 export default function ContentPage(props: {
-  user: User | null;
+  user: User | null | undefined;
   authorName: string;
   contentId: string;
   edit: boolean;
@@ -19,6 +19,9 @@ export default function ContentPage(props: {
       setContent(content);
     });
   }, [authorName, contentId]);
+  if (user === undefined) {
+    return null;
+  }
   return (
     <>
       <Nav user={user}></Nav>

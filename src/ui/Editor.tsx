@@ -1,6 +1,6 @@
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import View, { ViewApi } from "./View";
-import World, { WorldApi, WorldOptions } from "./World";
+import World, { WorldApi } from "./World";
 import SettingEditor, { SettingsEditorController } from "./SettingEditor";
 import { Settings, Output, User, Content } from "../../schema/schema.js";
 import Operation from "./Operation";
@@ -18,9 +18,6 @@ const operationSize = 340;
 const upperHeight = 300;
 const gap = (960 - (worldSize + viewSize + operationSize)) / 2;
 
-const worldOptions: WorldOptions = {
-  size: worldSize,
-};
 export default function Editor(props: {
   user: User | null;
   initiallyPreview: boolean;
@@ -151,39 +148,15 @@ export default function Editor(props: {
       <>
         {/** World の状態をリセットされないように HTML 構造を下と合わせておく */}
         <div>
-          <World
-            options={worldOptions}
-            output={output}
-            onReady={handleWorldReady}
-          />
+          <World size={worldSize} output={output} onReady={handleWorldReady} />
         </div>
-        <div
-          style={{
-            position: "fixed",
-            top: 0,
-            bottom: 0,
-            left: 0,
-            right: 0,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            backgroundColor: "#111",
-          }}
-          onClick={quitPreview}
-        >
-          <div
-            style={{
-              backgroundColor: "#111",
-              maxWidth: "90vh",
-              maxHeight: "90vh",
-              position: "relative",
-              width: "90vw",
-              height: "90vw",
-            }}
-          >
-            <View size={viewSize * 2} world={world} onReady={handleViewReady} />
-          </div>
-        </div>
+        <View
+          fullscreen={true}
+          onQuitFullscreen={quitPreview}
+          size={viewSize * 2}
+          world={world}
+          onReady={handleViewReady}
+        />
       </>
     );
   }
@@ -197,22 +170,14 @@ export default function Editor(props: {
           overflow: "scroll",
         }}
       >
-        <World
-          options={worldOptions}
-          output={output}
-          onReady={handleWorldReady}
+        <World size={worldSize} output={output} onReady={handleWorldReady} />
+        <View
+          fullscreen={false}
+          onQuitFullscreen={quitPreview}
+          size={viewSize}
+          world={world}
+          onReady={handleViewReady}
         />
-        <div
-          style={{
-            backgroundColor: "#222",
-            width: viewSize,
-            height: viewSize,
-            position: "relative",
-            minWidth: viewSize,
-          }}
-        >
-          <View size={viewSize} world={world} onReady={handleViewReady} />
-        </div>
         <Operation
           width={operationSize}
           height={upperHeight}
