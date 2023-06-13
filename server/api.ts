@@ -85,11 +85,7 @@ export function createRouters(
   routerWithAuth.use(async (context, next) => {
     const userName = await context.state.session.get("login");
     if (userName == null) {
-      context.response.status = 401;
-      context.response.body = JSON.stringify({
-        message: "not authenticated",
-      });
-      return;
+      throw new NotAuthenticatedError();
     }
     await next();
   });
@@ -283,7 +279,11 @@ function dataUrlToUint8Array(base64Str: string): Uint8Array {
     }) as number[]
   );
 }
-
+class NotAuthenticatedError extends Error {
+  constructor() {
+    super("Not authenticated");
+  }
+}
 export function handleError(context: Context, e: unknown) {
   if (e instanceof BadRequest) {
     context.response.status = 400;
@@ -313,6 +313,13 @@ export function handleError(context: Context, e: unknown) {
     context.response.status = 401;
     context.response.body = JSON.stringify({
       message: "Authentication failed",
+    });
+    return;
+  }
+  if (e instanceof NotAuthenticatedError) {
+    context.response.status = 401;
+    context.response.body = JSON.stringify({
+      message: "Not authenticated",
     });
     return;
   }
