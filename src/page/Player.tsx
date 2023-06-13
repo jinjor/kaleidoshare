@@ -1,8 +1,9 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useContext, useState } from "react";
 import { getContent } from "../domain/io";
 import { Content } from "../../schema/schema.js";
 import World, { WorldApi } from "../ui/World";
 import View from "../ui/View";
+import { RoutingContext } from "../Routing";
 
 const worldSize = 300;
 const viewSize = 300;
@@ -23,6 +24,7 @@ export default function Player(props: {
   contentId: string;
 }) {
   const { authorName, contentId } = props;
+  const routingContext = useContext(RoutingContext)!;
   const [content, setContent] = useState<Content | null | undefined>();
   const [world, setWorld] = useState<WorldApi | undefined>();
   const handleWorldReady = useCallback((world: WorldApi) => {
@@ -33,6 +35,15 @@ export default function Player(props: {
       setContent(content);
     });
   }, [authorName, contentId]);
+  const handleQuitFullscreen = useCallback(() => {
+    const isInIframe = window !== window.parent;
+    const path = `/contents/${authorName}/${contentId}`;
+    if (isInIframe) {
+      window.open(path, "_blank");
+    } else {
+      routingContext.goTo(path, true);
+    }
+  }, [routingContext]);
   if (content === undefined) {
     return <div style={messageStyle}>Loading...</div>;
   }
@@ -53,7 +64,7 @@ export default function Player(props: {
       </div>
       <View
         fullscreen={true}
-        onQuitFullscreen={() => {}}
+        onQuitFullscreen={handleQuitFullscreen}
         size={viewSize * 2}
         world={world}
         onReady={() => {}}

@@ -141,6 +141,46 @@ test("publish", async ({ page }) => {
   assert(reqs[0].pathname === `/api/contents/${userName}`);
   assert(reqs[0].body != null);
 });
+test("player", async ({ page }) => {
+  const authorName = "test";
+  const contentId = "id";
+  await mockApi(page, "GET", "/api/session", 200, null);
+  const reqs = await mockApi(page, "GET", "/api/contents/*/*", 200, {
+    id: contentId,
+    author: authorName,
+    settings: { objects: [] },
+    output: {
+      background: "#000",
+      spinner: {
+        speed: 1,
+        vertices: [
+          { x: 0, y: 1 },
+          { x: 1, y: 0 },
+          { x: 1, y: 1 },
+        ],
+      },
+      objects: [],
+    },
+    thumbnail: "",
+    image: "x",
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  });
+  await page.goto(`/contents/${authorName}/${contentId}/player`);
+  await expect(page.getByText(/not found/i)).not.toBeVisible();
+  assert.strictEqual(reqs.length, 1);
+  assert(reqs[0].pathname === `/api/contents/${authorName}/${contentId}`);
+});
+test("player (not found)", async ({ page }) => {
+  const authorName = "test";
+  const contentId = "id";
+  await mockApi(page, "GET", "/api/session", 200, null);
+  const reqs = await mockApi(page, "GET", "/api/contents/*/*", 200, null);
+  await page.goto(`/contents/${authorName}/${contentId}/player`);
+  await expect(page.getByText(/not found/i)).toBeVisible();
+  assert.strictEqual(reqs.length, 1);
+  assert(reqs[0].pathname === `/api/contents/${authorName}/${contentId}`);
+});
 test("content (self)", async ({ page }) => {
   const userName = "test";
   const authorName = userName;
