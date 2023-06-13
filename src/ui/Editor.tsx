@@ -100,7 +100,7 @@ export default function Editor(props: {
           // TODO: env を使う
           if (location.port === "5173") {
             // Example に転記するため
-            console.log(JSON.stringify({ settings, image }));
+            console.log(JSON.stringify({ name: "", settings, thumbnail }));
           }
           if (content == null) {
             const contentId = await createContent(
