@@ -8,7 +8,8 @@ export function makeContentPageForTwitterBot(
   const encAuthorName = encodeURIComponent(authorName);
   const encContentId = encodeURIComponent(contentId);
   const playerUrl = `https://kaleidoshare.deno.dev/contents/${encAuthorName}/${encContentId}/player`;
-  const description = `This is ${authorName}'s ${contentId}`;
+  const title = `${contentId} - kaleidoshare`;
+  const description = `A kaleidoscope created by ${authorName}`; // TODO: title
   const imageUrl = `https://kaleidoshare.deno.dev/api/contents/${encAuthorName}/${encContentId}/image.png`;
   return ReactDOMServer.renderToString(
     <html lang="en">
@@ -17,10 +18,10 @@ export function makeContentPageForTwitterBot(
         <meta http-equiv="Cache-Control" content="no-store" />
         <link rel="icon" type="image/svg+xml" href="/icon.svg" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <meta name="description" content={description} />
-        <meta name="twitter:card" content="player" />
-        <meta property="twitter:title" content="Kaleidoshare" />
-        <meta property="twitter:site" content="jinjor" />
+        <meta property="twitter:card" content="player" />
+        <meta property="twitter:title" content={title} />
+        <meta property="twitter:site" content="kaleidoshare" />
+        <meta property="twitter:description" content={description} />
         <meta property="twitter:player" content={playerUrl} />
         <meta property="twitter:player:width" content="300" />
         <meta property="twitter:player:height" content="300" />
