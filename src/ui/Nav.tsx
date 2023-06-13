@@ -1,12 +1,11 @@
 import React from "react";
 import { login, logout } from "../domain/io";
-import { env } from "../domain/env";
 import MessageBar, { MessageContext } from "./MessageBar";
 import { User } from "../../schema/schema.js";
 import { RoutingContext } from "../Routing";
 import SignupForm from "./SignupForm";
 
-export default function Nav(props: { user: User | null }) {
+export default function Nav(props: { user: User | null | undefined }) {
   const { user } = props;
 
   const routingContext = React.useContext(RoutingContext)!;

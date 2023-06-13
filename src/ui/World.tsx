@@ -27,19 +27,15 @@ export type WorldApi = {
   getImage: () => HTMLImageElement;
   getBackgroundColor: () => string;
 };
-export type WorldOptions = {
-  size: number;
-};
-
 const spinnerRadiusRatio = 0.5;
 const clipRadiusRatio = 0.25;
 
 const World = React.memo(function World(props: {
-  options: WorldOptions;
+  size: number;
   output: Output | undefined;
   onReady: (world: WorldApi) => void;
 }) {
-  const { options, output, onReady } = props;
+  const { size, output, onReady } = props;
 
   const worldRef = useRef<HTMLDivElement>(null);
 
@@ -50,7 +46,7 @@ const World = React.memo(function World(props: {
     const worldElement = worldRef.current!;
     const { render, runner, engine, update } = setupWorld(
       worldElement,
-      options,
+      size,
       output
     );
     onReady({
@@ -87,12 +83,12 @@ const World = React.memo(function World(props: {
       running = false;
       worldElement.innerHTML = "";
     };
-  }, [options, output]);
+  }, [size, output]);
   return (
     <div
       style={{
-        width: options.size,
-        height: options.size,
+        width: size,
+        height: size,
         backgroundColor: "#222",
       }}
       ref={worldRef}
@@ -101,13 +97,7 @@ const World = React.memo(function World(props: {
 });
 export default World;
 
-function setupWorld(
-  element: HTMLElement,
-  options: WorldOptions,
-  output: Output
-) {
-  const { size } = options;
-
+function setupWorld(element: HTMLElement, size: number, output: Output) {
   const spinnerRadius = size * spinnerRadiusRatio;
   const clipRadius = size * clipRadiusRatio; // TODO: 切り抜き範囲を表示
 

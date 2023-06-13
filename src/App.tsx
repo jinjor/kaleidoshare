@@ -5,10 +5,10 @@ import NotFound from "./page/NotFound";
 import Home from "./page/Home";
 import Account from "./page/Account";
 import { MessageContext, useMessage } from "./ui/MessageBar";
-import { env } from "./domain/env";
 import { User } from "../schema/schema.js";
 import { RoutingContext, useSPARouting } from "./Routing";
 import Gallery from "./page/Gallery";
+import Player from "./page/Player";
 
 type Route =
   | {
@@ -26,6 +26,11 @@ type Route =
       authorName: string;
       contentId: string;
       edit: boolean;
+    }
+  | {
+      type: "player";
+      authorName: string;
+      contentId: string;
     };
 
 function getRoute(pathname: string): Route | null {
@@ -54,6 +59,13 @@ function getRoute(pathname: string): Route | null {
     if (match) {
       const [, authorName, contentId] = match;
       return { type: "content", authorName, contentId, edit: false };
+    }
+  }
+  {
+    const match = pathname.match(/^\/contents\/([^\/]+)\/([^\/]+)\/player$/);
+    if (match) {
+      const [, authorName, contentId] = match;
+      return { type: "player", authorName, contentId };
     }
   }
   return null;
@@ -89,9 +101,6 @@ export default function App() {
       window.removeEventListener("unhandledrejection", handler);
     };
   }, [messageContext]);
-  if (user === undefined) {
-    return null;
-  }
   return (
     <RoutingContext.Provider value={routingContext}>
       <MessageContext.Provider value={messageContext}>
@@ -109,6 +118,8 @@ export default function App() {
               contentId={route.contentId}
               edit={route.edit}
             />
+          ) : route?.type === "player" ? (
+            <Player authorName={route.authorName} contentId={route.contentId} />
           ) : (
             <NotFound user={user} />
           )}

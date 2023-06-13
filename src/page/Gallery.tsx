@@ -6,7 +6,7 @@ import { getContents } from "../domain/io.js";
 import NotFound from "../ui/NotFound";
 
 export default function GalleryPage(props: {
-  user: User | null;
+  user: User | null | undefined;
   authorName: string;
 }) {
   const { user, authorName } = props;
@@ -20,6 +20,9 @@ export default function GalleryPage(props: {
       setContents(contents);
     });
   }, [authorName]);
+  if (user === undefined) {
+    return null;
+  }
   return (
     <>
       <Nav user={user}></Nav>
