@@ -92,7 +92,14 @@ export default function App() {
   }, [sessionKey]);
   useEffect(() => {
     const handler = (e) => {
-      messageContext.setError(e.error ?? e.reason);
+      const error = e.error ?? e.reason;
+      messageContext.setError(error);
+      if ("message" in error) {
+        // TODO: メッセージに依存させない
+        if (error.message === "Not authenticated") {
+          setUser(null);
+        }
+      }
     };
     window.addEventListener("error", handler);
     window.addEventListener("unhandledrejection", handler);
