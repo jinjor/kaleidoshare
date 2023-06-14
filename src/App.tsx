@@ -9,6 +9,7 @@ import { User } from "../schema/schema.js";
 import { RoutingContext, useSPARouting } from "./Routing";
 import Gallery from "./page/Gallery";
 import Player from "./page/Player";
+import Tutorial from "./page/Tutorial";
 
 type Route =
   | {
@@ -31,6 +32,9 @@ type Route =
       type: "player";
       authorName: string;
       contentId: string;
+    }
+  | {
+      type: "document";
     };
 
 function getRoute(pathname: string): Route | null {
@@ -66,6 +70,12 @@ function getRoute(pathname: string): Route | null {
     if (match) {
       const [, authorName, contentId] = match;
       return { type: "player", authorName, contentId };
+    }
+  }
+  {
+    const match = pathname.match(/^\/document$/);
+    if (match) {
+      return { type: "document" };
     }
   }
   return null;
@@ -127,6 +137,8 @@ export default function App() {
             />
           ) : route?.type === "player" ? (
             <Player authorName={route.authorName} contentId={route.contentId} />
+          ) : route?.type === "document" ? (
+            <Tutorial />
           ) : (
             <NotFound user={user} />
           )}

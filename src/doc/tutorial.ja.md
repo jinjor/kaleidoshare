@@ -4,7 +4,7 @@
 試しに、以下の設定をコピーしてエディタに貼り付けてみましょう。
 設定を反映するには、"Generate" ボタンを押すか Ctrl+S を押してください。
 
-```json
+```javascript
 {
   "objects": [
     {
@@ -38,7 +38,7 @@
 
 上の設定の中の１つ目の `shape` に注目してみましょう。
 
-```json
+```javascript
 "shape": {
   "type": "circle",
   "radius": 0.1
@@ -49,7 +49,7 @@
 
 ここで、 radius の値がランダムに生成されるようにしてみましょう。
 
-```json
+```javascript
 "radius": { "min": 0.01, "max": 0.1 }
 ```
 
@@ -57,7 +57,7 @@
 
 今度は、 radius の値が周期的に変化するようにしてみましょう。
 
-```json
+```javascript
 "radius": {
   "frequency": 0.2,
   "offset": 0.08,
@@ -71,7 +71,7 @@
 さらに、それぞれの数値は先ほどと同様にランダムにすることもできます。
 たとえば周波数にバラツキを持たせたい場合は以下のようにします。
 
-```json
+```javascript
 "radius": {
   "frequency": {
     "min": 0.1,
@@ -87,25 +87,25 @@
 今度は色に注目してみましょう。
 円の色は fill の指定で赤に塗りつぶされています。
 
-```json
+```javascript
 "fill": "red"
 ```
 
 次のようにすると、リストの中から一つの色がランダムに選ばれます。
 
-```json
+```javascript
 "fill": ["red", "green", "blue", "purple"]
 ```
 
 色の指定には CSS と同様の表現が使えます。
 
-```json
+```javascript
 "fill": ["#fa0", "rgb(100,100,200)", "hsl(180,50%,50%)"]
 ```
 
 RGB や HSL を使う場合、上のように書いても良いのですが、個別のプロパティを設定することもできます。
 
-```json
+```javascript
 "fill": {
   "type": "hsl",
   "h": 180,
@@ -116,7 +116,7 @@ RGB や HSL を使う場合、上のように書いても良いのですが、�
 
 もちろん、各数値はランダムにすることもできます。
 
-```json
+```javascript
 "fill": {
   "type": "hsl",
   "h": 180,
@@ -130,7 +130,7 @@ RGB や HSL を使う場合、上のように書いても良いのですが、�
 
 外縁の色を指定したい場合は、fill の隣に stroke と strokeWidth を加えます。
 
-```json
+```javascript
 "stroke": "white",
 "strokeWidth": 0.03
 ```
@@ -141,19 +141,19 @@ RGB や HSL を使う場合、上のように書いても良いのですが、�
 
 円
 
-```json
+```javascript
 "shape": { "type": "circle", "radius": 0.1 }
 ```
 
 多角形
 
-```json
+```javascript
 "shape": { "type": "polygon", "sides": 5, "radius": 0.1 }
 ```
 
 長方形
 
-```json
+```javascript
 "shape": { "type": "rectangle", "width": 0.1, "height": 0.2 }
 ```
 
@@ -161,7 +161,7 @@ RGB や HSL を使う場合、上のように書いても良いのですが、�
 
 オブジェクトの重さを指定することもできます。
 
-```json
+```javascript
 "objects": [
   {
     "weight": 0.01
@@ -176,7 +176,7 @@ weight のデフォルト値は 1 で、それよりも小さくすると落下�
 
 スピナーの挙動を設定することもできます。
 
-```json
+```javascript
 "spinner": {
   "sides": 4,
   "speed": 0.1
@@ -190,7 +190,7 @@ sides は辺の数、 speed は１秒あたりの回転数です。
 
 背景色を設定することもできます。
 
-```json
+```javascript
 "background": "#fff",
 "objects": ...
 ```
