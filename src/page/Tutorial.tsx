@@ -32,12 +32,18 @@ export default function Tutorial() {
         <div
           className="markdown-body"
           style={{
-            padding: "40px 20px 100px",
-            marginBottom: 40,
+            padding: "40px 40px 120px",
+            marginBottom: 15,
             boxSizing: "border-box",
           }}
-          dangerouslySetInnerHTML={{ __html: html }}
-        ></div>
+        >
+          <div style={{ marginBottom: 40 }}>
+            <a href="/" target="_blank">
+              Kaleidoshare
+            </a>
+          </div>
+          <div dangerouslySetInnerHTML={{ __html: html }}></div>
+        </div>
       </div>
     </div>
   );
