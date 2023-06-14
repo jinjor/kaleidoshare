@@ -17,7 +17,7 @@ jobs:
         uses: denoland/setup-deno@v1
       - name: Install npm dependencies
         run: |
-          npm ci
+          npm ci --legacy-peer-deps
           npx playwright install --with-deps
       - name: Build
         run: |
@@ -51,5 +51,3 @@ jobs:
         with:
           project: kaleidoshare
           entrypoint: server.ts
-          # entrypoint: https://deno.land/std@0.157.0/http/file_server.ts
-          # root: dist
