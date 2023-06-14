@@ -56,6 +56,11 @@ export default function Nav(props: { user: User | null | undefined }) {
             <img src="/logo.png" width={160} />
           </a>
           <ul>
+            <li>
+              <a href="/tutorial" target="_blank">
+                Tutorial
+              </a>
+            </li>
             {user ? (
               <>
                 <li>

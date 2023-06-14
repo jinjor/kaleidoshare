@@ -34,7 +34,7 @@ type Route =
       contentId: string;
     }
   | {
-      type: "document";
+      type: "tutorial";
     };
 
 function getRoute(pathname: string): Route | null {
@@ -73,9 +73,9 @@ function getRoute(pathname: string): Route | null {
     }
   }
   {
-    const match = pathname.match(/^\/document$/);
+    const match = pathname.match(/^\/tutorial$/);
     if (match) {
-      return { type: "document" };
+      return { type: "tutorial" };
     }
   }
   return null;
@@ -137,7 +137,7 @@ export default function App() {
             />
           ) : route?.type === "player" ? (
             <Player authorName={route.authorName} contentId={route.contentId} />
-          ) : route?.type === "document" ? (
+          ) : route?.type === "tutorial" ? (
             <Tutorial />
           ) : (
             <NotFound user={user} />
