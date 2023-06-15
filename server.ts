@@ -41,7 +41,9 @@ const app = new Application<AppState>();
 app.addEventListener("error", (e) => {
   console.error(e.error);
 });
-const store = new CookieStore(randomHex(32));
+const cookieStoreSecret = Deno.env.get("COOKIE_STORE_SECRET") ?? randomHex(32);
+const cookieStoreKey = `${DENO_DEPLOYMENT_ID ?? ""}:${cookieStoreSecret}`;
+const store = new CookieStore(cookieStoreKey);
 app.use(
   Session.initMiddleware(store, {
     expireAfterSeconds: 24 * 60 * 60, // 1 day
