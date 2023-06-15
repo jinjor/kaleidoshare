@@ -89,10 +89,28 @@ const World = React.memo(function World(props: {
       style={{
         width: size,
         height: size,
-        backgroundColor: "#222",
+        position: "relative",
       }}
-      ref={worldRef}
-    ></div>
+    >
+      <div
+        style={{
+          width: "100%",
+          height: "100%",
+        }}
+        ref={worldRef}
+      ></div>
+      <div
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          bottom: 0,
+          right: 0,
+          border: "solid 1px var(--bg-color-float)",
+          zIndex: 100,
+        }}
+      ></div>
+    </div>
   );
 });
 export default World;

@@ -38,7 +38,7 @@ export default function Tutorial() {
           }}
         >
           <div style={{ marginBottom: 40 }}>
-            <a href="/" target="_blank">
+            <a href="/" target="_blank" style={{ color: "hsl(252, 50%, 70%)" }}>
               Kaleidoshare
             </a>
           </div>

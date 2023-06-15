@@ -1,5 +1,6 @@
 :root {
-  --bg-color: #333;
+  --bg-color: #001;
+  --bg-color-nav: #222;
   --bg-color-float: #222;
   --text-color: #ddd;
   --text-color-active: #fff;
@@ -63,7 +64,7 @@ input:-webkit-autofill:active {
   caret-color: #fff;
 }
 nav {
-  background-color: var(--bg-color-float);
+  background-color: var(--bg-color-nav);
 }
 nav ul {
   list-style: none;
@@ -362,4 +363,10 @@ button.link {
 .content-selector-item-image {
   background-color: #000; /* TODO */
   border-radius: 50%;
+}
+.markdown-body {
+  background-color: var(--bg-color-float) !important;
+}
+pre[class*="language-"] {
+  background-color: #111 !important;
 }

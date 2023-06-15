@@ -130,7 +130,7 @@ const View = React.memo(function View(props: {
   ) : (
     <div
       style={{
-        backgroundColor: "#222",
+        backgroundColor: "var(--bg-color-float)",
         width: size,
         height: size,
         position: "relative",
