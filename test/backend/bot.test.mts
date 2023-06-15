@@ -32,7 +32,8 @@ test("bot", async (t) => {
     const contentId = "content";
     for (const url of [
       origin + `/contents/${authorName}/${contentId}`,
-      // origin + `/contents/${authorName}/${contentId}/player`,
+      origin + `/contents/${authorName}/${contentId}/show`,
+      origin + `/contents/${authorName}/${contentId}/player`,
     ]) {
       const res = await fetch(url, {
         headers: {
@@ -41,7 +42,6 @@ test("bot", async (t) => {
       });
       assert.strictEqual(res.status, 200);
       const html = await res.text();
-      console.log(html);
       assert(html.includes("twitter:player"));
       assert(html.includes(`${authorName}/${contentId}`));
     }
@@ -51,7 +51,7 @@ test("bot", async (t) => {
       {
         authorName: "author",
         contentId: "<script></script>",
-        expectPlayer: false,
+        expectPlayer: true,
         ngWords: [],
       },
       {
@@ -76,12 +76,12 @@ test("bot", async (t) => {
       assert.strictEqual(res.status, 200);
       const html = await res.text();
       if (expectPlayer) {
-        assert(html.includes("twitter:player"));
+        assert(html.includes("twitter:player"), "twitter:player not found");
         for (const ngWord of ngWords) {
           assert(!html.includes(ngWord), ngWord + " found");
         }
       } else {
-        assert(!html.includes("twitter:player"));
+        assert(!html.includes("twitter:player"), "twitter:player found");
       }
     }
   });

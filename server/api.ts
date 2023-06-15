@@ -255,12 +255,13 @@ export function createRouters(
     context.response.headers.set("content-length", array.length.toString());
     context.response.body = array;
   });
+
+  function isTwitterBot(headers: Headers): boolean {
+    return headers.get("user-agent")?.includes("Twitterbot") ?? false;
+  }
   const routerForBot = new Router();
   routerForBot.get("/contents/:author/:contentId", async (context, next) => {
-    const isTwitterBot =
-      context.request.headers.get("user-agent")?.includes("Twitterbot") ??
-      false;
-    if (!isTwitterBot) {
+    if (!isTwitterBot(context.request.headers)) {
       await next();
       return;
     }
@@ -269,6 +270,19 @@ export function createRouters(
     context.response.status = 200;
     context.response.body = makeContentPageForTwitterBot(author, contentId);
   });
+  routerForBot.get(
+    "/contents/:author/:contentId/(.*)",
+    async (context, next) => {
+      if (!isTwitterBot(context.request.headers)) {
+        await next();
+        return;
+      }
+      const author = context.params.author;
+      const contentId = context.params.contentId;
+      context.response.status = 200;
+      context.response.body = makeContentPageForTwitterBot(author, contentId);
+    }
+  );
   return { router, routerWithAuth, routerForBot };
 }
 function dataUrlToUint8Array(base64Str: string): Uint8Array {
