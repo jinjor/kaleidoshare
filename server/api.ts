@@ -29,7 +29,7 @@ import schema from "../schema/schema.json" assert { type: "json" };
 import { Settings, Output, Image } from "../schema/schema.ts";
 import { makeContentPageForTwitterBot } from "./twitter.tsx";
 
-const ajv = new Ajv.default();
+const ajv = new Ajv();
 function validate<T>(validate: ValidateFunction<T>, data: unknown): T {
   if (!validate(data)) {
     throw new BadRequest(validate.errors);
@@ -70,7 +70,12 @@ const validatePublishRequest = ajv.compile({
       $ref: "#/definitions/Image",
     },
   },
-}) as ValidateFunction<{ settings: Settings; output: Output; image: Image }>;
+}) as ValidateFunction<{
+  settings: Settings;
+  output: Output;
+  thumbnail: Image;
+  image: Image;
+}>;
 
 export function createRouters(
   expectedRPIDs: string[],

@@ -4,6 +4,7 @@ import MessageBar, { MessageContext } from "./MessageBar";
 import { User } from "../../schema/schema.js";
 import { RoutingContext } from "../Routing";
 import SignupForm from "./SignupForm";
+import IconButton from "./IconButton";
 
 export default function Nav(props: { user: User | null | undefined }) {
   const { user } = props;
@@ -11,6 +12,7 @@ export default function Nav(props: { user: User | null | undefined }) {
   const routingContext = React.useContext(RoutingContext)!;
   const messageContext = React.useContext(MessageContext)!;
   const [signupFormId, setSignupFormId] = React.useState<number | null>(null);
+  const [open, setOpen] = React.useState<boolean>(false);
 
   const handleSignup = async (event: React.FormEvent<HTMLButtonElement>) => {
     event.preventDefault();
@@ -46,16 +48,24 @@ export default function Nav(props: { user: User | null | undefined }) {
     <>
       <nav className="horizontal-center">
         <div className="container nav-contents">
-          <a className="nav-brand" href="/">
-            <img
-              src="/icon.svg"
-              width="26"
-              height="26"
-              style={{ marginRight: 10 }}
-            />
-            <img src="/logo.png" width={160} />
-          </a>
-          <ul>
+          <div className="nav-contents-left">
+            <a className="nav-brand" href="/">
+              <img
+                src="/icon.svg"
+                width="26"
+                height="26"
+                style={{ marginRight: 10 }}
+              />
+              <img src="/logo.png" width={160} />
+            </a>
+            <div className="nav-hamburger">
+              <IconButton
+                onClick={() => setOpen(!open)}
+                path="M 2 5 L 22 5 M 2 12 L 22 12 M 2 19 L 22 19"
+              ></IconButton>
+            </div>
+          </div>
+          <ul className={["nav-menu", open ? "open" : ""].join(" ")}>
             <li>
               <a href="/tutorial" target="_blank">
                 Tutorial
