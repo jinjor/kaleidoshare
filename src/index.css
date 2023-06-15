@@ -64,7 +64,6 @@ input:-webkit-autofill:active {
 }
 nav {
   background-color: var(--bg-color-float);
-  padding: 15px;
 }
 nav ul {
   list-style: none;
@@ -74,12 +73,6 @@ nav ul {
   align-items: center;
   justify-content: flex-end;
 }
-nav ul li {
-  margin-left: 15px;
-}
-nav ul li a {
-  text-decoration: none;
-}
 .nav-brand {
   display: inline-flex;
   align-items: center;
@@ -88,6 +81,60 @@ nav ul li a {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  padding: 15px;
+}
+.nav-contents-left {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.nav-menu {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.nav-menu > li > a {
+  display: inline-block;
+  text-decoration: none;
+  padding: 8px 12px;
+}
+.nav-hamburger {
+  display: none;
+}
+@media screen and (max-width: 500px) {
+  .nav-contents {
+    display: block;
+  }
+  .nav-menu {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    padding: 10px 0;
+    width: 100%;
+    z-index: 1;
+    background-color: var(--bg-color-float);
+  }
+  .nav-menu:not(.open) {
+    display: none;
+  }
+  .nav-menu > li {
+    display: block;
+    margin-left: 0;
+    text-align: center;
+    box-sizing: border-box;
+  }
+  .nav-menu > li > a {
+    display: block;
+  }
+  .nav-menu .button {
+    width: 100%;
+    display: block;
+    margin-top: 8px;
+  }
+  .nav-hamburger {
+    display: block;
+  }
 }
 .horizontal-center {
   display: flex;
@@ -142,7 +189,7 @@ main {
   border-color: var(--border-color-invalid);
 }
 .button {
-  padding: 8px 12px;
+  padding: 10px 12px;
   border: var(--border);
   outline: none;
   color: var(--text-color);

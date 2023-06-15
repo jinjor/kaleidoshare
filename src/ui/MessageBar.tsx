@@ -6,6 +6,7 @@ import React, {
   useState,
 } from "react";
 import { AppError } from "../domain/error";
+import IconButton from "./IconButton";
 
 type InfoType = "success" | "error";
 type Info = {
@@ -66,20 +67,10 @@ export default function MessageBar() {
     <div className={["message-bar", type ?? "", show ? "show" : ""].join(" ")}>
       <div className="message-bar-inner">
         <p style={{ margin: 0 }}>{message}</p>
-        <button
-          className="button"
-          style={{ border: "none", marginRight: -16 }}
+        <IconButton
           onClick={() => context.clear()}
-        >
-          <svg viewBox="0 0 1 1" style={{ width: "12px", height: "12px" }}>
-            <path
-              d="M 0 0 L 1 1 M 0 1 L 1 0"
-              stroke="#eee"
-              strokeWidth={0.1}
-              fill="none"
-            />
-          </svg>
-        </button>
+          path="M 6 6 L 18 18 M 6 18 L 18 6"
+        ></IconButton>
       </div>
     </div>
   );
