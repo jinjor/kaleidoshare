@@ -173,7 +173,7 @@ function createSpinner(spinner: OutSpinner, radius: number) {
     ],
     {
       isStatic: true,
-      render: { fillStyle: "#ddd" },
+      render: { fillStyle: "#888" },
     }
   );
 }
