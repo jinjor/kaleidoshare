@@ -4,6 +4,7 @@ import { User, Content } from "../../schema/schema.js";
 import Nav from "../ui/Nav";
 import Editor from "../ui/Editor";
 import NotFound from "../ui/NotFound";
+import Footer from "../ui/Footer";
 
 export default function ContentPage(props: {
   user: User | null | undefined;
@@ -34,6 +35,7 @@ export default function ContentPage(props: {
           </div>
         </main>
       )}
+      <Footer />
     </>
   );
 }

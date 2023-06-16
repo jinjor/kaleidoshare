@@ -95,7 +95,11 @@ const SettingEditor = React.memo(
             autoClosingQuotes: "always",
             formatOnPaste: true,
             formatOnType: true,
+            scrollbar: {
+              alwaysConsumeMouseWheel: false,
+            },
           }}
+          height={300}
         />
       </div>
     );
