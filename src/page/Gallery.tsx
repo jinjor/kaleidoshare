@@ -4,6 +4,7 @@ import Nav from "../ui/Nav";
 import Gallery from "../ui/Gallery";
 import { getContents } from "../domain/io.js";
 import NotFound from "../ui/NotFound";
+import Footer from "../ui/Footer.js";
 
 export default function GalleryPage(props: {
   user: User | null | undefined;
@@ -35,6 +36,7 @@ export default function GalleryPage(props: {
           </div>
         </main>
       )}
+      <Footer />
     </>
   );
 }

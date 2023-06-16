@@ -6,6 +6,7 @@ import { Content, User } from "../../schema/schema.js";
 import { RoutingContext } from "../Routing";
 import ConfirmDeleteAccount from "../ui/ConfirmDeleteAccount";
 import Gallery from "../ui/Gallery";
+import Footer from "../ui/Footer";
 
 export default function Account(props: { user: User | null | undefined }) {
   const { user } = props;
@@ -85,6 +86,7 @@ export default function Account(props: { user: User | null | undefined }) {
         onConfirm={handleDeleteAccount}
         onCancel={handleCancelDeleteAccount}
       />
+      <Footer />
     </>
   );
 }

@@ -102,7 +102,7 @@ export default function App() {
   }, [sessionKey]);
   useEffect(() => {
     const handler = (e) => {
-      const error = e.error ?? e.reason;
+      const error = e.error ?? e.reason ?? e;
       messageContext.setError(error);
       if ("message" in error) {
         // TODO: メッセージに依存させない
