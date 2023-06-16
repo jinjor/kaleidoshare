@@ -61,7 +61,7 @@ export default function Nav(props: { user: User | null | undefined }) {
             <div className="nav-hamburger">
               <IconButton
                 onClick={() => setOpen(!open)}
-                path="M 2 5 L 22 5 M 2 12 L 22 12 M 2 19 L 22 19"
+                path="M 2 9 A 6 6 0 0 1 7 2 L 17 2 A 6 6 0 0 1 22 9 L 2 9 M 1 14 L 23 14 M 1 19 L 23 19"
               ></IconButton>
             </div>
           </div>
