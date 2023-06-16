@@ -90,27 +90,10 @@ const World = React.memo(function World(props: {
         width: size,
         height: size,
         position: "relative",
+        backgroundColor: "var(--bg-color-float)",
       }}
-    >
-      <div
-        style={{
-          width: "100%",
-          height: "100%",
-        }}
-        ref={worldRef}
-      ></div>
-      <div
-        style={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          bottom: 0,
-          right: 0,
-          border: "solid 1px var(--bg-color-float)",
-          zIndex: 100,
-        }}
-      ></div>
-    </div>
+      ref={worldRef}
+    ></div>
   );
 });
 export default World;
@@ -191,7 +174,7 @@ function createSpinner(spinner: OutSpinner, radius: number) {
     ],
     {
       isStatic: true,
-      render: { fillStyle: "#888" },
+      render: { fillStyle: "#222", strokeStyle: "#aaa", lineWidth: 1 },
     }
   );
 }
