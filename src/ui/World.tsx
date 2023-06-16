@@ -38,6 +38,7 @@ const World = React.memo(function World(props: {
   const { size, output, onReady } = props;
 
   const worldRef = useRef<HTMLDivElement>(null);
+  const clipRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
     if (output == null) {
@@ -84,16 +85,39 @@ const World = React.memo(function World(props: {
       worldElement.innerHTML = "";
     };
   }, [size, output]);
+  useEffect(() => {
+    const clipElement = clipRef.current!;
+    const clipRadius = size * clipRadiusRatio;
+    clipElement.width = size;
+    clipElement.height = size;
+    const ctx = clipElement.getContext("2d")!;
+    ctx.strokeStyle = "#b7f";
+    ctx.lineWidth = 2;
+    ctx.clearRect(0, 0, size, size);
+    ctx.beginPath();
+    ctx.moveTo(size / 2, size / 2 - clipRadius);
+    ctx.lineTo(
+      size / 2 + clipRadius * Math.cos(Math.PI / 6),
+      size / 2 + clipRadius * Math.sin(Math.PI / 6)
+    );
+    ctx.lineTo(
+      size / 2 - clipRadius * Math.cos(Math.PI / 6),
+      size / 2 + clipRadius * Math.sin(Math.PI / 6)
+    );
+    ctx.closePath();
+    ctx.stroke();
+  }, [size]);
   return (
     <div
+      className="world"
       style={{
         width: size,
         height: size,
-        position: "relative",
-        backgroundColor: "var(--bg-color-float)",
       }}
-      ref={worldRef}
-    ></div>
+    >
+      <div className="world-spinner" ref={worldRef}></div>
+      <canvas className="world-clip" ref={clipRef}></canvas>
+    </div>
   );
 });
 export default World;
