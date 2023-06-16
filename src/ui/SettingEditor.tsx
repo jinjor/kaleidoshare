@@ -43,6 +43,28 @@ const SettingEditor = React.memo(
     function handleEditorDidMount(editor: any, monaco: Monaco) {
       editorRef.current = editor;
       monacoRef.current = monaco;
+
+      // https://github.com/microsoft/monaco-editor/issues/794#issuecomment-688959283
+      const container =
+        editor.getDomNode()!.parentElement!.parentElement!.parentElement;
+      let ignoreEvent = false;
+      const updateHeight = () => {
+        if (ignoreEvent) {
+          return;
+        }
+        const width = 960;
+        const height = Math.max(300, editor.getContentHeight());
+        container.style.width = `100%`;
+        container.style.height = `${height}px`;
+        try {
+          ignoreEvent = true;
+          editor.layout({ width, height });
+        } finally {
+          ignoreEvent = false;
+        }
+      };
+      editor.onDidContentSizeChange(updateHeight);
+      updateHeight();
       onReady({
         save,
       });
@@ -95,6 +117,9 @@ const SettingEditor = React.memo(
             autoClosingQuotes: "always",
             formatOnPaste: true,
             formatOnType: true,
+            scrollbar: {
+              alwaysConsumeMouseWheel: false,
+            },
           }}
         />
       </div>

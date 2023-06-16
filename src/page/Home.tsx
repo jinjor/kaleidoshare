@@ -16,6 +16,23 @@ export default function Home(props: { user: User | null | undefined }) {
           <Editor user={user} initiallyPreview={false} content={null} />
         </div>
       </main>
+      <div className="horizontal-center">
+        <div
+          className="container"
+          style={{
+            display: "flex",
+            gap: 10,
+            padding: 30,
+            boxSizing: "border-box",
+            fontSize: 12,
+            color: "#999",
+          }}
+        >
+          <div>Copyright © 2023-present @jinjor</div>
+          <a href="https://github.com/jinjor/kaleidoshare">GitHub</a>
+          <a href="https://twitter.com/kaleidoshare">Twitter</a>
+        </div>
+      </div>
     </>
   );
 }

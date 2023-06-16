@@ -168,6 +168,11 @@ export default function Editor(props: {
           gap,
           maxWidth: "100vw",
           overflow: "scroll",
+          borderBottom: "solid 10px var(--bg-color)",
+          backgroundColor: "var(--bg-color)",
+          position: "sticky",
+          top: 0,
+          zIndex: 1,
         }}
       >
         <World size={worldSize} output={output} onReady={handleWorldReady} />

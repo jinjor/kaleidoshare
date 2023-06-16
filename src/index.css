@@ -39,6 +39,7 @@ body {
   height: 100%;
   display: flex;
   flex-direction: column;
+  gap: 10px;
 }
 hr {
   border: none;
@@ -146,13 +147,12 @@ nav ul {
   max-width: 960px;
 }
 main {
-  padding: 10px 0 0;
+  padding: 0;
   box-sizing: border-box;
 }
 .editor-wrapper {
   display: flex;
   flex-direction: column;
-  gap: 10px;
 }
 .setting-editor {
   flex-grow: 1;
