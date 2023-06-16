@@ -38,6 +38,7 @@ const World = React.memo(function World(props: {
   const { size, output, onReady } = props;
 
   const worldRef = useRef<HTMLDivElement>(null);
+  const clipRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
     if (output == null) {
@@ -84,32 +85,38 @@ const World = React.memo(function World(props: {
       worldElement.innerHTML = "";
     };
   }, [size, output]);
+  useEffect(() => {
+    const clipElement = clipRef.current!;
+    const clipRadius = size * clipRadiusRatio;
+    clipElement.width = size;
+    clipElement.height = size;
+    const ctx = clipElement.getContext("2d")!;
+    ctx.strokeStyle = "#b7f";
+    ctx.lineWidth = 2;
+    ctx.clearRect(0, 0, size, size);
+    ctx.beginPath();
+    ctx.moveTo(size / 2, size / 2 - clipRadius);
+    ctx.lineTo(
+      size / 2 + clipRadius * Math.cos(Math.PI / 6),
+      size / 2 + clipRadius * Math.sin(Math.PI / 6)
+    );
+    ctx.lineTo(
+      size / 2 - clipRadius * Math.cos(Math.PI / 6),
+      size / 2 + clipRadius * Math.sin(Math.PI / 6)
+    );
+    ctx.closePath();
+    ctx.stroke();
+  }, [size]);
   return (
     <div
+      className="world"
       style={{
         width: size,
         height: size,
-        position: "relative",
       }}
     >
-      <div
-        style={{
-          width: "100%",
-          height: "100%",
-        }}
-        ref={worldRef}
-      ></div>
-      <div
-        style={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          bottom: 0,
-          right: 0,
-          border: "solid 1px var(--bg-color-float)",
-          zIndex: 100,
-        }}
-      ></div>
+      <div className="world-spinner" ref={worldRef}></div>
+      <canvas className="world-clip" ref={clipRef}></canvas>
     </div>
   );
 });
@@ -191,7 +198,7 @@ function createSpinner(spinner: OutSpinner, radius: number) {
     ],
     {
       isStatic: true,
-      render: { fillStyle: "#888" },
+      render: { fillStyle: "#222", strokeStyle: "#aaa", lineWidth: 1 },
     }
   );
 }

@@ -40,14 +40,15 @@ function generateSpinner(spinner: Spinner | undefined): OutSpinner {
   const sides = generateInt(spinner?.sides ?? 3);
   const angle = (Math.PI * 2) / sides;
   const radius = 0.5 / Math.cos(angle / 2);
-  const outerRadius = radius * 1.3;
+  const innerRadius = radius * 1.01; // ボーダーが映らないようにする
+  const outerRadius = radius * 3;
   for (let i = 0; i < sides; i++) {
     vertices.push(posFromAngle(angle * i, outerRadius));
   }
   vertices.push(posFromAngle(-0.001, outerRadius));
-  vertices.push(posFromAngle(-0.001, radius));
+  vertices.push(posFromAngle(-0.001, innerRadius));
   for (let i = sides - 1; i >= 0; i--) {
-    vertices.push(posFromAngle(angle * i, radius));
+    vertices.push(posFromAngle(angle * i, innerRadius));
   }
   return {
     speed: spinner?.speed != null ? generateFrequency(spinner.speed) : 0.1,
