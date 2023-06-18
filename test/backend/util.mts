@@ -24,7 +24,10 @@ class CookieJar {
 
 export function createClient() {
   const cookieJar = new CookieJar();
-  return async (input: RequestInfo, init?: RequestInit): Promise<Response> => {
+  return async (
+    input: RequestInfo | URL,
+    init?: RequestInit
+  ): Promise<Response> => {
     const headers = cookieJar.write(init?.headers ?? {});
     const res = await fetch(input, { ...init, headers });
     cookieJar.read(res.headers);

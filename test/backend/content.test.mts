@@ -30,7 +30,15 @@ test("content", async (t) => {
   after(() => {
     p.kill();
   });
-  const fetch = createClient();
+  const insecureFetch = createClient();
+  async function fetch(
+    input: RequestInfo | URL,
+    init?: RequestInit | undefined
+  ): Promise<Response> {
+    const headers = { ...init?.headers };
+    init = { ...init, headers: { ...headers, kaleidoshare: "true" } };
+    return insecureFetch(input, init);
+  }
   const userName = "test";
   await t.test("cannot create contents before login", async (t) => {
     const res = await fetch(origin + `/api/contents/foo`, {

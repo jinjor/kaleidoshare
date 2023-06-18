@@ -84,8 +84,20 @@ export function createRouters(
   const router = new Router({
     prefix: "/api",
   });
+  router.use(async (context, next) => {
+    if (!context.request.headers.has("kaleidoshare")) {
+      throw new BadApiAccessError();
+    }
+    await next();
+  });
   const routerWithAuth = new Router({
     prefix: "/api",
+  });
+  routerWithAuth.use(async (context, next) => {
+    if (!context.request.headers.has("kaleidoshare")) {
+      throw new BadApiAccessError();
+    }
+    await next();
   });
   routerWithAuth.use(async (context, next) => {
     const userName = await context.state.session.get("login");
@@ -298,13 +310,18 @@ function dataUrlToUint8Array(base64Str: string): Uint8Array {
     }) as number[]
   );
 }
+class BadApiAccessError extends Error {
+  constructor() {
+    super("Bad API access");
+  }
+}
 class NotAuthenticatedError extends Error {
   constructor() {
     super("Not authenticated");
   }
 }
 export function handleError(context: Context, e: unknown) {
-  if (e instanceof BadRequest) {
+  if (e instanceof BadApiAccessError || e instanceof BadRequest) {
     context.response.status = 400;
     context.response.body = JSON.stringify({
       message: "Bad request", // このメッセージを見るのは攻撃者だけ
