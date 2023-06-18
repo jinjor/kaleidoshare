@@ -171,6 +171,20 @@ test("content", async (t) => {
       content2Id = id;
     }
   });
+  await t.test("ogp image", async (t) => {
+    {
+      const res = await insecureFetch(
+        origin + `/contents/${userName}/${content1Id}/image.png`
+      );
+      assert.strictEqual(res.status, 200);
+    }
+    {
+      const res = await insecureFetch(
+        origin + `/contents/${userName}/foo/image.png`
+      );
+      assert.strictEqual(res.status, 404);
+    }
+  });
   await t.test("cannot create invalid content", async (t) => {
     const res = await fetch(origin + `/api/contents/${userName}`, {
       method: "POST",

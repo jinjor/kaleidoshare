@@ -80,7 +80,7 @@ const validatePublishRequest = ajv.compile({
 export function createRouters(
   expectedRPIDs: string[],
   expectedOrigins: string[]
-): { router: Router; routerWithAuth: Router; routerForBot: Router } {
+): { router: Router; routerWithAuth: Router; routerForNonApi: Router } {
   const router = new Router({
     prefix: "/api",
   });
@@ -259,25 +259,32 @@ export function createRouters(
     context.response.status = 200;
     context.response.body = JSON.stringify(content);
   });
-  router.get("/contents/:author/:contentId/image.png", async (context) => {
-    const author = context.params.author;
-    const contentId = context.params.contentId;
-    const image = await getUserContentImage(author, contentId);
-    if (image == null) {
-      throw new ContentNotFoundError();
-    }
-    const array = dataUrlToUint8Array(image);
-    context.response.status = 200;
-    context.response.headers.set("content-type", "image/png");
-    context.response.headers.set("content-length", array.length.toString());
-    context.response.body = array;
-  });
-
   function isTwitterBot(headers: Headers): boolean {
     return headers.get("user-agent")?.includes("Twitterbot") ?? false;
   }
-  const routerForBot = new Router();
-  routerForBot.get("/contents/:author/:contentId", async (context, next) => {
+  const routerForNonApi = new Router();
+  routerForNonApi.get(
+    "/contents/:author/:contentId/image.png",
+    async (context) => {
+      const author = context.params.author;
+      const contentId = context.params.contentId;
+      const image = await getUserContentImage(author, contentId);
+      if (image == null) {
+        throw new ContentNotFoundError();
+      }
+      let array: Uint8Array = new Uint8Array();
+      try {
+        array = dataUrlToUint8Array(image);
+      } catch (_e) {
+        console.error(`failed to parse image: ${author}/${contentId}`);
+      }
+      context.response.status = 200;
+      context.response.headers.set("content-type", "image/png");
+      context.response.headers.set("content-length", array.length.toString());
+      context.response.body = array;
+    }
+  );
+  routerForNonApi.get("/contents/:author/:contentId", async (context, next) => {
     if (!isTwitterBot(context.request.headers)) {
       await next();
       return;
@@ -287,7 +294,7 @@ export function createRouters(
     context.response.status = 200;
     context.response.body = makeContentPageForTwitterBot(author, contentId);
   });
-  routerForBot.get(
+  routerForNonApi.get(
     "/contents/:author/:contentId/(.*)",
     async (context, next) => {
       if (!isTwitterBot(context.request.headers)) {
@@ -300,7 +307,7 @@ export function createRouters(
       context.response.body = makeContentPageForTwitterBot(author, contentId);
     }
   );
-  return { router, routerWithAuth, routerForBot };
+  return { router, routerWithAuth, routerForNonApi };
 }
 function dataUrlToUint8Array(base64Str: string): Uint8Array {
   const raw = atob(base64Str.split(",")[1]);
@@ -370,6 +377,13 @@ export function handleError(context: Context, e: unknown) {
     context.response.status = 400;
     context.response.body = JSON.stringify({
       message: "Too many contents",
+    });
+    return;
+  }
+  if (e instanceof ContentNotFoundError) {
+    context.response.status = 404;
+    context.response.body = JSON.stringify({
+      message: "Content not found",
     });
     return;
   }
