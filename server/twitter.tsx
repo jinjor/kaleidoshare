@@ -10,7 +10,7 @@ export function makeContentPageForTwitterBot(
   const playerUrl = `https://kaleidoshare.deno.dev/contents/${encAuthorName}/${encContentId}/player`;
   const title = `${contentId} - kaleidoshare`;
   const description = `A kaleidoscope created by ${authorName}`; // TODO: title
-  const imageUrl = `https://kaleidoshare.deno.dev/api/contents/${encAuthorName}/${encContentId}/image.png`;
+  const imageUrl = `https://kaleidoshare.deno.dev/contents/${encAuthorName}/${encContentId}/image.png`;
   return ReactDOMServer.renderToString(
     <html lang="en">
       <head>

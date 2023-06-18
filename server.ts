@@ -32,7 +32,7 @@ const expectedRPIDs = isDeploy
 const expectedOrigins = isDeploy
   ? expectedRPIDs.map((rpID) => `https://${rpID}`)
   : [5173, 8000].map((port) => `http://localhost:${port}`);
-const { router, routerWithAuth, routerForBot } = createRouters(
+const { router, routerWithAuth, routerForNonApi } = createRouters(
   expectedRPIDs,
   expectedOrigins
 );
@@ -69,7 +69,7 @@ app.use(router.routes());
 app.use(router.allowedMethods());
 app.use(routerWithAuth.routes());
 app.use(routerWithAuth.allowedMethods());
-app.use(routerForBot.routes());
+app.use(routerForNonApi.routes());
 app.use(async (context, next) => {
   try {
     const hasExtension = context.request.url.pathname
