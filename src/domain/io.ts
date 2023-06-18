@@ -5,6 +5,20 @@ import {
 import { Settings, Output, Content, User } from "../../schema/schema.js";
 import { AppError } from "./error.js";
 
+function encode(strings, ...params) {
+  if (strings.length !== params.length + 1) {
+    throw new Error("assertion error");
+  }
+  let s = "";
+  for (const [i, str] of strings.entries()) {
+    s += str;
+    if (i < params.length) {
+      s += encodeURIComponent(params[i]);
+    }
+  }
+  return s;
+}
+
 async function request(
   input: RequestInfo | URL,
   init?: RequestInit | undefined
@@ -145,8 +159,7 @@ export async function getSession(): Promise<User | null> {
 }
 
 export async function getContents(userName: string): Promise<Content[]> {
-  // TODO: encode
-  const res = await request(`/api/contents/${userName}`, {
+  const res = await request(encode`/api/contents/${userName}`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -159,8 +172,7 @@ export async function getContent(
   userName: string,
   contentId: string
 ): Promise<Content | null> {
-  // TODO: encode
-  const res = await request(`/api/contents/${userName}/${contentId}`, {
+  const res = await request(encode`/api/contents/${userName}/${contentId}`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -176,8 +188,7 @@ export async function createContent(
   thumbnail: string,
   image: string
 ): Promise<string> {
-  // TODO: encode
-  const res = await request(`/api/contents/${userName}`, {
+  const res = await request(encode`/api/contents/${userName}`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -201,8 +212,7 @@ export async function updateContent(
   thumbnail: string,
   image: string
 ): Promise<void> {
-  // TODO: encode
-  await request(`/api/contents/${userName}/${contentId}`, {
+  await request(encode`/api/contents/${userName}/${contentId}`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
