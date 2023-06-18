@@ -14,6 +14,8 @@ async function request(
     controller.abort();
   }, 10 * 1000);
   let res: Response;
+  const headers = { ...init?.headers };
+  init = { ...init, headers: { ...headers, kaleidoshare: "true" } };
   try {
     res = await fetch(input, {
       ...init,

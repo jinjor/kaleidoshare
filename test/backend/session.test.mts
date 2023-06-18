@@ -32,8 +32,15 @@ test("session", async (t) => {
   after(() => {
     p.kill();
   });
-  const fetch = createClient();
-
+  const insecureFetch = createClient();
+  async function fetch(
+    input: RequestInfo | URL,
+    init?: RequestInit | undefined
+  ): Promise<Response> {
+    const headers = { ...init?.headers };
+    init = { ...init, headers: { ...headers, kaleidoshare: "true" } };
+    return insecureFetch(input, init);
+  }
   await t.test("guest", async (t) => {
     await t.test("no session", async () => {
       const res = await fetch(origin + "/api/session");
