@@ -12,7 +12,7 @@ Let's create and share kaleidoscopes on the web.
 ### Install deps
 
 ```
-npm ci --legacy-peer-deps
+npm ci
 npx playwright install --with-deps
 ```
 
