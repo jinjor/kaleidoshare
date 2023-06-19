@@ -21,7 +21,7 @@
     "ts-json-schema-generator": "^1.2.0",
     "tsx": "^3.12.7",
     "vite": "^4.3.5",
-    "vite-plugin-markdown": "^2.1.0"
+    "vite-plugin-markdown": "^2.2.0-2"
   },
   "scripts": {
     "dev": "run-p dev:*",
