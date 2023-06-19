@@ -25,5 +25,9 @@ module.exports = {
     sourceType: "module",
   },
   plugins: ["@typescript-eslint", "react"],
-  rules: {},
+  rules: {
+    "no-constant-condition": ["error", { checkLoops: false }],
+    "react/no-unescaped-entities": "off",
+    "@typescript-eslint/no-non-null-assertion": "off",
+  },
 };

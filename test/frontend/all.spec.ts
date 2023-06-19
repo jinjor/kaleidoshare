@@ -14,6 +14,7 @@ function getReq(route: Route): Req {
   const body = request.postDataJSON();
   return { method, pathname, body };
 }
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 async function trackApi(page: Page): Promise<Req[]> {
   const requests: Req[] = [];
   // route は後に設定されたものが先にハンドリングされる（https://github.com/microsoft/playwright/issues/7394）
@@ -31,7 +32,7 @@ async function mockApi(
   method: string,
   path: string,
   status: number,
-  body: any
+  body: unknown
 ): Promise<Req[]> {
   const requests: Req[] = [];
   await page.context().route(path, async (route) => {
@@ -248,7 +249,7 @@ test("content (someone)", async ({ page }) => {
   const authorName = "other";
   const contentId = "id";
   await mockApi(page, "GET", "/api/session", 200, { name: userName });
-  const gets = await mockApi(page, "GET", "/api/contents/*/*", 200, {
+  await mockApi(page, "GET", "/api/contents/*/*", 200, {
     id: contentId,
     author: authorName,
     settings: { objects: [] },

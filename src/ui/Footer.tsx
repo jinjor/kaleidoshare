@@ -14,7 +14,11 @@ const Footer = () => (
     >
       <div>
         Copyright © 2023-present{" "}
-        <a href="https://twitter.com/jinjor" target="_blank" rel="noopener">
+        <a
+          href="https://twitter.com/jinjor"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
           @jinjor
         </a>
       </div>
@@ -22,11 +26,15 @@ const Footer = () => (
         style={{ marginLeft: "auto" }}
         href="https://github.com/jinjor/kaleidoshare"
         target="_blank"
-        rel="noopener"
+        rel="noopener noreferrer"
       >
         GitHub
       </a>
-      <a href="https://twitter.com/kaleidoshare" target="_blank" rel="noopener">
+      <a
+        href="https://twitter.com/kaleidoshare"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
         Twitter
       </a>
     </div>

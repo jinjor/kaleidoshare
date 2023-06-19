@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { test, before, after } from "node:test";
 import * as assert from "assert";
 import * as childProcess from "child_process";

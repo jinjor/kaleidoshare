@@ -67,7 +67,9 @@ export default function Player(props: {
         onQuitFullscreen={handleQuitFullscreen}
         size={viewSize * 2}
         world={world}
-        onReady={() => {}}
+        onReady={() => {
+          // noop
+        }}
       />
     </>
   );

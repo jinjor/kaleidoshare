@@ -45,7 +45,7 @@ export default function Operation(props: {
     setSignupFormId(null);
     await handlePublish(userName);
   };
-  const handleSignupFailure = async (error: any) => {
+  const handleSignupFailure = async (error: Error) => {
     setSignupFormId(null);
     messageContext.setError(error);
   };
