@@ -1,4 +1,4 @@
-import { createContext, useEffect } from "react";
+import { createContext, useCallback, useEffect } from "react";
 
 type RoutingContext = {
   goTo: (href: string, refreshSession: boolean) => void;
@@ -11,10 +11,13 @@ export const RoutingContext = createContext<RoutingContext | null>(null);
 export function useSPARouting(
   callback: (refreshSession: boolean) => void
 ): RoutingContext {
-  const goTo = (href: string, refreshSession: boolean) => {
-    window.history.pushState(null, "", href);
-    callback(refreshSession);
-  };
+  const goTo = useCallback(
+    (href: string, refreshSession: boolean) => {
+      window.history.pushState(null, "", href);
+      callback(refreshSession);
+    },
+    [callback]
+  );
   const changeUrl = (href: string) => {
     window.history.replaceState(null, "", href);
   };
@@ -52,6 +55,6 @@ export function useSPARouting(
       window.removeEventListener("popstate", handlePopState);
       document.removeEventListener("click", handleAnchorClick, true);
     };
-  }, []);
+  }, [callback, goTo]);
   return { goTo, changeUrl, refreshSession };
 }

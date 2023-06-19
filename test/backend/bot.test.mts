@@ -27,7 +27,7 @@ test("bot", async (t) => {
     p.kill();
   });
   const fetch = createClient();
-  await t.test("special html for twitter bot", async (t) => {
+  await t.test("special html for twitter bot", async () => {
     const authorName = "author";
     const contentId = "content";
     for (const url of [
@@ -46,7 +46,7 @@ test("bot", async (t) => {
       assert(html.includes(`${authorName}/${contentId}`));
     }
   });
-  await t.test("security", async (t) => {
+  await t.test("security", async () => {
     for (const { authorName, contentId, expectPlayer, ngWords } of [
       {
         authorName: "author",

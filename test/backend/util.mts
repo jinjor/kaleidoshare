@@ -1,5 +1,6 @@
 class CookieJar {
   private cookies = new Map<string, string>();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   read(headers: any) {
     const entries = headers.getSetCookie() as string[];
     this.cookies = new Map();

@@ -61,7 +61,7 @@ export default function MessageBar() {
         clearTimeout(timeout);
       };
     }
-  }, [context.info]);
+  }, [context, context.info]);
   const message = context.info?.message ?? "";
   return (
     <div className={["message-bar", type ?? "", show ? "show" : ""].join(" ")}>

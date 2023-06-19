@@ -49,7 +49,7 @@ export default function Editor(props: {
         setOutput(generate(examples[selectedExampleIndex].settings));
       }
     });
-  }, []);
+  }, [output, selectedExampleIndex]);
   const handleWorldReady = useCallback((world: WorldApi) => {
     setWorld(world);
   }, []);
@@ -128,7 +128,7 @@ export default function Editor(props: {
   const handleChange = useCallback(() => {
     setSaved(false);
   }, []);
-  const handleApply = useCallback((json: any) => {
+  const handleApply = useCallback((json: unknown) => {
     const settings = json as Settings;
     const output = generate(settings);
     setSettings(settings);

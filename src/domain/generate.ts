@@ -18,7 +18,7 @@ import {
   OutSpinner,
   Angle,
   OutShape,
-  Object,
+  Object as ObjectType,
   Spinner,
   OutVector,
   Sides,
@@ -55,7 +55,7 @@ function generateSpinner(spinner: Spinner | undefined): OutSpinner {
     vertices,
   };
 }
-function generateObjects(objects: Object[]): OutObject[] {
+function generateObjects(objects: ObjectType[]): OutObject[] {
   const out: OutObject[] = [];
   for (const object of objects) {
     for (let i = 0; i < generateInt(object.count); i++) {
@@ -65,7 +65,7 @@ function generateObjects(objects: Object[]): OutObject[] {
   out.sort(() => Math.random() - 0.5);
   return out;
 }
-function generateObject(object: Object): OutObject {
+function generateObject(object: ObjectType): OutObject {
   const shape = generateShape(object.shape);
   const fill = object.fill != null ? generateColor(object.fill) : "transparent";
   const stroke =

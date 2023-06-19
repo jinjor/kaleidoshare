@@ -23,7 +23,7 @@ export default function Nav(props: { user: User | null | undefined }) {
     messageContext.setMessage(isLogin ? "Hello" : "Welcome");
     routingContext.refreshSession();
   };
-  const handleSignupFailure = async (error: any) => {
+  const handleSignupFailure = async (error: Error) => {
     setSignupFormId(null);
     messageContext.setError(error);
   };

@@ -61,7 +61,7 @@ export const testCred2AuthenticationResponse = {
 };
 
 export async function waitForServer(url: string) {
-  for (const _ of Array(1000).keys()) {
+  for (let i = 0; i < 1000; i++) {
     try {
       await fetch(url);
       break;

@@ -15,7 +15,7 @@ export function makeContentPageForTwitterBot(
     <html lang="en">
       <head>
         <meta charSet="UTF-8" />
-        <meta http-equiv="Cache-Control" content="no-store" />
+        <meta httpEquiv="Cache-Control" content="no-store" />
         <link rel="icon" type="image/svg+xml" href="/icon.svg" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta property="twitter:card" content="player" />

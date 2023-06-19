@@ -84,7 +84,7 @@ const World = React.memo(function World(props: {
       running = false;
       worldElement.innerHTML = "";
     };
-  }, [size, output]);
+  }, [size, output, onReady]);
   useEffect(() => {
     const clipElement = clipRef.current!;
     const clipRadius = size * clipRadiusRatio;
@@ -124,7 +124,6 @@ export default World;
 
 function setupWorld(element: HTMLElement, size: number, output: Output) {
   const spinnerRadius = size * spinnerRadiusRatio;
-  const clipRadius = size * clipRadiusRatio; // TODO: 切り抜き範囲を表示
 
   const engine = Engine.create();
   const createCanvas = (width: number, height: number) => {
