@@ -86,7 +86,6 @@ export default function App() {
   const [user, setUser] = React.useState<User | null | undefined>(undefined);
   const [route, setRoute] = React.useState<Route | null>(initialRoute);
   const [sessionKey, setSessionKey] = React.useState<number>(Date.now());
-  const [navigationKey, setNavigationKey] = React.useState<number>(0);
 
   const messageContext = useMessage();
   const routingContext = useSPARouting((refreshSession) => {
@@ -95,7 +94,6 @@ export default function App() {
     if (refreshSession) {
       setSessionKey(Date.now());
     }
-    setNavigationKey((key) => key + 1);
   });
   useEffect(() => {
     getSession().then((user) => setUser(user));
@@ -121,7 +119,7 @@ export default function App() {
   return (
     <RoutingContext.Provider value={routingContext}>
       <MessageContext.Provider value={messageContext}>
-        <div className="top" key={navigationKey}>
+        <div className="top">
           {route?.type === "home" ? (
             <Home user={user} />
           ) : route?.type === "account" ? (
