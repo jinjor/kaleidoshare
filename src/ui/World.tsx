@@ -84,7 +84,7 @@ const World = React.memo(function World(props: {
       running = false;
       worldElement.innerHTML = "";
     };
-  }, [size, output]);
+  }, [size, output, onReady]);
   useEffect(() => {
     const clipElement = clipRef.current!;
     const clipRadius = size * clipRadiusRatio;

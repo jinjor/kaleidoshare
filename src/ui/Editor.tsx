@@ -49,7 +49,7 @@ export default function Editor(props: {
         setOutput(generate(examples[selectedExampleIndex].settings));
       }
     });
-  }, []);
+  }, [output, selectedExampleIndex]);
   const handleWorldReady = useCallback((world: WorldApi) => {
     setWorld(world);
   }, []);

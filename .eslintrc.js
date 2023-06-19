@@ -24,10 +24,11 @@ module.exports = {
     ecmaVersion: "latest",
     sourceType: "module",
   },
-  plugins: ["@typescript-eslint", "react"],
+  plugins: ["@typescript-eslint", "react", "react-hooks"],
   rules: {
     "no-constant-condition": ["error", { checkLoops: false }],
     "react/no-unescaped-entities": "off",
     "@typescript-eslint/no-non-null-assertion": "off",
+    "react-hooks/exhaustive-deps": "warn",
   },
 };

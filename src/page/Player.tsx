@@ -43,7 +43,7 @@ export default function Player(props: {
     } else {
       routingContext.goTo(path, true);
     }
-  }, [routingContext]);
+  }, [routingContext, authorName, contentId]);
   if (content === undefined) {
     return <div style={messageStyle}>Loading...</div>;
   }
