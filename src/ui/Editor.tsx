@@ -10,14 +10,6 @@ import { MessageContext } from "./MessageBar";
 import { RoutingContext } from "../Routing";
 import { Example } from "../domain/example";
 
-// |--- worldSize --|-|--- viewSize ---|-|-- opetaionSize --|
-//                  gap                gap
-const worldSize = 300;
-const viewSize = 300;
-const operationSize = 340;
-const upperHeight = 300;
-const gap = (960 - (worldSize + viewSize + operationSize)) / 2;
-
 export default function Editor(props: {
   user: User | null;
   initiallyPreview: boolean;
@@ -161,14 +153,7 @@ export default function Editor(props: {
   }
   return (
     <>
-      <div
-        style={{
-          display: "flex",
-          gap,
-          maxWidth: "100vw",
-          overflow: "scroll",
-        }}
-      >
+      <div className="editor">
         <World output={output} onReady={handleWorldReady} />
         <View
           fullscreen={false}
@@ -177,8 +162,6 @@ export default function Editor(props: {
           onReady={handleViewReady}
         />
         <Operation
-          width={operationSize}
-          height={upperHeight}
           user={user}
           onPreview={handlePreview}
           onGenerate={handleGenerate}
