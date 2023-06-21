@@ -375,6 +375,8 @@ pre[class*="language-"] {
 .world {
   position: relative;
   background-color: var(--bg-color-float);
+  width: var(--world-size);
+  height: var(--world-size);
 }
 .world-clip {
   position: absolute;

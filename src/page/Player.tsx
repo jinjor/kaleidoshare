@@ -5,8 +5,6 @@ import World, { WorldApi } from "../ui/World";
 import View from "../ui/View";
 import { RoutingContext } from "../Routing";
 
-const worldSize = 300;
-const viewSize = 300;
 const messageStyle = {
   position: "fixed",
   top: 0,
@@ -55,11 +53,7 @@ export default function Player(props: {
     <>
       <div>
         {content && (
-          <World
-            size={worldSize}
-            output={content.output}
-            onReady={handleWorldReady}
-          />
+          <World output={content.output} onReady={handleWorldReady} />
         )}
       </div>
       <View

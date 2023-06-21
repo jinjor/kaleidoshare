@@ -148,7 +148,7 @@ export default function Editor(props: {
       <>
         {/** World の状態をリセットされないように HTML 構造を下と合わせておく */}
         <div>
-          <World size={worldSize} output={output} onReady={handleWorldReady} />
+          <World output={output} onReady={handleWorldReady} />
         </div>
         <View
           fullscreen={true}
@@ -169,7 +169,7 @@ export default function Editor(props: {
           overflow: "scroll",
         }}
       >
-        <World size={worldSize} output={output} onReady={handleWorldReady} />
+        <World output={output} onReady={handleWorldReady} />
         <View
           fullscreen={false}
           onQuitFullscreen={quitPreview}
