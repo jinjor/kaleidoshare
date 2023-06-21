@@ -61,7 +61,7 @@ export default function Operation(props: {
     (content == null || content.author === user?.name) && coding;
   return (
     <>
-      <div className="form" style={{ width, height, boxSizing: "border-box" }}>
+      <div className="form" style={{ width, height }}>
         <div className="form-item">
           <button
             className="button wide"

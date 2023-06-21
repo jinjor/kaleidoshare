@@ -19,6 +19,9 @@
   --border-color-danger-active: #f55;
   --border-radius: 2px;
 }
+* {
+  box-sizing: border-box;
+}
 html {
   background-color: var(--bg-color);
   color: var(--text-color);
@@ -123,7 +126,6 @@ nav ul {
     display: block;
     margin-left: 0;
     text-align: center;
-    box-sizing: border-box;
   }
   .nav-menu > li > a {
     display: block;
@@ -147,7 +149,6 @@ nav ul {
 }
 main {
   padding: 10px 0 0;
-  box-sizing: border-box;
 }
 .editor-wrapper {
   display: flex;
@@ -166,7 +167,6 @@ main {
   display: flex;
   flex-direction: column;
   gap: 25px;
-  box-sizing: border-box;
 }
 .form-title {
   font-size: 18px;
@@ -278,7 +278,6 @@ main {
   display: flex;
   align-items: center;
   padding: 0 10px;
-  box-sizing: border-box;
   pointer-events: none;
 }
 .message-bar:not(.show) {
