@@ -6,24 +6,13 @@ import { MessageContext } from "./MessageBar";
 
 export default function Operation(props: {
   user: User | null;
-  width: number;
-  height: number;
   onPreview: (() => void) | null;
   onGenerate: (() => void) | null;
   onPublish: ((userName: string) => void) | null;
   coding: boolean;
   content: Content | null;
 }) {
-  const {
-    user,
-    width,
-    height,
-    onPreview,
-    onGenerate,
-    onPublish,
-    coding,
-    content,
-  } = props;
+  const { user, onPreview, onGenerate, onPublish, coding, content } = props;
   const [signupFormId, setSignupFormId] = React.useState<number | null>(null);
 
   const messageContext = React.useContext(MessageContext)!;
@@ -61,7 +50,7 @@ export default function Operation(props: {
     (content == null || content.author === user?.name) && coding;
   return (
     <>
-      <div className="form" style={{ width, height, boxSizing: "border-box" }}>
+      <div className="form operation">
         <div className="form-item">
           <button
             className="button wide"

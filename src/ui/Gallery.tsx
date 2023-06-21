@@ -9,15 +9,9 @@ export default function Gallery(props: {
 
   const size = 120;
   return (
-    <div className="form" style={{ width: "100%" }}>
+    <div className="form" style={{ width: "100%", flexGrow: 1 }}>
       <h1 className="form-title">{authorName}'s gallery</h1>
-      <div
-        style={{
-          display: "grid",
-          gap: "20px 40px",
-          gridTemplateColumns: `repeat(auto-fill, ${size}px)`,
-        }}
-      >
+      <div className="content-selector">
         {contents.length === 0 ? (
           <div>None yet.</div>
         ) : (

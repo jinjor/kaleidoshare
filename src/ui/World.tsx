@@ -20,6 +20,7 @@ import {
   OutSpinner,
   Output,
 } from "../../schema/schema.js";
+import { getGlobalStyle, getPx } from "./util.js";
 
 Common.setDecomp(decomp);
 
@@ -31,14 +32,15 @@ const spinnerRadiusRatio = 0.5;
 const clipRadiusRatio = 0.25;
 
 const World = React.memo(function World(props: {
-  size: number;
   output: Output | undefined;
   onReady: (world: WorldApi) => void;
 }) {
-  const { size, output, onReady } = props;
+  const { output, onReady } = props;
 
   const worldRef = useRef<HTMLDivElement>(null);
   const clipRef = useRef<HTMLCanvasElement>(null);
+
+  const size = getPx(getGlobalStyle("--world-size"));
 
   useEffect(() => {
     if (output == null) {
@@ -108,13 +110,7 @@ const World = React.memo(function World(props: {
     ctx.stroke();
   }, [size]);
   return (
-    <div
-      className="world"
-      style={{
-        width: size,
-        height: size,
-      }}
-    >
+    <div className="world">
       <div className="world-spinner" ref={worldRef}></div>
       <canvas className="world-clip" ref={clipRef}></canvas>
     </div>
@@ -141,10 +137,7 @@ function setupWorld(element: HTMLElement, size: number, output: Output) {
     return canvas;
   };
   const { backgroundColor, spinner, objects } = output;
-  const spinnerMatter = createSpinner(
-    output.spinner,
-    size * spinnerRadiusRatio
-  );
+  const spinnerMatter = createSpinner(output.spinner, spinnerRadius);
   const objectsMatter = objects.map((object) => createBody(object, size));
 
   Composite.add(engine.world, [spinnerMatter]);

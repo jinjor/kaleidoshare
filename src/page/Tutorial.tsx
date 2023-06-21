@@ -34,7 +34,6 @@ export default function Tutorial() {
           style={{
             padding: "40px 40px 120px",
             marginBottom: 15,
-            boxSizing: "border-box",
           }}
         >
           <div style={{ marginBottom: 40 }}>

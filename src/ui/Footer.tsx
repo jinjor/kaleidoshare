@@ -2,16 +2,7 @@ import React from "react";
 
 const Footer = () => (
   <footer className="horizontal-center" style={{ marginTop: "auto" }}>
-    <div
-      className="container"
-      style={{
-        display: "flex",
-        gap: 10,
-        padding: 15,
-        fontSize: 12,
-        color: "#999",
-      }}
-    >
+    <div className="container footer-content">
       <div>
         Copyright © 2023-present{" "}
         <a

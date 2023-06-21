@@ -52,7 +52,7 @@ export default function SignupForm(props: {
             minLength={schema.definitions.UserName.minLength}
             maxLength={schema.definitions.UserName.maxLength}
             pattern={schema.definitions.UserName.pattern}
-            style={{ width: "100%", boxSizing: "border-box" }}
+            style={{ width: "100%" }}
           />
           <div className="help">lowercase letters, numbers, and hyphens</div>
         </div>

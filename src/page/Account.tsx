@@ -60,23 +60,21 @@ export default function Account(props: { user: User | null | undefined }) {
       <Nav user={user}></Nav>
       {contents && (
         <main className="horizontal-center">
-          <div className="container">
+          <div className="container account">
             <Gallery authorName={user.name} contents={contents} />
-            <div className="horizontal-center" style={{ marginTop: 10 }}>
-              <div className="form">
-                <h1 className="form-title">Account</h1>
-                <button className="button wide" onClick={handleAddCredential}>
-                  Add credential
-                </button>
-                <hr></hr>
-                <h1 className="form-title">Danger Zone</h1>
-                <button
-                  className="button wide danger"
-                  onClick={handleBeginDeleteAccount}
-                >
-                  Delete account
-                </button>
-              </div>
+            <div className="form account-form">
+              <h1 className="form-title">Account</h1>
+              <button className="button wide" onClick={handleAddCredential}>
+                Add credential
+              </button>
+              <hr></hr>
+              <h1 className="form-title">Danger Zone</h1>
+              <button
+                className="button wide danger"
+                onClick={handleBeginDeleteAccount}
+              >
+                Delete account
+              </button>
             </div>
           </div>
         </main>

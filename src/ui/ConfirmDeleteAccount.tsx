@@ -33,7 +33,7 @@ export default function ConfirmDeleteAccount(props: {
             className="input"
             type="text"
             onInput={hanldeInput}
-            style={{ width: "100%", boxSizing: "border-box" }}
+            style={{ width: "100%" }}
           />
         </div>
         <button
