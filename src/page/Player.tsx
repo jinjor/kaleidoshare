@@ -65,7 +65,6 @@ export default function Player(props: {
       <View
         fullscreen={true}
         onQuitFullscreen={handleQuitFullscreen}
-        size={viewSize * 2}
         world={world}
         onReady={() => {}}
       />

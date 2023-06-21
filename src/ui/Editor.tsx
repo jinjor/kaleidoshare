@@ -153,7 +153,6 @@ export default function Editor(props: {
         <View
           fullscreen={true}
           onQuitFullscreen={quitPreview}
-          size={viewSize * 2}
           world={world}
           onReady={handleViewReady}
         />
@@ -174,7 +173,6 @@ export default function Editor(props: {
         <View
           fullscreen={false}
           onQuitFullscreen={quitPreview}
-          size={viewSize}
           world={world}
           onReady={handleViewReady}
         />

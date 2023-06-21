@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import { WorldApi } from "./World";
+import { getGlobalStyle, getPx } from "./util";
 
 const generation = 5;
 const f = [
@@ -22,15 +23,15 @@ export type ViewApi = {
   getImageString: (size: number) => Promise<string>;
 };
 const View = React.memo(function View(props: {
-  size: number;
   world: WorldApi | undefined;
   fullscreen: boolean;
   onQuitFullscreen: () => void;
   onReady: (api: ViewApi) => void;
 }) {
-  const { size, world, fullscreen, onQuitFullscreen, onReady } = props;
+  const { world, fullscreen, onQuitFullscreen, onReady } = props;
 
   const viewRef = useRef<HTMLCanvasElement>(null);
+  const size = getPx(getGlobalStyle("--view-size")) * (fullscreen ? 2 : 1);
 
   useEffect(() => {
     if (world == null) {
@@ -87,58 +88,15 @@ const View = React.memo(function View(props: {
       ref={viewRef}
       width={size}
       height={size}
-      style={{
-        width: "100%",
-        height: "100%",
-        overflow: "hidden",
-        position: "absolute",
-        left: 0,
-        top: 0,
-        borderRadius: "50%",
-        WebkitPrintColorAdjust: "exact",
-      }}
+      className="view-canvas"
     ></canvas>
   );
   return fullscreen ? (
-    <div
-      style={{
-        position: "fixed",
-        top: 0,
-        bottom: 0,
-        left: 0,
-        right: 0,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        backgroundColor: "#111",
-      }}
-      onClick={onQuitFullscreen}
-    >
-      <div
-        style={{
-          backgroundColor: "#111",
-          maxWidth: "90vh",
-          maxHeight: "90vh",
-          position: "relative",
-          width: "90vw",
-          height: "90vw",
-        }}
-      >
-        {canvas}
-      </div>
+    <div className="view-fullscreen" onClick={onQuitFullscreen}>
+      <div className="view-fullscreen-inner">{canvas}</div>
     </div>
   ) : (
-    <div
-      style={{
-        backgroundColor: "var(--bg-color-float)",
-        width: size,
-        height: size,
-        position: "relative",
-        minWidth: size,
-      }}
-    >
-      {canvas}
-    </div>
+    <div className="view">{canvas}</div>
   );
 });
 export default View;
