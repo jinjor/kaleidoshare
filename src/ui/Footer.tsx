@@ -4,7 +4,7 @@ const Footer = () => (
   <footer className="horizontal-center" style={{ marginTop: "auto" }}>
     <div className="container footer-content">
       <div>
-        Copyright © 2023-present{" "}
+        © 2023-present{" "}
         <a
           href="https://twitter.com/jinjor"
           target="_blank"
