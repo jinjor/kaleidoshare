@@ -19,15 +19,26 @@ test("session", async (t) => {
   let p: childProcess.ChildProcess;
   before(async () => {
     fs.mkdirSync("tmp", { recursive: true });
-    p = childProcess.spawn("deno", ["run", "-A", "--unstable", "server.ts"], {
-      env: {
-        ...process.env,
-        CHALLENGE: "test",
-        PORT: String(port),
-        KV_PATH: kvPath,
-      },
-      stdio: "inherit",
-    });
+    p = childProcess.spawn(
+      "deno",
+      [
+        "run",
+        "-A",
+        "--unstable",
+        "--config",
+        "server/deno.jsonc",
+        "server/index.ts",
+      ],
+      {
+        env: {
+          ...process.env,
+          CHALLENGE: "test",
+          PORT: String(port),
+          KV_PATH: kvPath,
+        },
+        stdio: "inherit",
+      }
+    );
     await waitForServer(origin);
   });
   after(() => {
