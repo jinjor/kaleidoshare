@@ -50,4 +50,5 @@ jobs:
         uses: denoland/deployctl@v1
         with:
           project: kaleidoshare
-          entrypoint: server.ts
+          entrypoint: server/index.ts
+          import-map: server/deno.jsonc

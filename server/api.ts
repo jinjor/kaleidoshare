@@ -24,7 +24,8 @@ import {
   updateContent,
 } from "./content.ts";
 
-import Ajv, { ValidateFunction } from "ajv";
+import AjvImport, { ValidateFunction } from "ajv";
+const Ajv = AjvImport as unknown as typeof AjvImport.default;
 import schema from "../schema/schema.json" assert { type: "json" };
 import { Settings, Output, Image } from "../schema/schema.ts";
 import { makeContentPageForTwitterBot } from "./twitter.tsx";

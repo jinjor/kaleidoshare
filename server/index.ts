@@ -1,8 +1,8 @@
 import { Application } from "oak";
 import { CookieStore, Session } from "oak_sessions";
-import { randomHex } from "./server/util.ts";
-import { openKv } from "./server/kv.ts";
-import { createRouters, handleError } from "./server/api.ts";
+import { randomHex } from "./util.ts";
+import { openKv } from "./kv.ts";
+import { createRouters, handleError } from "./api.ts";
 
 const apiServerPort: number = parseInt(Deno.env.get("PORT") ?? "8000");
 

@@ -31,11 +31,11 @@
   "scripts": {
     "dev": "run-p dev:*",
     "dev:frontend": "vite",
-    "dev:backend": "deno run -A --watch --unstable ./server.ts",
+    "dev:backend": "deno run -A --watch --unstable --config server/deno.jsonc server/index.ts",
     "build": "run-s build:*",
     "build:schema": "ts-json-schema-generator --path 'schema/schema.ts' --out schema/schema.json",
     "build:frontend": "vite build",
-    "preview": "deno run -A --unstable ./server.ts",
+    "preview": "deno run -A --unstable --config server/deno.jsonc server/index.ts",
     "test": "run-s test:*",
     "test:backend": "node --loader tsx --test ./test/backend/*.test.mts",
     "test:frontend": "playwright test"

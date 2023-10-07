@@ -1,0 +1,22 @@
+{
+  "imports": {
+    "simplewebauthn/server": "npm:@simplewebauthn/server@^7.3.0",
+    "simplewebauthn/server/helpers": "npm:@simplewebauthn/server@^7.3.0/helpers",
+    "simplewebauthn/typescript-types": "npm:@simplewebauthn/typescript-types@7.4.0",
+    "std/encoding/base64url": "https://deno.land/std@0.179.0/encoding/base64url.ts",
+    "std/_util/asserts": "https://deno.land/std@0.183.0/_util/asserts.ts",
+    "ulid": "npm:ulid@2.3.0",
+    "ajv": "npm:ajv@8.12.0",
+    "oak": "https://deno.land/x/oak@v12.2.0/mod.ts",
+    "oak_sessions": "https://deno.land/x/oak_sessions@v4.1.4/mod.ts",
+    "react": "npm:react@18.2.0",
+    "react-dom/server": "npm:react-dom@18.2.0/server"
+  },
+  "scopes": {},
+  "compilerOptions": {
+    "jsx": "react",
+    "jsxFactory": "React.createElement",
+    "jsxFragmentFactory": "React.Fragment"
+  },
+  "nodeModulesDir": false
+}
